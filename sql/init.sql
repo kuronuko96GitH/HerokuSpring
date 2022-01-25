@@ -12,10 +12,8 @@ CREATE TABLE USERS (
 );
 
 INSERT INTO USERS (NAME, EMAIL, PASSWORD, ADMIN_CODE, ADDRESS, PHONE) VALUES
-('admin', 'admin@example.com','admin1234', 1, '東京都品川区1-1', '090-0000-0000');
-INSERT INTO USERS (NAME, EMAIL, PASSWORD, ADMIN_CODE, ADDRESS, PHONE) VALUES
-('test1', 'test1@example.com','test1234', 0, '東京都荒川区1-1', '090-0000-0000');
-INSERT INTO USERS (NAME, EMAIL, PASSWORD, ADMIN_CODE, ADDRESS, PHONE) VALUES
+('admin', 'admin@example.com','admin1234', 1, '東京都品川区1-1', '090-0000-0000'),
+('test1', 'test1@example.com','test1234', 0, '東京都荒川区1-1', '090-0000-0000'),
 ('test2', 'test2@example.com','test1234', 0, '東京都渋谷区1-1', '090-0000-0000');
 
 
