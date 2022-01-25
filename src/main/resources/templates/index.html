@@ -1,11 +1,28 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>Hello</title>
-    <meta charset="utf-8" />
-  </head>
+<head th:replace="common/head :: head_fragment(title = 'TOPページ', scripts = ~{::script}, links = ~{::link})"></head>
   <body>
-    <h1>第一章 Spring Boot＋Thymeleaf で”Hello World”を作成する</h1>
+    <h1>Spring Boot＋Thymeleaf でユーザー登録画面を作成する</h1>
     <h2><span th:text="${message}"></span></h2>
+
+     <section class="bg-dark">
+         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+             <div class="d-flex justify-content-center">
+                 
+                 <div class="text-center">
+                     <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+                         <div class="card-body">
+                             <br>
+
+                             <div>◆動作テスト用リンク一覧</div>
+                             <div><a href="http://localhost:8080/user/list" target="_blank" rel="noopener">ユーザー情報一覧画面</a></div>
+                             <div><a href="http://localhost:8080/user/add" target="_blank" rel="noopener">ユーザー情報新規登録画面</a></div>
+                         </div>
+                     </div>
+                 </div>
+
+             </div>
+         </div>
+     </section>
   </body>
 </html>
