@@ -12,11 +12,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserUpdateRequest;
+import com.example.demo.dto.UserUpdateRequestPass;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 
@@ -25,6 +27,9 @@ import com.example.demo.service.UserService;
  */
 @Controller
 public class UserController {
+// 補足説明：
+// Controllerアノテーションを付けたクラスで、
+// index.htmlなどを呼び出す、ルート管理の処理を作成する。
 
   /**
    * ユーザー情報 Service
@@ -38,11 +43,38 @@ public class UserController {
    * @return トップページ
    * 補足(ローカル環境)：URL…http://localhost:8080/
    */
-  @RequestMapping(value = "/", method = RequestMethod.GET)
-  public String helloWorld(Model model) {
-      model.addAttribute("message", "Hello World!!");
-      return "index";
+  @GetMapping(value = "/")
+  public String root() {
+	  return "index";
   }
+
+  @PostMapping(value = "/index")
+  public String index() {
+	  return "index";
+  }
+  
+/*
+@RequestMapping(value = "/", method = RequestMethod.GET)
+public String helloWorld(Model model) {
+  model.addAttribute("message", "Hello World!!");
+  return "index";
+}
+*/
+  
+
+  /**
+   * ログイン画面を表示
+   * @param model Model
+   * @return ログイン画面
+   */
+  @GetMapping(value = "/login")
+  public String login() {
+    return "login";
+  }
+//  補足説明：GetMapping…Getメソッドで送信されてきたリクエストを処理するアノテーション
+//　ちなみに↓２つは同じ意味
+//  @GetMapping("/login")
+//  @RequestMapping(value = "/login", method = RequestMethod.POST)
   
   
   /**
@@ -87,7 +119,8 @@ public class UserController {
     }
     // ユーザー情報の登録
     userService.create(userRequest);
-    return "redirect:/user/list";
+    return "login"; // 管理者ではないユーザーの新規登録の場合は、ログイン画面に戻る？
+//    return "redirect:/user/list";
   }
   
   /**
@@ -116,7 +149,7 @@ public class UserController {
     userUpdateRequest.setId(user.getId());
     userUpdateRequest.setName(user.getName());
     userUpdateRequest.setEmail(user.getEmail());
-    userUpdateRequest.setPassword(user.getPassword());
+//    userUpdateRequest.setPassword(user.getPassword());
     userUpdateRequest.setPhone(user.getPhone());
     userUpdateRequest.setAddress(user.getAddress());
     model.addAttribute("userUpdateRequest", userUpdateRequest);
@@ -142,6 +175,45 @@ public class UserController {
     // ユーザー情報の更新
     userService.update(userUpdateRequest);
     return String.format("redirect:/user/%d", userUpdateRequest.getId());
+  }
+
+
+  /**
+   * ユーザー(パスワード)編集画面を表示
+   * @param id 表示するユーザーID
+   * @param model Model
+   * @return ユーザー(パスワード)編集画面
+   */
+  @GetMapping("/user/{id}/editpass")
+  public String displayEditPass(@PathVariable Long id, Model model) {
+    User user = userService.findById(id);
+    UserUpdateRequestPass userUpdateRequest = new UserUpdateRequestPass();
+    // パスワードの情報は、セキュリィ対策として保持しない
+    userUpdateRequest.setId(user.getId());
+//    userUpdateRequest.setPassword(user.getPassword());
+    model.addAttribute("userUpdateRequestPass", userUpdateRequest);
+    return "user/editpass";
+  }
+
+  /**
+   * ユーザー(パスワード)更新
+   * @param userRequest リクエストデータ
+   * @param model Model
+   * @return ユーザー情報詳細画面
+   */
+  @RequestMapping(value = "/user/updatepass", method = RequestMethod.POST)
+  public String updatePass(@Validated @ModelAttribute UserUpdateRequestPass userUpdateRequestPass, BindingResult result, Model model) {
+    if (result.hasErrors()) {
+      List<String> errorList = new ArrayList<String>();
+      for (ObjectError error : result.getAllErrors()) {
+        errorList.add(error.getDefaultMessage());
+      }
+      model.addAttribute("validationError", errorList);
+      return "user/editpass";
+    }
+    // ユーザー情報（パスワードのみ）の更新
+    userService.updatePass(userUpdateRequestPass);
+    return String.format("redirect:/user/%d", userUpdateRequestPass.getId());
   }
   
 

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head_fragment(title = 'ログイン', scripts = ~{::script}, links = ~{::link})"></head>
+  <body>
+
+	<!-- th:replaceを使用して、 Navbarを読込みます -->
+	<div th:replace="common/footerNavbar :: footer_fragment"></div>
+
+	<div class="form-container align-items-center justify-content-center">
+		<div class="card" style="width: 24rem;">
+			<div class="card-body">
+				<h5 class="card-title">ログイン</h5>
+				<hr />
+				<form method="post" autocomplete="off" th:action="@{/login}">
+					<div class="form-group">
+						<label for="email">E-Mail</label>
+						<input type="email" class="form-control" id="email" name="email" tabindex="1" required />
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label>
+						<input type="password" class="form-control" id="password" name="password" tabindex="2" required />
+					</div>
+
+					<hr />
+					<div class="py-3 d-grid gap-2">
+						<button type="submit" class="btn btn-primary btn-block">ログイン</button>
+						<a th:href="@{/user/add}" class="btn btn-danger btn-block text-light">ユーザ登録</a>
+		<!--
+						<a href="signup.html" class="btn btn-danger btn-block text-light">ユーザ登録</a>
+		-->
+		<!--
+						<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+							data-bs-target="#registrationForm">新規ユーザー登録</button>
+		-->
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+<!-- エラーメッセージを共通化するつもりなら
+<div th:replace="fragments/Toast :: toast"></div>	
+-->
+	
+	<!-- Scripts -->
+	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
+	<div th:replace="common/footerScript :: footer_fragment"></div>
+<!--
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+ -->
+  </body>
+</html>

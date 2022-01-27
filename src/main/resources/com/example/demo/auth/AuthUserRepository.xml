@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http:mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.auth.AuthUserRepository">
+
+	<select id="identifyUser" parameterType="java.lang.String" resultMap="userDetails">
+	<![CDATA[
+		SELECT	USERS.ID,
+				USERS.EMAIL,
+				USERS.NAME,
+				USERS.PASSWORD,
+				'01' AS ROLE,
+				'ROLE_USER' AS CODE_NM
+		FROM USERS
+		WHERE USERS.EMAIL = #{email}
+	]]>
+	</select>
+
+	<resultMap type="com.example.demo.auth.AuthUser" id="userDetails">
+		<result property="id" column="ID" />
+		<result property="email" column="EMAIL" />
+		<result property="username" column="NAME" />
+		<result property="password" column="PASSWORD" />
+		<collection property="roles" ofType="java.lang.String">
+			<result column="CODE_NM" />
+		</collection>
+	</resultMap>
+</mapper>
+
