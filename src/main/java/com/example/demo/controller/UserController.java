@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -80,7 +82,18 @@ public String helloWorld(Model model) {
 //  @GetMapping("/login")
 //  @RequestMapping(value = "/login", method = RequestMethod.POST)
 
-
+  /**
+   * ログイン画面でログインエラーが発生
+   * @param model Model
+   * @return ログイン画面
+   */
+  @PostMapping(value = "/loginerr")
+  public String loginerr(@RequestAttribute("SPRING_SECURITY_LAST_EXCEPTION") 
+		AuthenticationException ex,
+		Model model) {
+	model.addAttribute("authenticationException", ex);
+	return "login";
+  }
 
 
   /**
@@ -172,6 +185,17 @@ public String helloWorld(Model model) {
       model.addAttribute("validationError", errorList);
       return "user/add";
     }
+
+ 
+    // 新規登録しようしたメールアドレスが、データベースに存在してないかを検索
+    Integer intCnt = userService.findByEmail(userRequest.getEmail());
+    
+	if ( intCnt > 0) {
+		  // データベースに同じメールアドレスが存在していた場合。
+	    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
+	    return "user/add";  
+	}
+  
     // ユーザー情報の登録
     userService.create(userRequest);
     return "login"; // 管理者ではないユーザーの新規登録の場合は、ログイン画面に戻る？

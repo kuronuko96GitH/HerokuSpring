@@ -14,6 +14,12 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return authUserRepository.identifyUser(username);
+		AuthUser user = authUserRepository.identifyUser(username);
+		if (user == null) {
+			// メールアドレスが間違っており、データベースから取得したデータがnullだった場合。
+			throw new UsernameNotFoundException(username);
+		}
+		return user;
+//		return authUserRepository.identifyUser(username);
 	}
 }

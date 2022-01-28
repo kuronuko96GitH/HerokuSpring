@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 
 import com.example.demo.auth.DatabaseUserDetailsService;
 
@@ -41,7 +42,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 			.and().formLogin()
 			.loginPage("/login").usernameParameter("email").passwordParameter("password").permitAll();
 */
-		// アクセス制御
+
 		http.authorizeRequests()
 			.antMatchers("/css/**", "/js/**", "/img/**").permitAll()
 			.antMatchers("/user/add").permitAll()
@@ -52,12 +53,14 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 			.formLogin().loginPage("/login")
 //			.loginProcessingUrl("/Login.do")	// HTML側でログインの実行処理を別名にしたい場合。
 //			.formLogin().loginPage("/Login.html")
+			.failureHandler(new ForwardAuthenticationFailureHandler("/loginerr"))
 //			.failureHandler(new ForwardAuthenticationFailureHandler("/Login.err"))
 			.usernameParameter("email").passwordParameter("password").permitAll()
 		// ログアウト
 		.and()
 			.logout()
 			.logoutUrl("/logout")
+			.logoutSuccessUrl("/login")
 //			.logoutUrl("/Logout.do")	// HTML側でログアウトの実行処理を別名にしたい場合。
 //			.logoutSuccessUrl("/Login.html")
 			.invalidateHttpSession(true)
@@ -84,14 +87,19 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 		// antMatchers()　cssだけは、ログイン認証無しでも表示ができるように許可するメソッド
 		//
 		// permitAll()　ログイン後に、全てのリクエストを許可するメソッド
-		
-		
+				
 		// 補足説明：
 		// anyRequest()…全てのリクエストに対して
 		// authenticated()…認証済みであること
 		// ログインしないとWebアプリケーションのリソースに一切アクセスができない
 
 		
+		
+//		.failureHandler(new ForwardAuthenticationFailureHandler("/Login.err"))
+		
+		// 補足説明：
+		// failureHandler()…認証が失敗した時の事後処理をするクラス
+
 		
 //		.and().httpBasic();
 		
@@ -117,6 +125,10 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 //				.deleteCookies("JSESSIONID");
 //				クッキーのセッション情報を削除
 				
+
+		//　補足説明：logoutSuccessUrl()
+		// ログアウト成功時の後処理をしておかないと、
+		// 再ログイン後に、login?logout　にリクエストを飛ばして、ユーザーからログインエラーをしたように見えてしまうでの。
 
 	}
 

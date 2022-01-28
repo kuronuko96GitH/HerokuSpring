@@ -1,38 +1,45 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org">
 <head
-  th:replace="common/head :: head_fragment(title = 'ユーザー情報詳細', scripts = ~{::script}, links = ~{::link})"></head>
-
+	th:replace="common/head :: head_fragment(title = 'ユーザー情報詳細', scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
 	<!-- th:replaceを使用して、 Navbarを読込みます -->
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
-	
+
 	<div class="container">
-	  <h1>ユーザー情報詳細</h1>
+	  <div class="head_title">ユーザー情報詳細</div>
+
+	  <div class="float-end">
+		<!-- 右端にボタン  -->
+	    <a th:href="@{/user/{id}/delete(id=*{id})}" class="btn btn-danger">　削除　</a>
+	  </div>
+	  <br />
+	  <br />
+
 	  <div th:object="${userData}">
 	    <div class="row mx-md-n5">
 	      <div class="col-2 pt-3 border bg-light">名前</div>
-	      <div class="col pt-3 border">
+	      <div class="col pt-3 border bg-white">
 	        <p th:text="*{name}"></p>
 	      </div>
 	    </div>
 	    <div class="row mx-md-n5">
 	      <div class="col-2 pt-3 border bg-light">メールアドレス</div>
-	      <div class="col pt-3 border">
+	      <div class="col pt-3 border bg-white">
 	        <p th:text="*{email}"></p>
 	      </div>
 	    </div>
 	    <div class="row mx-md-n5">
 	      <div class="col-2 pt-3 border bg-light">住所</div>
-	      <div class="col pt-3 border">
+	      <div class="col pt-3 border bg-white">
 	        <p th:text="*{address}"></p>
 	      </div>
 	    </div>
 	    <div class="row mx-md-n5">
 	      <div class="col-2 pt-3 border bg-light">電話番号</div>
-	      <div class="col pt-3 border">
+	      <div class="col pt-3 border bg-white">
 	        <p th:text="*{phone}"></p>
 	      </div>
 	    </div>
@@ -41,7 +48,6 @@
 	  <div class="text-center">
 	    <a th:href="@{/user/{id}/edit(id=*{id})}" class="btn btn-primary">　編集　</a>
 	    <a th:href="@{/user/{id}/editpass(id=*{id})}" class="btn btn-primary">　パスワード編集　</a>
-	    <a th:href="@{/user/{id}/delete(id=*{id})}" class="btn btn-secondary">　削除　</a>
 	    <a href="/user/list" class="btn btn-secondary">一覧に戻る</a>
 	  </div>
 	</div>

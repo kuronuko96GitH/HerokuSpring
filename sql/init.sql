@@ -13,6 +13,7 @@ CREATE TABLE USERS (
 
 INSERT INTO USERS (NAME, EMAIL, PASSWORD, ADMIN_CODE, ADDRESS, PHONE) VALUES
 ('admin', 'admin@example.com','$2a$08$CekzJRYhb5bzp5mx/eZmX.grG92fRXo267QVVyRs0IE.V.zeCIw8S', 1, '東京都品川区1-1', '09012345678'),
+('guest', 'guest@example.com','test1234', 9, '東京都荒川区1-1', '09012345678'),
 ('test1', 'test1@example.com','test1234', 0, '東京都荒川区1-1', '09012345678'),
 ('test2', 'test2@example.com','test1234', 0, '東京都渋谷区1-1', '09012345678');
 

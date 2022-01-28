@@ -23,10 +23,16 @@
 						<input type="password" class="form-control" id="password" name="password" tabindex="2" required />
 					</div>
 
+
+					<!-- エラーメッセージ -->
+					<div class="my-1 text-danger" th:if="${authenticationException}">
+						<span th:text="${authenticationException.message}"></span>
+					</div>
+
 					<hr />
 					<div class="py-3 d-grid gap-2">
 						<button type="submit" class="btn btn-primary btn-block">ログイン</button>
-						<a th:href="@{/user/add}" class="btn btn-danger btn-block text-light">ユーザ登録</a>
+						<a th:href="@{/user/add}" class="btn btn-success btn-block text-light">ユーザ登録</a>
 		<!--
 						<a href="signup.html" class="btn btn-danger btn-block text-light">ユーザ登録</a>
 		-->

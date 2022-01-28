@@ -14,6 +14,7 @@ import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.UserRepositoryStr;
 
 /**
  * ユーザー情報 Service
@@ -27,6 +28,13 @@ public class UserService {
    */
   @Autowired
   private UserRepository userRepository;
+  
+  /**
+   * ユーザー情報 RepositoryStr
+   * (String型の項目指定が可能)
+   */
+  @Autowired
+  private UserRepositoryStr userRepositoryStr;
 
   
   /**
@@ -75,6 +83,29 @@ public class UserService {
     return userRepository.findById(id).get();
   }
 
+  /**
+   * ユーザー情報 該当する『メールアドレス』検索
+   * @return 検索結果
+   */
+
+  public Integer findByEmail(String email) {
+	  
+	  return userRepositoryStr.findByEmail(email).size();
+	  
+//		return userRepositoryStr.findByEmail(email).get(0);
+  }
+
+  /**
+   * ユーザー情報 該当する『メールアドレス』の件数を検索
+   * @return 検索結果
+   */
+/*
+  public User findByEmailCnt(String email) {
+	    return userRepositoryStr.findByEmailCnt(email).get(0);
+//  public Integer findByEmailCnt(String email) {
+//    return Integer.parseInt(userRepositoryStr.findByEmailCnt(email).get(0).getEmail());
+  }
+*/
   /**
    * ユーザー情報 更新
    * @param user ユーザー情報

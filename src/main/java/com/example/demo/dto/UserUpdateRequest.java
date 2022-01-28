@@ -18,7 +18,7 @@ public class UserUpdateRequest implements Serializable {
   /**
    * ユーザーID
    */
-  @NotNull
+  @NotNull(message = "IDが取得できません。")
   private Long id;
 
   /**

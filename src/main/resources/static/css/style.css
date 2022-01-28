@@ -1,22 +1,90 @@
-/*
 body {
-  width: 90%;
+   /* HTML全ての<body>の背景色を『whitesmoke』に設定 */
+   background: #f5f5f5;
+/*   background: #eeeeee; 『薄いグレイ』 */
+
+   /* 商用可のフリー素材を背景色として使用。*/
+/*　パスの呼び出しに問題あり。要調査。
+   background-image: url("45degreee_fabric.png");
+*/
+
+   /* フォントの種類 『メイリオ』に設定 */
+   font-family: Meiryo;
+
+   /* これはいらないかも。幅９０％に指定すると、全体のレイアウトが崩れる */
+/*
+   width: 90%;
+ */
+
 }
+
+/* ここからオリジナルのCSS。HTML側のclassで指定すれば呼び出せます。 */
+.head_title {
+/* 使用タグは<div> */
+/* HTML側やる場合のclass指定：<h1 calss="text-center text-white bg-dark pt-1 pb-1 mt-3 mb-3"></h1> */
+  font-size: 2.5em; /* 文字のサイズ…H1と同じサイズ */
+  text-align: center; /* テキストの中央寄せ */
+  color: #FFF;/* 文字色は白 */
+  background: #000; /*背景色は、黒 */
+  padding: 0.5px 0; /*内側の空白指定：上下 | 左右 */
+  margin: 15px 0; /*外側の空白指定：上下 | 左右 */
+/*　参考 
+  font-size: 1.5em;
+  padding: 0.5em 1em; 内側の空白指定
+  margin: 2em 0; 上下 | 左右	(例)margin: 2em　四辺全てに2emのマージン
+  background: #000;
+  border: solid 3px #6091d3; 枠線 青系
+  border-radius: 10px; 角の丸み
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22); テキストボックスに影をつける
+*/
+}
+/*
+div {
+	background: #ffffff;
+}
+h1{
+  font-size: 20px,
+  color: blue;
+}
+*/
+/*
+CSSを書く上でよく使われるプロパティ。
+
+プロパティ	説明文
+color	文字色を指定する
+background	背景の指定をする
+background-color	背景の色を指定する
+font-family	フォントの種類を指定する
+font-weight	フォントの太さを指定する
+line-height	行の高さを指定する
+text-align	行の揃え位置を指定する
+width	幅を指定する
+height	高さを指定する
+margin	マージンの指定をする
+padding	パディングの指定をする
+border	ボーダーの色や太さを指定する
+position	要素の配置方法を指定する
+display	要素の表示形式を指定する
+float	左か右に寄せて配置する
+z-index	要素の重なりの順序を指定する
+*/
 table{
-    width: 100%;
-    border-collapse: collapse;
-  font-size: 12px;
+	width: 100%;
+	border-collapse: collapse;
+/*	font-size: 12px; このサイズは、小さすぎる */
+}
+table th {
+	/* テーブルのヘッダの背景色を指定 */
+	background: #FFFFFF; /* 白色　★指定が反映されない　要調査★ */
+	/* ライトグレー */
+/*	background-color: #F2F2F2; */
+	text-align: center;	
 }
 
 table th, table td {
-    border: 1px solid #ddd;
-    padding: 6px;
-}
-
-table th {
-  background-color: #F2F2F2;
+	border: 1px solid #ddd;
+	padding: 6px;
 }
 .center {
-  text-align: center;
+	text-align: center;
 }
-*/

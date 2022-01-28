@@ -28,7 +28,7 @@ public class UserRequest implements Serializable {
    * パスワード
    */
   @NotEmpty(message = "パスワードを入力してください")
-  @Size(max = 100, message = "パスワードは100桁以内で入力して下さい。")
+  @Size(min = 8, max = 20, message = "パスワードは８桁以上、２０桁以内で入力して下さい。")
   private String password;
   /**
    * 住所
@@ -41,4 +41,5 @@ public class UserRequest implements Serializable {
 //@Pattern(regexp = "0\\d{1,4}-\\d{1,4}-\\d{4}", message = "電話番号の形式で入力して下さい。(入力例：00-0000-0000 又は 090-0000-0000)")
   @Size(max = 11, message = "電話番号は11桁以内で入力して下さい。")
   private String phone;
+
 }

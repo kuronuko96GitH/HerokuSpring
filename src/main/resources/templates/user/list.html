@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common/head :: head_fragment(title = 'ユーザー情報一覧', scripts = ~{::script}, links = ~{::link})"></head>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head
+	th:replace="common/head :: head_fragment(title = 'ユーザー情報一覧', scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
 	<!-- th:replaceを使用して、 Navbarを読込みます -->
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
 	<div class="container">
-	  <h1 class="text-center text-white bg-dark mt-3 mb-3">ユーザー情報一覧</h1>
-	  <div class="float-end">
+	  <div class="head_title">ユーザー情報一覧</div>
+
+	  <div class="float-end mb-3">
 	    <a th:href="@{/user/add}" class="btn btn-primary">新規登録はこちら</a>
 	  </div>
 	  <table class="table table-striped">
@@ -24,12 +27,12 @@
 	        <th>電話番号</th>
 	        <th>更新日時</th>
 	        <th>登録日時</th>
-	        <th></th>
+	        <th class="bg-white"></th>
 	      </tr>
 	    </thead>
 	    <tbody>
 	      <tr th:each="user, userRec : ${userlist}" th:object="${user}" class="align-middle">
-	        <td th:text="${userRec.count}"></td>
+	        <td th:text="${userRec.count}" class="text-center"></td>
 <!--
 	      <tr th:each="user, userRec : ${userlist}" th:object="${user}" class="align-middle">
 	        <td th:text="${userRec.count} + '番'"></td>
@@ -48,7 +51,7 @@
 	          <td>2022/XX/XX</td>
 	          <td th:text="${#dates.format(user.deleteDate, 'yyyy/MM/dd')}"></td>
 	-->
-	        <td><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-secondary">詳細</a></td>
+	        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
 	      </tr>
 	    </tbody>
 	  </table>
