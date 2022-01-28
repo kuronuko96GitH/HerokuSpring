@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,12 @@ public class UserService {
    * @return 検索結果
    */
   public List<User> searchAll() {
-    return userRepository.findAll();
+	  // id(昇順)
+	  return userRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+	  // id(降順)
+//	  return userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+	  // ソート指定なし
+//	      return userRepository.findAll();
   }
 
   /**

@@ -6,15 +6,8 @@
 	<!-- th:replaceを使用して、 Navbarを読込みます -->
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
-    <h1>現在、システムの改修中です。<span class="text-danger">予告なく</span>、画面レイアウトの変更、</h1>
+    <h1>◆現在、システムの改修中です。<span class="text-danger">予告なく</span>、画面レイアウトの変更、</h1>
     <h1>更新に伴うデータの削除が発生します。ご注意ください。</h1>
-    
-<!--
-    			<form th:action="@{/Logout.do}" method="post">
- -->
-    			<form th:action="@{/logout}" method="post">
-					<button type="submit" class="btn btn-success btn-sm shadow-sm">ログオフ</button>
-				</form>
 				
     <h2><span th:text="${message}"></span></h2>
 

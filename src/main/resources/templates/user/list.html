@@ -14,7 +14,10 @@
 	  <table class="table table-striped">
 	    <thead>
 	      <tr>
+	        <th>NO</th>
+<!--	        
 	        <th>ID</th>
+  -->
 	        <th>名前</th>
 	        <th>メールアドレス</th>
 	        <th>住所</th>
@@ -25,8 +28,16 @@
 	      </tr>
 	    </thead>
 	    <tbody>
+	      <tr th:each="user, userRec : ${userlist}" th:object="${user}" class="align-middle">
+	        <td th:text="${userRec.count}"></td>
+<!--
+	      <tr th:each="user, userRec : ${userlist}" th:object="${user}" class="align-middle">
+	        <td th:text="${userRec.count} + '番'"></td>
+  -->
+<!--
 	      <tr th:each="user : ${userlist}" th:object="${user}" class="align-middle">
 	        <td th:text="*{id}"></td>
+  -->
 	        <td th:text="*{name}"></td>
 	        <td th:text="*{email}"></td>
 	        <td th:text="*{address}"></td>

@@ -3,6 +3,10 @@ package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,8 +79,59 @@ public String helloWorld(Model model) {
 //　ちなみに↓２つは同じ意味
 //  @GetMapping("/login")
 //  @RequestMapping(value = "/login", method = RequestMethod.POST)
-  
-  
+
+
+
+
+  /**
+   * サンプル（テンプレート用）画面を表示
+   * @param model Model
+   * @return トップページ
+   * 補足(ローカル環境)：URL…http://localhost:8080/sample.html
+   */
+  @GetMapping(value = "/sample")
+  public String sample(HttpServletRequest request, Model model){
+      // セッションIDと、Cookieに設定されたセッションIDを設定する
+      HttpSession session = request.getSession(false);
+      model.addAttribute("sessionId"
+          , session == null ? "sessionは未作成" : session.getId());
+      model.addAttribute("cookieSessionId", getCookieSessionId(request));
+      return "sample";
+  }
+/*
+  @GetMapping(value = "/sample")
+  public String sample() {
+	  return "sample";
+  }
+*/
+
+
+
+  /**
+   * About Me画面を表示
+   * @param model Model
+   * @return トップページ
+   * 補足(ローカル環境)：URL…http://localhost:8080/others/aboutme.html
+   */
+  @GetMapping(value = "/others/aboutme")
+  public String aboutme() {
+	  return "others/aboutme";
+  }
+
+  /**
+   * Link画面を表示
+   * @param model Model
+   * @return トップページ
+   * 補足(ローカル環境)：URL…http://localhost:8080/others/aboutme.html
+   */
+  @GetMapping(value = "/others/portfolio")
+  public String portfolio() {
+	  return "others/portfolio";
+  }
+
+
+
+
   /**
    * ユーザー情報一覧画面を表示
    * @param model Model
@@ -228,5 +283,26 @@ public String helloWorld(Model model) {
     // ユーザー情報の削除
     userService.delete(id);
     return "redirect:/user/list";
+  }
+
+
+
+
+  /**
+   * CookieのセッションIDを取得する
+   * @param request HttpServletリクエスト
+   * @return CookieのセッションID
+   */
+  private String getCookieSessionId(HttpServletRequest request){
+      if(request == null || request.getCookies() == null){
+          return "CookieのセッションIDは未設定";
+      }
+      Cookie cookie[] = request.getCookies();
+      for (int i = 0 ; i < cookie.length ; i++) {
+          if ("JSESSIONID".equals(cookie[i].getName())) {
+              return cookie[i].getValue();
+          }
+      }
+      return "CookieのセッションIDは未設定";
   }
 }
