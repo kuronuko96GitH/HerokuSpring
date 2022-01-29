@@ -3,12 +3,9 @@ package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.example.demo.auth.AuthUser;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
@@ -43,6 +41,8 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  private AuthUser authUser;
+
   /**
    * トップページを表示
    * @param model Model
@@ -50,10 +50,26 @@ public class UserController {
    * 補足(ローカル環境)：URL…http://localhost:8080/
    */
   @GetMapping(value = "/")
+  public String root(@AuthenticationPrincipal AuthUser userDetails) {
+
+	  // 他のコントローラ処理でも、ログイン情報を扱えるように、
+	  // トップページにアクセスしたタイミングで、ログイン情報を取得。
+	  authUser = userDetails;
+	  // authUser.getId();
+	  // authUser.getEmail();
+	  // authUser.getUsername();
+	  // authUser.getRoles().get(0)	// (出力例)『ROLE_USER』
+
+//      System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
+
+	  return "index";
+  }
+/*
+  @GetMapping(value = "/")
   public String root() {
 	  return "index";
   }
-
+*/
   @PostMapping(value = "/index")
   public String index() {
 	  return "index";
@@ -103,20 +119,16 @@ public String helloWorld(Model model) {
    * 補足(ローカル環境)：URL…http://localhost:8080/sample.html
    */
   @GetMapping(value = "/sample")
-  public String sample(HttpServletRequest request, Model model){
-      // セッションIDと、Cookieに設定されたセッションIDを設定する
-      HttpSession session = request.getSession(false);
-      model.addAttribute("sessionId"
-          , session == null ? "sessionは未作成" : session.getId());
-      model.addAttribute("cookieSessionId", getCookieSessionId(request));
+  public String sample(){
+
       return "sample";
   }
-/*
-  @GetMapping(value = "/sample")
-  public String sample() {
-	  return "sample";
+
+  @GetMapping(value = "/sample2")
+  public String sample2() {
+	  return "sample2";
   }
-*/
+
 
 
 
@@ -135,13 +147,21 @@ public String helloWorld(Model model) {
    * Link画面を表示
    * @param model Model
    * @return トップページ
-   * 補足(ローカル環境)：URL…http://localhost:8080/others/aboutme.html
    */
   @GetMapping(value = "/others/portfolio")
   public String portfolio() {
 	  return "others/portfolio";
   }
 
+  /**
+   * 開発ドキュメント画面を表示
+   * @param model Model
+   * @return トップページ
+   */
+  @GetMapping(value = "/others/devdoc")
+  public String devdoc() {
+	  return "others/devdoc";
+  }
 
 
 
@@ -152,9 +172,16 @@ public String helloWorld(Model model) {
    */
   @GetMapping(value = "/user/list")
   public String displayList(Model model) {
-    List<User> userlist = userService.searchAll();
-    model.addAttribute("userlist", userlist);
-    return "user/list";
+
+	// 検索画面に、ログイン情報のパラメータを渡す。
+	model.addAttribute("authId", authUser.getId());
+	model.addAttribute("authName", authUser.getUsername());
+
+	// ユーザー情報の全検索
+	List<User> userlist = userService.searchAll();
+	model.addAttribute("userlist", userlist);
+
+	return "user/list";
   }
 
   /**
@@ -176,26 +203,52 @@ public String helloWorld(Model model) {
    */
   @RequestMapping(value = "/user/create", method = RequestMethod.POST)
   public String create(@Validated @ModelAttribute UserRequest userRequest, BindingResult result, Model model) {
-    if (result.hasErrors()) {
+
+//    int intCnt = 0; // デバッグ用
+//    String strX = ""; // デバッグ用
+
+	if (result.hasErrors()) {
       // 入力チェックエラーの場合
       List<String> errorList = new ArrayList<String>();
       for (ObjectError error : result.getAllErrors()) {
         errorList.add(error.getDefaultMessage());
+//        strX = errorList.get(intCnt); // デバッグ用
+//        intCnt++; // デバッグ用
       }
       model.addAttribute("validationError", errorList);
       return "user/add";
     }
 
- 
+/*
+    // 新規登録しようした名前が、データベースに存在してないかを検索
+	Integer intCnt = userService.findByNameCnt(userRequest.getName());
+
+    if ( intCnt > 0) {
+		  // データベースに同じ名前が存在していた場合。
+//	    model.addAttribute("validationError", "既に登録済の名前です。");
+
+	    List<String> errorList = new ArrayList<String>();
+      errorList.add("既に登録済の名前です。");
+      model.addAttribute("validationError", errorList);
+	    
+	    return "user/add";  
+	}
+*/
     // 新規登録しようしたメールアドレスが、データベースに存在してないかを検索
-    Integer intCnt = userService.findByEmail(userRequest.getEmail());
+    Integer intCnt = userService.findByEmailCnt(userRequest.getEmail());
     
 	if ( intCnt > 0) {
 		  // データベースに同じメールアドレスが存在していた場合。
-	    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
+//	    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
+
+	    List<String> errorList = new ArrayList<String>();
+        errorList.add("既に登録済のメールアドレスです。");
+        model.addAttribute("validationError", errorList);
+	    
 	    return "user/add";  
 	}
-  
+
+
     // ユーザー情報の登録
     userService.create(userRequest);
     return "login"; // 管理者ではないユーザーの新規登録の場合は、ログイン画面に戻る？
@@ -243,6 +296,9 @@ public String helloWorld(Model model) {
    */
   @RequestMapping(value = "/user/update", method = RequestMethod.POST)
   public String update(@Validated @ModelAttribute UserUpdateRequest userUpdateRequest, BindingResult result, Model model) {
+//    long lngCnt = 0; // デバッグ用
+//    String strX = ""; // デバッグ用
+
     if (result.hasErrors()) {
       List<String> errorList = new ArrayList<String>();
       for (ObjectError error : result.getAllErrors()) {
@@ -251,6 +307,26 @@ public String helloWorld(Model model) {
       model.addAttribute("validationError", errorList);
       return "user/edit";
     }
+
+//    strX = userUpdateRequest.getEmail(); // デバッグ用
+//    lngCnt = userUpdateRequest.getId(); // デバッグ用    
+
+/*
+    // 更新しようしたメールアドレスが、データベースに存在してないかを検索
+    Integer intCnt = userService.findByEmailCnt(userUpdateRequest.getEmail());
+    
+	if ( intCnt > 0) {
+		  // データベースに同じメールアドレスが存在していた場合。
+//	    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
+
+	    List<String> errorList = new ArrayList<String>();
+        errorList.add("既に登録済のメールアドレスです。");
+        model.addAttribute("validationError", errorList);
+	    
+	    return "user/edit";  
+	}
+*/
+
     // ユーザー情報の更新
     userService.update(userUpdateRequest);
     return String.format("redirect:/user/%d", userUpdateRequest.getId());
@@ -294,7 +370,7 @@ public String helloWorld(Model model) {
     userService.updatePass(userUpdateRequestPass);
     return String.format("redirect:/user/%d", userUpdateRequestPass.getId());
   }
-  
+
 
   /**
    * ユーザー情報削除
@@ -309,24 +385,4 @@ public String helloWorld(Model model) {
     return "redirect:/user/list";
   }
 
-
-
-
-  /**
-   * CookieのセッションIDを取得する
-   * @param request HttpServletリクエスト
-   * @return CookieのセッションID
-   */
-  private String getCookieSessionId(HttpServletRequest request){
-      if(request == null || request.getCookies() == null){
-          return "CookieのセッションIDは未設定";
-      }
-      Cookie cookie[] = request.getCookies();
-      for (int i = 0 ; i < cookie.length ; i++) {
-          if ("JSESSIONID".equals(cookie[i].getName())) {
-              return cookie[i].getValue();
-          }
-      }
-      return "CookieのセッションIDは未設定";
-  }
 }

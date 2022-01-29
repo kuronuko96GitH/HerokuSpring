@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -37,7 +38,6 @@ public class UserUpdateRequest implements Serializable {
    * パスワード
    */
 //  @NotEmpty(message = "パスワードを入力してください")
-//  @Size(max = 100, message = "パスワードは100桁以内で入力して下さい。")
 //  private String password;
   /**
    * 住所
@@ -48,6 +48,7 @@ public class UserUpdateRequest implements Serializable {
    * 電話番号
    */
 //@Pattern(regexp = "0\\d{1,4}-\\d{1,4}-\\d{4}", message = "電話番号の形式で入力して下さい。(入力例：00-0000-0000 又は 090-0000-0000)")
+  @Pattern(regexp = "\\d{0,11}", message = "電話番号は数値を入力して下さい。") // 未入力も可とする。ただし、MAXを超えると『数値を入力～』のメッセージになるのが微妙。
   @Size(max = 11, message = "電話番号は11桁以内で入力して下さい。")
   private String phone;
 }

@@ -28,6 +28,8 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 		// （パスワードは平文ではなく、ハッシュ化された状態とする）
 //		auth.inMemoryAuthentication()
 //			.withUser("user").password(passwordEncoder().encode("password")).roles("USER");
+		
+//		String strDebug = "";
 
 	}
 	

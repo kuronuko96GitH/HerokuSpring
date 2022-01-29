@@ -84,28 +84,34 @@ public class UserService {
   }
 
   /**
-   * ユーザー情報 該当する『メールアドレス』検索
+   * ユーザー情報 該当する『ユーザー』で検索
    * @return 検索結果
    */
+  public User findByName(String name) {
+	  
+//	  return userRepositoryStr.findByName(name).size();
+	  
+		return userRepositoryStr.findByName(name).get(0);
+  }
 
-  public Integer findByEmail(String email) {
+  /**
+   * ユーザー情報 該当する『ユーザー名』の件数を検索
+   * @return 検索結果
+   */
+  public Integer findByNameCnt(String name) {
 	  
-	  return userRepositoryStr.findByEmail(email).size();
-	  
-//		return userRepositoryStr.findByEmail(email).get(0);
+	  return userRepositoryStr.findByName(name).size();
   }
 
   /**
    * ユーザー情報 該当する『メールアドレス』の件数を検索
    * @return 検索結果
    */
-/*
-  public User findByEmailCnt(String email) {
-	    return userRepositoryStr.findByEmailCnt(email).get(0);
-//  public Integer findByEmailCnt(String email) {
-//    return Integer.parseInt(userRepositoryStr.findByEmailCnt(email).get(0).getEmail());
+  public Integer findByEmailCnt(String email) {
+	  
+	  return userRepositoryStr.findByEmail(email).size();
   }
-*/
+
   /**
    * ユーザー情報 更新
    * @param user ユーザー情報
