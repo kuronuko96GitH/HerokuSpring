@@ -58,7 +58,7 @@ public class UserController {
 	  // authUser.getId();
 	  // authUser.getEmail();
 	  // authUser.getUsername();
-	  // authUser.getRoles().get(0)	// (出力例)『ROLE_USER』
+	  // authUser.getRoles().get(0);	// (出力例)『ROLE_USER』
 
 //      System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
 
@@ -115,7 +115,7 @@ public String helloWorld(Model model) {
   /**
    * サンプル（テンプレート用）画面を表示
    * @param model Model
-   * @return トップページ
+   * @return サンプル画面
    * 補足(ローカル環境)：URL…http://localhost:8080/sample.html
    */
   @GetMapping(value = "/sample")
@@ -124,6 +124,11 @@ public String helloWorld(Model model) {
       return "sample";
   }
 
+  /**
+   * サンプル（ログイン認証情報のチェック用）画面を表示
+   * @param model Model
+   * @return サンプル画面
+   */
   @GetMapping(value = "/sample2")
   public String sample2() {
 	  return "sample2";
@@ -135,7 +140,7 @@ public String helloWorld(Model model) {
   /**
    * About Me画面を表示
    * @param model Model
-   * @return トップページ
+   * @return About Me画面
    * 補足(ローカル環境)：URL…http://localhost:8080/others/aboutme.html
    */
   @GetMapping(value = "/others/aboutme")
@@ -146,7 +151,7 @@ public String helloWorld(Model model) {
   /**
    * Link画面を表示
    * @param model Model
-   * @return トップページ
+   * @return Link画面
    */
   @GetMapping(value = "/others/portfolio")
   public String portfolio() {
@@ -156,7 +161,7 @@ public String helloWorld(Model model) {
   /**
    * 開発ドキュメント画面を表示
    * @param model Model
-   * @return トップページ
+   * @return 開発ドキュメント画面
    */
   @GetMapping(value = "/others/devdoc")
   public String devdoc() {
@@ -300,16 +305,24 @@ public String helloWorld(Model model) {
 //    String strX = ""; // デバッグ用
 
     if (result.hasErrors()) {
+      // 入力チェックエラーの場合
       List<String> errorList = new ArrayList<String>();
       for (ObjectError error : result.getAllErrors()) {
         errorList.add(error.getDefaultMessage());
+//      strX = userUpdateRequest.getEmail(); // デバッグ用
+//      lngCnt = userUpdateRequest.getId(); // デバッグ用
       }
       model.addAttribute("validationError", errorList);
       return "user/edit";
     }
 
-//    strX = userUpdateRequest.getEmail(); // デバッグ用
-//    lngCnt = userUpdateRequest.getId(); // デバッグ用    
+
+    if (!isAuthRoleCheck(userUpdateRequest.getId())) {
+    // 権限チェックがエラーの場合、更新処理はさせない。
+      model.addAttribute("validationError", "管理者権限が無いため、編集はできません。");
+      return "user/edit";
+    }
+    
 
 /*
     // 更新しようしたメールアドレスが、データベースに存在してないかを検索
@@ -366,6 +379,14 @@ public String helloWorld(Model model) {
       model.addAttribute("validationError", errorList);
       return "user/editpass";
     }
+    
+
+    if (!isAuthRoleCheck(userUpdateRequestPass.getId())) {
+    // 権限チェックがエラーの場合、更新処理はさせない。
+      model.addAttribute("validationError", "管理者権限が無いため、編集はできません。");
+      return "user/editpass";
+    }
+
     // ユーザー情報（パスワードのみ）の更新
     userService.updatePass(userUpdateRequestPass);
     return String.format("redirect:/user/%d", userUpdateRequestPass.getId());
@@ -380,9 +401,56 @@ public String helloWorld(Model model) {
    */
   @GetMapping("/user/{id}/delete")
   public String delete(@PathVariable Long id, Model model) {
+
+	boolean blnErrCnk = true;
+	Long lngAuthId = authUser.getId(); // ログイン情報のユーザーIDを取得
+	
+    if (!isAuthRoleCheck(id)) {
+    // 権限チェックがエラーの場合、削除処理はさせない。
+      model.addAttribute("validationError", "管理者権限が無いため、削除はできません。");
+      blnErrCnk = false;
+    }
+
+    if (lngAuthId.equals(id)) {
+    // ログイン中のユーザーと、削除対象のユーザーが同じだった場合。
+      model.addAttribute("validationError", "ログイン中のユーザーは、削除できません。");
+      blnErrCnk = false;
+    }
+    
+    if (!blnErrCnk) {
+    	// エラーチェックに、エラーがあった場合
+
+        User user = userService.findById(id);
+        model.addAttribute("userData", user);
+        // ユーザー詳細画面を表示。
+        return "user/view";
+    }
+
+
     // ユーザー情報の削除
     userService.delete(id);
     return "redirect:/user/list";
   }
+
+
+	private boolean isAuthRoleCheck(@PathVariable Long id) {
+		
+		// メニュー画面にアクセスした時に取得した、ログイン情報を使用して権限チェックをする。
+		boolean blnChk = false;
+		String strRoles = authUser.getRoles().get(0);	// (出力例)『ROLE_USER』
+		Long lngAuthId = authUser.getId();
+		
+		// 編集対象のIDが、ログイン情報のIDと同じ場合は、権限チェックをせずに許可を出す。
+		if (lngAuthId.equals(id)) {
+			return true;
+		}
+
+		if (strRoles.equals("ROLE_ADMIN")) {
+			// 管理者権限ありのため、編集・削除の許可を出す。
+			blnChk = true;
+		}
+		
+		return blnChk;
+	}
 
 }

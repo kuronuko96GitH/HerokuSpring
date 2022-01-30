@@ -7,79 +7,87 @@
 	<!-- th:replaceを使用して、 Navbarを読込みます -->
 <!--
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
--->
+
 	<div class="form-container align-items-center justify-content-center">
-		<div class="card" style="width: 24rem;">
-			<div class="card-body">
-				<h5 class="card-title">ログイン</h5>
-				<hr />
-				<form method="post" autocomplete="off" th:action="@{/login}">
-					<div class="form-group">
-						<label for="email">E-Mail</label>
-						<input type="email" class="form-control" id="email" name="email" tabindex="1" required />
-					</div>
-					<div class="form-group">
-						<label for="password">Password</label>
-						<input type="password" class="form-control" id="password" name="password" tabindex="2" required />
-					</div>
+-->
 
-
-					<!-- エラーメッセージ -->
-					<div class="my-1 text-danger" th:if="${authenticationException}">
-						<span th:text="${authenticationException.message}"></span>
-					</div>
-
+	<div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	    <div class="d-flex justify-content-center">
+			<div class="card" style="width: 24rem;">
+				<div class="card-body center">
+					<h5 class="card-title">ログイン</h5>
 					<hr />
-					<div class="py-3 d-grid gap-2">
-						<button type="submit" class="btn btn-primary btn-block">ログイン</button>
-						<a th:href="@{/user/add}" class="btn btn-success btn-block text-light">ユーザ登録</a>
-		<!--
-						<a href="signup.html" class="btn btn-danger btn-block text-light">ユーザ登録</a>
-		-->
-		<!--
-						<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-							data-bs-target="#registrationForm">新規ユーザー登録</button>
-		-->
-					</div>
-				</form>
+					<form method="post" autocomplete="off" th:action="@{/login}">
+						<div class="form-group">
+							<label for="email">E-Mail</label>
+							<input type="email" class="form-control" id="email" name="email" tabindex="1" required />
+						</div>
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" class="form-control" id="password" name="password" tabindex="2" required />
+						</div>
+	
+	
+						<!-- エラーメッセージ -->
+						<div class="my-1 text-danger" th:if="${authenticationException}">
+							<span th:text="${authenticationException.message}"></span>
+						</div>
+	
+						<hr />
+						<div class="py-3 d-grid gap-2">
+							<button type="submit" class="btn btn-primary btn-block">ログイン</button>
+							<a th:href="@{/user/add}" class="btn btn-success btn-block text-light">ユーザ登録</a>
+			<!--
+							<a href="signup.html" class="btn btn-danger btn-block text-light">ユーザ登録</a>
+			-->
+			<!--
+							<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+								data-bs-target="#registrationForm">新規ユーザー登録</button>
+			-->
+						</div>
+	
+						<div class="row mb-2">
+				<!-- 		    <div class="col-md-8 offset-md-4">  -->
+						    <div class="col-md-0 offset-md-0">
+							    <br>『ゲスト(guest)』ユーザーで、
+							    <br>ログインすることもできます。
+							        <input type="button" class="btn btn-secondary" value="ゲストアカウント" id="guest_button">
+					
+							    <br>
+							    <br>ただし、管理者権限の必要な
+							    <br>更新・削除はできません。
+						    </div>					
+						</div>
+						
+					</form>
+	
+				</div>
 			</div>
+	
 		</div>
 	</div>
-
-<!-- エラーメッセージを共通化するつもりなら
-<div th:replace="fragments/Toast :: toast"></div>	
--->
-
-	<div class="row mb-3">
 	
-	    <div class="col-md-8 offset-md-4">
-	    <br>『ゲスト(guest)』で、ログインすることもできます。
-	    <br>ただし、管理者権限の必要な更新・削除はできません。
-	    <br>
-	        <input type="button" class="btn btn-secondary" value="ゲストアカウント" id="guest_button">
+	<section class="bg-dark">
+	    <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	        <div class="d-flex justify-content-center">
+	            
+	            <div class="text-center">
+	                <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                    <div class="card-body">
+	                        <br>
+	
+	                        <div>『Spring Boot』(Javaのフレームワーク)で製作したWebアプリです。</div>
+	                        <div>↓GitHubで、ソースコードも公開しています。</div>
+	                        <div><i class="fab fa-github fa-2x"></i>  GitHub: <a href="https://github.com/kuronuko96GitH/HerokuSpring" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/HerokuSpring</a></div>
+	                    </div>
+	                </div>
+	            </div>
+	
+	        </div>
 	    </div>
-	
-	</div>
+	</section>
 
-                <section class="bg-dark">
-                    <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                        <div class="d-flex justify-content-center">
-                            
-                            <div class="text-center">
-                                <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                                    <div class="card-body">
-                                        <br>
 
-                                        <div>『Spring Boot』(Javaのフレームワーク)で製作したWebアプリです。</div>
-                                        <div>↓GitHubで、ソースコードも公開しています。</div>
-                                        <div><i class="fab fa-github fa-2x"></i>  GitHub: <a href="https://github.com/kuronuko96GitH/HerokuSpring" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/HerokuSpring</a></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
 	<!-- Scripts -->
 	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
 	<div th:replace="common/footerScript :: footer_fragment"></div>

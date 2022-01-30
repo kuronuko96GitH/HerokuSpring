@@ -20,13 +20,17 @@
 
                     <!-- Left Side Of Navbar -->
                     <!-- mr-auto は CSSのmargin-right: autoと同じ効果 -->
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav mr-auto" sec:authorize="isAuthenticated()">
                         <!-- Authentication Links -->
-<!--
+
                             <li class="nav-item">
-                                <a class="nav-link" href="aaa">ログイン</a>
+                                <a class="nav-link text-white" th:text="${#authentication.principal.username}+'様'"></a>
                             </li>
--->
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/}">HOME</a>
+                            </li>
+
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     About Me<span class="caret"></span>
@@ -40,22 +44,7 @@
                                         他ポートフォリオ
                                     </a>
                                     <a class="dropdown-item" th:href="@{/others/devdoc}">
-                                        開発経歴
-                                    </a>
-                                </div>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    ユーザー情報<span class="caret"></span>
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" th:href="@{/user/list}">
-                                        ユーザー情報一覧
-                                    </a>
-                                    <a class="dropdown-item" th:href="@{/user/add}">
-                                        ユーザー新規登録
+                                        開発履歴
                                     </a>
                                 </div>
                             </li>
