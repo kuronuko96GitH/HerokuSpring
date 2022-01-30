@@ -7,7 +7,7 @@
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
 	<div class="container">
-	  <div class="head_title">開発履歴</div>
+	  <div class="head_title">開発ドキュメント</div>
 
         <!-- Masthead-->
         <header class="masthead">
@@ -32,6 +32,23 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
+        </header>
+
+
+       <header class="masthead">
+            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+                <div class="d-flex justify-content-center">                    
+                    <div class="text-center">
+                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+                            <div class="card-body">
+                                <p class="card-text">実際に使用してる開発ドキュメントです。</p>
+                                <p class="card-text">テーブル定義書『users』</p>
+                            </div>
+                            <img class="card-img-bottom" src="../static/img/TableLayout_users.png" th:src="@{/img/TableLayout_users.png}" alt="TableLayout_users">
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
