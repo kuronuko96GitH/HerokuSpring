@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,12 @@ import com.example.demo.auth.AuthUser;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
+import com.example.demo.dto.WorkRequest;
+import com.example.demo.dto.WorkUpdateRequest;
 import com.example.demo.entity.User;
+import com.example.demo.entity.Work;
 import com.example.demo.service.UserService;
+import com.example.demo.service.WorkService;
 
 /**
  * ユーザー情報 Controller
@@ -41,6 +46,15 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  /**
+   * 勤怠(work)情報 Service
+   */
+  @Autowired
+  private WorkService workService;
+
+  /**
+   * ログイン情報
+   */
   private AuthUser authUser;
 
   /**
@@ -256,8 +270,12 @@ public String helloWorld(Model model) {
 
     // ユーザー情報の登録
     userService.create(userRequest);
-    return "login"; // 管理者ではないユーザーの新規登録の場合は、ログイン画面に戻る？
-//    return "redirect:/user/list";
+
+    // ユーザー情報一覧画面に戻る
+    // (ログイン画面側から新規登録の場合は、強制的にログイン画面へ一度戻されてから、再ログインの流れになります。)
+    return "redirect:/user/list";
+//    return "login"; // ログイン画面に戻る
+    
   }
   
   /**
@@ -452,5 +470,230 @@ public String helloWorld(Model model) {
 		
 		return blnChk;
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	  /**
+	   * 勤怠情報一覧画面を表示
+	   * @param model Model
+	   * @return ユーザー情報一覧画面
+	   */
+	  @GetMapping(value = "/work/list")
+	  public String displayListWork(Model model) {
+
+		// 検索画面に、ログイン情報のパラメータを渡す。
+		model.addAttribute("authId", authUser.getId());
+		model.addAttribute("authName", authUser.getUsername());
+
+		// ユーザー情報の全検索
+//		List<Work> worklist = workService.searchAll();
+		List<Work> worklist = workService.findByUserID(authUser.getId());
+		model.addAttribute("worklist", worklist);
+
+		return "work/list";
+	  }
+
+	  /**
+	   * 勤怠情報新規登録画面を表示
+	   * @param model Model
+	   * @return 勤怠情報一覧画面
+	   */
+
+	  @GetMapping(value = "/work/add")
+	  public String displayAddWork(Model model) {
+
+/*
+//	    Work work = userService.findById(id);
+	    WorkRequest workRequest = new WorkRequest();
+	    workRequest.setUserId(authUser.getId()); // ログイン時のユーザーIDを設定。
+	    model.addAttribute("workRequest", workRequest);
+*/
+	    model.addAttribute("workRequest", new WorkRequest());
+		    
+	    return "work/add";
+	  }
+
+	  /**
+	   * 勤怠情報新規登録
+	   * @param workRequest リクエストデータ
+	   * @param model Model
+	   * @return 勤怠情報一覧画面
+	   */
+
+	  @RequestMapping(value = "/work/create", method = RequestMethod.POST)
+	  public String createWork(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) {
+//		  public String createWork(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) {
+
+//	    int intCnt = 0; // デバッグ用
+//	    String strX = ""; // デバッグ用
+
+		if (result.hasErrors()) {
+	      // 入力チェックエラーの場合
+	      List<String> errorList = new ArrayList<String>();
+	      for (ObjectError error : result.getAllErrors()) {
+	        errorList.add(error.getDefaultMessage());
+//	        strX = errorList.get(intCnt); // デバッグ用
+//	        intCnt++; // デバッグ用
+	      }
+	      model.addAttribute("validationError", errorList);
+	      return "work/add";
+	    }
+
+/*
+	    // 新規登録しようしたメールアドレスが、データベースに存在してないかを検索
+	    Integer intCnt = workService.findByEmailCnt(workRequest.getEmail());
+	    
+		if ( intCnt > 0) {
+			  // データベースに同じメールアドレスが存在していた場合。
+//		    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
+
+		    List<String> errorList = new ArrayList<String>();
+	        errorList.add("既に登録済のメールアドレスです。");
+	        model.addAttribute("validationError", errorList);
+		    
+		    return "work/add";  
+		}
+*/
+
+	    // 勤怠情報の新規登録
+		try {
+		    workService.create(workRequest, authUser.getId()); // ログイン時のユーザーIDを設定。
+//		    workService.create(workRequest);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+//	    workService.create(workRequest);
+		
+		
+//	    return "login"; // 管理者ではないユーザーの新規登録の場合は、ログイン画面に戻る？
+	    return "redirect:/work/list";
+	  }
+
+	  /**
+	   * 勤怠情報詳細画面を表示
+	   * @param id 表示するワークID
+	   * @param model Model
+	   * @return 勤怠情報詳細画面
+	   */
+	  @GetMapping("/work/{id}")
+	  public String displayViewWork(@PathVariable Long id, Model model) {
+	    Work work = workService.findById(id);
+	    model.addAttribute("workData", work);
+	    return "work/view";
+	  }
+
+	  /**
+	   * 勤怠情報編集画面を表示
+	   * @param id 表示するワークID
+	   * @param model Model
+	   * @return ユーザー編集画面
+	   */
+	  @GetMapping("/work/{id}/edit")
+	  public String displayEditWork(@PathVariable Long id, Model model) {
+	    Work work = workService.findById(id);
+	    WorkUpdateRequest workUpdateRequest = new WorkUpdateRequest();
+	    workUpdateRequest.setId(work.getId());
+//	    workUpdateRequest.setUserID(authUser.getId()); // ログイン情報のユーザーIDをパラメータで渡す。
+	    workUpdateRequest.setContent(work.getContent());
+
+	    // 開始日時
+//	    workUpdateRequest.setStartDate(work.getStartDate());
+	    String strDateS = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getStartDate());
+	    workUpdateRequest.setStartDate(strDateS);
+
+
+	    // 終了日時
+//	    workUpdateRequest.setEndDate(work.getEndDate());
+	    String strDateE = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getEndDate());
+	    workUpdateRequest.setEndDate(strDateE);
+
+	    model.addAttribute("workUpdateRequest", workUpdateRequest);
+	    return "work/edit";
+	  }
+
+	  /**
+	   * 勤怠情報更新
+	   * @param workRequest リクエストデータ
+	   * @param model Model
+	   * @return 勤怠情報詳細画面
+	   */
+	  @RequestMapping(value = "/work/update", method = RequestMethod.POST)
+	  public String updateWork(@Validated @ModelAttribute WorkUpdateRequest workUpdateRequest, BindingResult result, Model model) {
+//	    long lngCnt = 0; // デバッグ用
+//	    String strX = ""; // デバッグ用
+
+	    if (result.hasErrors()) {
+	      // 入力チェックエラーの場合
+	      List<String> errorList = new ArrayList<String>();
+	      for (ObjectError error : result.getAllErrors()) {
+	        errorList.add(error.getDefaultMessage());
+//	      strX = workUpdateRequest.getEmail(); // デバッグ用
+//	      lngCnt = workUpdateRequest.getId(); // デバッグ用
+	      }
+	      model.addAttribute("validationError", errorList);
+	      return "work/edit";
+	    }
+
+	    // 勤怠情報の更新
+		try {
+			workService.update(workUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
+//		    workService.update(workUpdateRequest);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	    
+	    return String.format("redirect:/work/%d", workUpdateRequest.getId());
+	  }
+
+	  /**
+	   * 勤怠情報削除
+	   * @param id 表示するユーザーID
+	   * @param model Model
+	   * @return 勤怠情報詳細画面
+	   */
+	  @GetMapping("/work/{id}/delete")
+	  public String deleteWork(@PathVariable Long id, Model model) {
+/*
+		boolean blnErrCnk = true;
+		Long lngAuthId = authUser.getId(); // ログイン情報のユーザーIDを取得
+		
+	    if (!isAuthRoleCheck(id)) {
+	    // 権限チェックがエラーの場合、削除処理はさせない。
+	      model.addAttribute("validationError", "管理者権限が無いため、削除はできません。");
+	      blnErrCnk = false;
+	    }
+
+	    if (lngAuthId.equals(id)) {
+	    // ログイン中のユーザーと、削除対象のユーザーが同じだった場合。
+	      model.addAttribute("validationError", "ログイン中のユーザーは、削除できません。");
+	      blnErrCnk = false;
+	    }
+	    
+	    if (!blnErrCnk) {
+	    	// エラーチェックに、エラーがあった場合
+
+	        Work work = workService.findById(id);
+	        model.addAttribute("workData", work);
+	        // ユーザー詳細画面を表示。
+	        return "work/view";
+	    }
+*/
+
+	    // 勤怠情報の削除
+	    workService.delete(id);
+	    return "redirect:/work/list";
+	  }
 
 }

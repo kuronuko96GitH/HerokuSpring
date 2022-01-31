@@ -76,8 +76,6 @@ public class AuthUser implements UserDetails {
 	}
 
 
-
-// 以下、今回は不要
 	public Date getAvf() {
 		return avf;
 	}

@@ -21,29 +21,22 @@ INSERT INTO USERS (NAME, EMAIL, PASSWORD, ADMIN_CODE, ADDRESS, PHONE) VALUES
 
 
 
---postgresの場合(パスワード暗号化のパターン)
-INSERT INTO users (name, email, password, admin_code) VALUES
-('admin', 'admin@example.com','$2y$10$/Egm530y0MFUx0q3/TTWveUVId94DF1PUtuzaEzdm0W0kQ.2C1Joa', 1),
-('About_me', 'aboutme@example.com','$2y$10$QqzU.DDGSwaYqcovF0w0vuiA4ebiQNZuHDe5wBae56S4U5ep1tuBW', 9),
-('guest', 'guest@example.com','$2y$10$ehiNFPkWhE/tKThn.o/y8OVpGxTAqVrcsxhMoSjVb8SdLpedTzcR.', 0),
-('link', 'link@example.com','$2y$10$QqzU.DDGSwaYqcovF0w0vuiA4ebiQNZuHDe5wBae56S4U5ep1tuBW', 8);
 
+CREATE TABLE WORKS (
+  ID  SERIAL NOT NULL,
+  USER_ID integer default 0,
+  CONTENT VARCHAR(255) NOT NULL,
+  START_AT timestamp NOT NULL,
+  END_AT timestamp NOT NULL,
+  CREATED_AT timestamp default CURRENT_TIMESTAMP,
+  UPDATED_AT timestamp default CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
 
+INSERT INTO WORKS (USER_ID, CONTENT, START_AT, END_AT) VALUES
+(2, 'ゲスト用Ａ会社の打刻', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 'ゲスト用Ａ会社の打刻', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 'ゲスト用Ｂ会社の打刻', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 'ゲスト用Ｂ会社の打刻', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 'ゲスト用Ｃ会社の打刻', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-
-
-
-
---mysqlの場合
-CREATE TABLE `sampledb`.`USERS` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `address` VARCHAR(255) NULL,
-  `phone` VARCHAR(50) NULL,
-  `update_date` DATETIME NOT NULL,
-  `create_date` DATETIME NOT NULL,
-  `delete_date` DATETIME NULL,
-  PRIMARY KEY (`id`));
-
-INSERT INTO `sampledb`.`user` (`id`, `name`, `address`, `phone`, `update_date`, `create_date`) VALUES ('1', 'テスト太郎', '東京都品川区1-1', '090-0000-0000', '2021/06/30', '2021/06/30');
-INSERT INTO `sampledb`.`user` (`id`, `name`, `address`, `phone`, `update_date`, `create_date`) VALUES ('2', 'テスト次郎', '東京都渋谷区1-1', '080-0000-0000', '2021/06/30', '2021/06/30');
