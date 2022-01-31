@@ -15,7 +15,7 @@ import com.example.demo.entity.Work;
 public interface WorkRepository extends JpaRepository<Work, Long> {
 
 	// ユーザーIDで検索する。
-	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 ORDER BY ID", nativeQuery=true)
+	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 ORDER BY START_AT, END_AT", nativeQuery=true)
 	List<Work> findByUserID(Long userid);
 //	public List<Work> findByUserID(Long userid);
 }

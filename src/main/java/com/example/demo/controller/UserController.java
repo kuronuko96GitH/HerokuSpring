@@ -57,6 +57,18 @@ public class UserController {
    */
   private AuthUser authUser;
 
+
+// extends用に作成（※extendsした別クラスからも、ログイン情報を取得できるようにする。）
+//  public AuthUser getAuthUser() {
+//	return authUser;
+//  }
+//
+// setメソッドが必要な時用に
+//	public void setAuthUser(AuthUser authUser) {
+//		this.authUser = authUser;
+//}
+
+
   /**
    * トップページを表示
    * @param model Model
@@ -510,7 +522,6 @@ public String helloWorld(Model model) {
 	   * @param model Model
 	   * @return 勤怠情報一覧画面
 	   */
-
 	  @GetMapping(value = "/work/add")
 	  public String displayAddWork(Model model) {
 
@@ -525,6 +536,39 @@ public String helloWorld(Model model) {
 	    return "work/add";
 	  }
 
+
+	  /**
+	   * 勤怠情報(コピー)新規登録画面を表示
+	   * (勤怠情報一覧のコピーボタンを押した時のイベント)
+	   * @param id 表示するワークID
+	   * @param model Model
+	   * @return 勤怠情報新規登録画面
+	   */
+//	  @GetMapping(value = "/work/addcopy")
+//	  public String displayAddCopyWork(Model model) {
+	  @GetMapping("/work/addcopy{id}")
+	  public String displayAddCopyWork(@PathVariable Long id, Model model) {
+
+		Work work = workService.findById(id);
+	    WorkRequest workRequest = new WorkRequest();
+	    
+	    workRequest.setContent(work.getContent());
+
+	    // 開始日時
+	    String strDateS = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getStartDate());
+	    workRequest.setStartDate(strDateS);
+
+	    // 終了日時
+	    String strDateE = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getEndDate());
+	    workRequest.setEndDate(strDateE);
+
+	    model.addAttribute("workRequest", workRequest);
+//	    model.addAttribute("workRequest", new WorkRequest());
+
+	    return "work/add";
+	  }
+	  
+	  
 	  /**
 	   * 勤怠情報新規登録
 	   * @param workRequest リクエストデータ

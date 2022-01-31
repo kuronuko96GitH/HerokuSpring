@@ -24,7 +24,7 @@
 	        <th>開始日時</th>
 	        <th>終了日時</th>
 	        <th>更新日時</th>
-	        <th>登録日時</th>
+<!--	        <th>登録日時</th> -->
 	        <th class="bg-white"></th>
 	      </tr>
 	    </thead>
@@ -45,14 +45,19 @@
 	        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd HH:mm')}"></td>
 	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd HH:mm')}"></td>
 	        <td th:text="${#dates.format(work.updateDate, 'yyyy/MM/dd')}"></td>
-	        <td th:text="${#dates.format(work.createDate, 'yyyy/MM/dd')}"></td>
+<!--	        <td th:text="${#dates.format(work.createDate, 'yyyy/MM/dd')}"></td> -->
 	<!--          
 	          <td>2022/XX/XX</td>
 	          <td th:text="${#dates.format(work.deleteDate, 'yyyy/MM/dd')}"></td>
 	        <td class="center"><a th:if="${authId == work.id}" th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
 	        <td class="center"><a th:if="${authName == work.content}" th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
 	-->
-	        <td class="center"><a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
+	        <td class="center">
+	        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
+	        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary">コピー(新規登録)</a>
+<!--
+  -->	        	
+	        </td>
 <!-- ログインしてるユーザしか変更・削除できない
 	        <td class="center"><a th:if="${authworkName == work.content}" th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
   -->

@@ -17,7 +17,7 @@
                     <div class="text-center">
  -->
                     <div>
-                        <div class="card text-white bg-dark mb-3" style="max-width: 60rem;">
+                        <div class="card text-white bg-dark mb-5" style="max-width: 60rem;">
                             <div class="card-body">
                                 <h4 class="card-title">◆開発履歴</h4>
 
@@ -26,10 +26,14 @@
                                     <br>2022/01/24　Heroku(ネット公開用本番環境)にて、データベースと連携した動作確認成功。
                                     <br>2022/01/25　ユーザー情報登録・一覧画面追加。(ver 0.3)
                                     <br>2022/01/29　ログイン画面追加。(ver 0.4)
-                                    <br>2022/01/30　権限情報を追加。(ver 0.5)
+                                    <br>2022/01/30　ログインユーザーの権限情報を追加。(ver 0.5)
                                     <br>　　　　　　　管理者以外は、他ユーザーの編集・削除を不可とする。
+                                    <br>
                                     <br>2022/01/31　勤怠情報登録の開発を開始。
-                                    <br>2022/01/31　勤怠情報登録・一覧画面（簡易版）を追加。(ver 0.6)
+                                    <br>　　　　　　　勤怠情報登録・一覧画面（簡易版）を追加。(ver 0.6)
+                                    <br>2022/02/01　勤怠情報一覧画面にコピー（新規登録）ボタンを追加。
+                                    <br>
+                                    <br>
                             </div>
                         </div>
                     </div>
@@ -43,17 +47,35 @@
             <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
                 <div class="d-flex justify-content-center">                    
                     <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+                        <div class="card text-white bg-dark mb-5" style="max-width: 50rem;">
                             <div class="card-body">
-                                <p class="card-text">実際に使用してる開発ドキュメントです。</p>
-                                <p class="card-text">テーブル定義書『users』</p>
+                                <p class="card-text">(実際に使用してる開発ドキュメント)
+                                					<br>テーブル定義書『users』</p>
                             </div>
-                            <img class="card-img-bottom" src="../static/img/TableLayout_users.png" th:src="@{/img/TableLayout_users.png}" alt="TableLayout_users">
+                            <img class="card-img-bottom" src="../static/img/TableLayout_users.png" th:src="@{/img/TableLayout_users.png}" alt="テーブル定義書『users』">
                         </div>
                     </div>
                 </div>
             </div>
         </header>
+
+
+       <header class="masthead">
+            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+                <div class="d-flex justify-content-center">                    
+                    <div class="text-center">
+                        <div class="card text-white bg-dark mb-5" style="max-width: 50rem;">
+                            <div class="card-body">
+                                <p class="card-text">(実際に使用してる開発ドキュメント)
+                                					<br>テーブル定義書『works』</p>
+                            </div>
+                            <img class="card-img-bottom" src="../static/img/TableLayout_works.png" th:src="@{/img/TableLayout_works.png}" alt="テーブル定義書『works』">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
 	</div>
 	  
 	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
