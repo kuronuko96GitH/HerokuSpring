@@ -14,7 +14,6 @@ import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.UserRepositoryStr;
 
 /**
  * ユーザー情報 Service
@@ -28,15 +27,7 @@ public class UserService {
    */
   @Autowired
   private UserRepository userRepository;
-  
-  /**
-   * ユーザー情報 RepositoryStr
-   * (String型の項目指定が可能)
-   */
-  @Autowired
-  private UserRepositoryStr userRepositoryStr;
 
-  
   /**
    * パスワードエンコーダ（暗号化） Repository
    */
@@ -84,32 +75,21 @@ public class UserService {
   }
 
   /**
-   * ユーザー情報 該当する『ユーザー』で検索
-   * @return 検索結果
-   */
-  public User findByName(String name) {
-	  
-//	  return userRepositoryStr.findByName(name).size();
-	  
-		return userRepositoryStr.findByName(name).get(0);
-  }
-
-  /**
-   * ユーザー情報 該当する『ユーザー名』の件数を検索
-   * @return 検索結果
-   */
-  public Integer findByNameCnt(String name) {
-	  
-	  return userRepositoryStr.findByName(name).size();
-  }
-
-  /**
    * ユーザー情報 該当する『メールアドレス』の件数を検索
    * @return 検索結果
    */
   public Integer findByEmailCnt(String email) {
 	  
-	  return userRepositoryStr.findByEmail(email).size();
+	  return userRepository.findByEmail(email).size();
+  }
+
+  /**
+   * ユーザー情報 該当する『ユーザーID』＆『メールアドレス』の件数を検索
+   * @return 検索結果
+   */
+  public Integer findByEmailCnt(Long id, String email) {
+	  
+	  return userRepository.findByEmail(id, email).size();
   }
 
   /**

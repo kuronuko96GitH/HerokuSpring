@@ -28,14 +28,6 @@ public class WorkService {
    */
   @Autowired
   private WorkRepository workRepository;
-  
-  /**
-   * 勤怠情報 RepositoryStr
-   * (String型の項目指定が可能)
-   */
-//  @Autowired
-//  private WorkRepositoryStr userRepositoryStr;
-
 
   /**
    * 勤怠情報 全検索
@@ -44,10 +36,6 @@ public class WorkService {
   public List<Work> searchAll() {
 	  // id(昇順)
 	  return workRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
-	  // id(降順)
-//	  return userRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-	  // ソート指定なし
-//	      return userRepository.findAll();
   }
 
   /**
@@ -61,19 +49,10 @@ public class WorkService {
     Work work = new Work();
 
     work.setUserId(userID);
-//    work.setUserId(workRequest.getUserId());
     work.setContent(workRequest.getContent());
-    
-/*
-    String strDate = "2017/03/02 01:23:45";
-    SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-    Date date = sdFormat.parse(strDate);
-*/
+
 
     // 開始日時
-//    String strDateS = workRequest.getStartDate() + ":00";
-//    String strDateS = workRequest.getStartDateY() + "/" + workRequest.getStartDateM() + "/" + workRequest.getStartDateD()
-//    					+ " " + workRequest.getStartDateHH() + ":" + workRequest.getStartDateMI() + ":00";
     String strDateS = workRequest.getStartDateY() + "/"
     					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateM())) + "/"
     					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateD())) + " "
@@ -88,9 +67,6 @@ public class WorkService {
 
 
     // 終了日時
-//    String strDateE = workRequest.getEndDate() + ":00";
-//  String strDateE = workRequest.getEndDateY() + "/" + String.format("%02d", workRequest.getEndDateM()) + "/" + String.format("%02d", workRequest.getEndDateD())
-//	+ " " + String.format("%02d", workRequest.getEndDateHH()) + ":" + String.format("%02d", workRequest.getEndDateMI()) + ":00";
     String strDateE = workRequest.getEndDateY() + "/"
 			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateM())) + "/"
 			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateD())) + " "
@@ -121,47 +97,29 @@ public class WorkService {
    * 勤怠情報 該当する『ユーザーID』で検索
    * @return 検索結果
    */
-
-//  public Work findByUserID(@PathVariable("userId") Long userId) {
   public List<Work> findByUserID(@PathVariable("userId") Long userId) {
-
-//	  return userRepositoryStr.findByName(name).size();
-	  
 	return workRepository.findByUserID(userId);
   }
 
   /**
-   * 勤怠情報 該当する『ユーザー名』で検索
+   * 勤怠情報 該当する『ユーザーID』と『勤怠開始日』で検索
    * @return 検索結果
    */
-/*
-  public User findByName(String name) {
-	  
-//	  return userRepositoryStr.findByName(name).size();
-	  
-		return userRepositoryStr.findByName(name).get(0);
+  public List<Work> findByDate(@PathVariable("userId") Long userId, Date startDate, Date endDate) {
+
+		// 年月日の検索コードで検索条件を変更する。
+		if (startDate != null && endDate == null) {
+			// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白(Null)。
+			return workRepository.findByStartDate(userId, startDate);
+		} else if (startDate == null && endDate != null) {
+			// "NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
+			return workRepository.findByEndDate(userId, endDate);
+		} else {
+			// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
+			return workRepository.findByDate(userId, startDate, endDate);
+		}
+
   }
-*/
-  /**
-   * 勤怠情報 該当する『ユーザー名』の件数を検索
-   * @return 検索結果
-   */
-/*
-  public Integer findByNameCnt(String name) {
-	  
-	  return userRepositoryStr.findByName(name).size();
-  }
-*/
-  /**
-   * 勤怠情報 該当する『メールアドレス』の件数を検索
-   * @return 検索結果
-   */
-/*
-  public Integer findByEmailCnt(String email) {
-	  
-	  return userRepositoryStr.findByEmail(email).size();
-  }
-*/
 
   /**
    * 勤怠情報 更新
@@ -174,13 +132,7 @@ public class WorkService {
     work.setUserId(userID);
     work.setContent(workUpdateRequest.getContent());
 
-//  work.setStartDate(workUpdateRequest.getStartDate());
-//  work.setEndDate(workUpdateRequest.getEndDate());
-
     // 開始日時
-//    String strDateS = workUpdateRequest.getStartDate() + ":00";
-//    String strDateS = workUpdateRequest.getStartDateY() + "/" + workUpdateRequest.getStartDateM() + "/" + workUpdateRequest.getStartDateD()
-//	+ " " + workUpdateRequest.getStartDateHH() + ":" + workUpdateRequest.getStartDateMI() + ":00";
     String strDateS = workUpdateRequest.getStartDateY() + "/"
 			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateM())) + "/"
 			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateD())) + " "
@@ -194,9 +146,6 @@ public class WorkService {
 
 
     // 終了日時
-//    String strDateE = workUpdateRequest.getEndDate() + ":00";
-//    String strDateE = workUpdateRequest.getEndDateY() + "/" + workUpdateRequest.getEndDateM() + "/" + workUpdateRequest.getEndDateD()
-//	+ " " + workUpdateRequest.getEndDateHH() + ":" + workUpdateRequest.getEndDateMI() + ":00";
     String strDateE = workUpdateRequest.getEndDateY() + "/"
 			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateM())) + "/"
 			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateD())) + " "

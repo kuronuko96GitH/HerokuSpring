@@ -9,11 +9,15 @@
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
 	<div class="container">
+	  <div class="head_title">勤怠情報詳細</div>
+
 	  <div th:if="${validationError}" th:each="error : ${validationError}">
 	    <label class="text-danger" th:text="${error}"></label>
 	  </div>
-	  <div class="head_title">勤怠情報詳細</div>
-
+	  <div th:if="${validationError}">
+	    <hr>
+	  </div>
+	  
 	  <div class="float-end">
 		<!-- 右端にボタン  -->
 	    <a th:href="@{/work/{id}/delete(id=*{id})}" class="btn btn-danger">　削除　</a>

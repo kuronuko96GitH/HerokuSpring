@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,6 @@ public class UserController {
    */
   private AuthUser authUser;
 
-
 // extends用に作成（※extendsした別クラスからも、ログイン情報を取得できるようにする。）
 //  public AuthUser getAuthUser() {
 //	return authUser;
@@ -95,12 +96,12 @@ public class UserController {
   public String root() {
 	  return "index";
   }
-*/
+
   @PostMapping(value = "/index")
   public String index() {
 	  return "index";
   }
-  
+*/  
 /*
 @RequestMapping(value = "/", method = RequestMethod.GET)
 public String helloWorld(Model model) {
@@ -250,21 +251,6 @@ public String helloWorld(Model model) {
       return "user/add";
     }
 
-/*
-    // 新規登録しようした名前が、データベースに存在してないかを検索
-	Integer intCnt = userService.findByNameCnt(userRequest.getName());
-
-    if ( intCnt > 0) {
-		  // データベースに同じ名前が存在していた場合。
-//	    model.addAttribute("validationError", "既に登録済の名前です。");
-
-	    List<String> errorList = new ArrayList<String>();
-      errorList.add("既に登録済の名前です。");
-      model.addAttribute("validationError", errorList);
-	    
-	    return "user/add";  
-	}
-*/
     // 新規登録しようしたメールアドレスが、データベースに存在してないかを検索
     Integer intCnt = userService.findByEmailCnt(userRequest.getEmail());
     
@@ -354,21 +340,19 @@ public String helloWorld(Model model) {
     }
     
 
-/*
+
     // 更新しようしたメールアドレスが、データベースに存在してないかを検索
-    Integer intCnt = userService.findByEmailCnt(userUpdateRequest.getEmail());
+    Integer intCnt = userService.findByEmailCnt(userUpdateRequest.getId(), userUpdateRequest.getEmail());
     
 	if ( intCnt > 0) {
 		  // データベースに同じメールアドレスが存在していた場合。
-//	    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
-
 	    List<String> errorList = new ArrayList<String>();
         errorList.add("既に登録済のメールアドレスです。");
         model.addAttribute("validationError", errorList);
 	    
 	    return "user/edit";  
 	}
-*/
+
 
     // ユーザー情報の更新
     userService.update(userUpdateRequest);
@@ -483,24 +467,14 @@ public String helloWorld(Model model) {
 		return blnChk;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
 
 	  /**
 	   * 勤怠情報一覧画面を表示
 	   * @param model Model
-	   * @return ユーザー情報一覧画面
+	   * @return 勤怠情報一覧画面
 	   */
 	  @GetMapping(value = "/work/list")
 	  public String displayListWork(Model model) {
@@ -514,6 +488,177 @@ public String helloWorld(Model model) {
 		List<Work> worklist = workService.findByUserID(authUser.getId());
 		model.addAttribute("worklist", worklist);
 
+
+		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日の空データを作っておく。
+		// ここで作成しておかないと、HTML側でnullエラーになる。
+	    model.addAttribute("workRequest", new WorkRequest());
+
+		return "work/list";
+	  }
+
+	  /**
+	   * 勤怠情報一覧画面(勤怠年月)検索
+	   * @param WorkRequest workRequest（検索条件：勤怠開始日）
+	   * @param model Model
+	   * @return 勤怠情報一覧画面
+	   * @throws ParseException 
+	   */
+//	  @GetMapping(value = "/work/search")
+//	  public String displayListWorkSearch(String startDateY, Model model) throws ParseException {
+	  @RequestMapping(value = "/work/search", method = RequestMethod.POST)
+	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) throws ParseException {
+
+		// 検索画面に、ログイン情報のパラメータを渡す。
+		model.addAttribute("authId", authUser.getId());
+		model.addAttribute("authName", authUser.getUsername());
+
+		Date dateStart = null; // 勤怠開始年月日
+		Date dateEnd = null; // 勤怠終了年月日
+		
+		String StrSearchCd = "ALL"; // 年月日の検索コード：
+									// "ALL"：検索条件指定なし（勤怠開始日と勤怠終了日のどちらも空白。）
+									// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白(Null)。
+									// "NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
+									// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
+
+		
+		// 検索条件の入力チェック(開始年月日)
+		if (workRequest.getStartDateY().isEmpty()
+			&& workRequest.getStartDateM().isEmpty()
+			&& workRequest.getStartDateD().isEmpty() ) {
+			// 年・月・日が空白の場合は、エラーチェックの対象外。
+
+				StrSearchCd = "ALL"; // "ALL"：検索条件指定なし（勤怠開始日と勤怠終了日のどちらも空白。）
+/*
+				// 全検索
+				List<Work> worklist = workService.findByUserID(authUser.getId());
+				model.addAttribute("worklist", worklist);
+	
+			    return "work/list";
+*/
+		} else {
+			String StrChk = workRequest.getStartDateY();
+			if (!isValueCheck(StrChk, "勤怠開始日(年)", model)) {
+		          return "work/list";
+			}
+			StrChk = workRequest.getStartDateM();
+			if (!isValueCheck(StrChk, "勤怠開始日(月)", model)) {
+		          return "work/list";
+			}
+			StrChk = workRequest.getStartDateD();
+			if (!isValueCheck(StrChk, "勤怠開始日(日)", model)) {
+		          return "work/list";
+			}
+
+			StrSearchCd = "LN"; // "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
+		}
+
+		if ( StrSearchCd == "LN" ) {
+			// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
+		    String strDateS = String.format("%04d", Integer.parseInt(workRequest.getStartDateY())) + "/"
+					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateM())) + "/"
+					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateD())) + " 00:00:00";
+
+			SimpleDateFormat sdFormatS = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+			dateStart = sdFormatS.parse(strDateS);
+		}
+
+
+
+		// 検索条件の入力チェック(終了年月日)
+		if (workRequest.getEndDateY().isEmpty()
+			&& workRequest.getEndDateM().isEmpty()
+			&& workRequest.getEndDateD().isEmpty() ) {
+			// 年・月・日が空白の場合は、エラーチェックの対象外。
+
+			if ( StrSearchCd == "LN" ) {
+				// 年月日の検索コードが
+				// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
+				
+				// 例）検索条件の入力状態…開始日：2022/XX/XX　～　終了日：空白
+				StrSearchCd = "LN"; // "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
+
+			} else {
+				// 例）検索条件の入力状態…開始日：空白　～　終了日：空白
+				StrSearchCd = "ALL"; // "ALL"：検索条件指定なし（勤怠開始日と勤怠終了日のどちらも空白。）
+			}
+			
+//			StrSearchCd = "LN"; // "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
+/*
+			// 年・月・日が空白の場合は、エラーチェックの対象外。
+				// 全検索
+				List<Work> worklist = workService.findByUserID(authUser.getId());
+				model.addAttribute("worklist", worklist);
+	
+			    return "work/list";
+*/
+		} else {
+			String StrChk = workRequest.getEndDateY();
+			if (!isValueCheck(StrChk, "勤怠終了日(年)", model)) {
+		          return "work/list";
+			}
+			StrChk = workRequest.getEndDateM();
+			if (!isValueCheck(StrChk, "勤怠終了日(月)", model)) {
+		          return "work/list";
+			}
+			StrChk = workRequest.getEndDateD();
+			if (!isValueCheck(StrChk, "勤怠終了日(日)", model)) {
+		          return "work/list";
+			}
+
+			if ( StrSearchCd == "LN" ) {
+				// 年月日の検索コードが
+				// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
+				
+				// 例）検索条件の入力状態…開始日：2022/XX/XX　～　終了日：2022/XX/XX
+				StrSearchCd = "LR"; // "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
+
+			} else {
+				// 例）検索条件の入力状態…開始日：空白　～　終了日：2022/XX/XX
+				StrSearchCd = "NR"; // "NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
+			}
+		}
+
+		if ( StrSearchCd == "LR" || StrSearchCd == "NR" ) {
+			// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
+			// または　"NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
+		    String strDateE = String.format("%04d", Integer.parseInt(workRequest.getEndDateY())) + "/"
+					+ String.format("%02d", Integer.parseInt(workRequest.getEndDateM())) + "/"
+					+ String.format("%02d", Integer.parseInt(workRequest.getEndDateD())) + " 23:59:59";
+
+			SimpleDateFormat sdFormatE = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+			dateEnd = sdFormatE.parse(strDateE);
+		}
+
+
+		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日のパラメータを渡しておく。
+//	    model.addAttribute("workRequest", workRequest);
+
+		List<Work> worklist;
+		
+		// 年月日の検索コードで検索条件を変更する。
+		if (StrSearchCd == "LN") {
+			// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白(Null)。
+			worklist = workService.findByDate(authUser.getId(), dateStart, null);
+		} else if (StrSearchCd == "NR") {
+			// "NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
+			worklist = workService.findByDate(authUser.getId(), null, dateEnd);
+		} else if (StrSearchCd == "LR") {
+			// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
+			worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);
+		} else {
+			// "ALL"：検索条件指定なし（勤怠開始日と勤怠終了日のどちらも空白。）
+			worklist = workService.findByUserID(authUser.getId());
+		}
+
+//		List<Work> worklist = workService.findByDate(authUser.getId(), dateS);
+
+		if (worklist.size() == 0) {
+			// 該当データ無し。
+			model.addAttribute("searchMsg", "該当データがありません。");
+		}
+		model.addAttribute("worklist", worklist);
+
 		return "work/list";
 	  }
 
@@ -525,12 +670,6 @@ public String helloWorld(Model model) {
 	  @GetMapping(value = "/work/add")
 	  public String displayAddWork(Model model) {
 
-/*
-//	    Work work = userService.findById(id);
-	    WorkRequest workRequest = new WorkRequest();
-	    workRequest.setUserId(authUser.getId()); // ログイン時のユーザーIDを設定。
-	    model.addAttribute("workRequest", workRequest);
-*/
 	    model.addAttribute("workRequest", new WorkRequest());
 		    
 	    return "work/add";
@@ -556,7 +695,6 @@ public String helloWorld(Model model) {
 
 	    // 開始日時
 	    String strDateS = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getStartDate());
-//	    workRequest.setStartDate(strDateS);
 	    
 	    // 開始日時(年)
 	    workRequest.setStartDateY(strDateS.substring(0, 4));
@@ -572,7 +710,6 @@ public String helloWorld(Model model) {
 
 	    // 終了日時
 	    String strDateE = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getEndDate());
-//	    workRequest.setEndDate(strDateE);
 
 	    // 終了日時(年)
 	    workRequest.setEndDateY(strDateE.substring(0, 4));
@@ -587,7 +724,6 @@ public String helloWorld(Model model) {
 	    
 	    
 	    model.addAttribute("workRequest", workRequest);
-//	    model.addAttribute("workRequest", new WorkRequest());
 
 	    return "work/add";
 	  }
@@ -602,50 +738,24 @@ public String helloWorld(Model model) {
 
 	  @RequestMapping(value = "/work/create", method = RequestMethod.POST)
 	  public String createWork(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) {
-//		  public String createWork(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) {
-
-//	    int intCnt = 0; // デバッグ用
-//	    String strX = ""; // デバッグ用
 
 		if (result.hasErrors()) {
 	      // 入力チェックエラーの場合
 	      List<String> errorList = new ArrayList<String>();
 	      for (ObjectError error : result.getAllErrors()) {
 	        errorList.add(error.getDefaultMessage());
-//	        strX = errorList.get(intCnt); // デバッグ用
-//	        intCnt++; // デバッグ用
 	      }
 	      model.addAttribute("validationError", errorList);
 	      return "work/add";
 	    }
 
-/*
-	    // 新規登録しようしたメールアドレスが、データベースに存在してないかを検索
-	    Integer intCnt = workService.findByEmailCnt(workRequest.getEmail());
-	    
-		if ( intCnt > 0) {
-			  // データベースに同じメールアドレスが存在していた場合。
-//		    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
-
-		    List<String> errorList = new ArrayList<String>();
-	        errorList.add("既に登録済のメールアドレスです。");
-	        model.addAttribute("validationError", errorList);
-		    
-		    return "work/add";  
-		}
-*/
-
 	    // 勤怠情報の新規登録
 		try {
 		    workService.create(workRequest, authUser.getId()); // ログイン時のユーザーIDを設定。
-//		    workService.create(workRequest);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//	    workService.create(workRequest);
-		
-		
-//	    return "login"; // 管理者ではないユーザーの新規登録の場合は、ログイン画面に戻る？
+
 	    return "redirect:/work/list";
 	  }
 
@@ -757,35 +867,34 @@ public String helloWorld(Model model) {
 	   */
 	  @GetMapping("/work/{id}/delete")
 	  public String deleteWork(@PathVariable Long id, Model model) {
-/*
-		boolean blnErrCnk = true;
-		Long lngAuthId = authUser.getId(); // ログイン情報のユーザーIDを取得
-		
-	    if (!isAuthRoleCheck(id)) {
-	    // 権限チェックがエラーの場合、削除処理はさせない。
-	      model.addAttribute("validationError", "管理者権限が無いため、削除はできません。");
-	      blnErrCnk = false;
-	    }
-
-	    if (lngAuthId.equals(id)) {
-	    // ログイン中のユーザーと、削除対象のユーザーが同じだった場合。
-	      model.addAttribute("validationError", "ログイン中のユーザーは、削除できません。");
-	      blnErrCnk = false;
-	    }
-	    
-	    if (!blnErrCnk) {
-	    	// エラーチェックに、エラーがあった場合
-
-	        Work work = workService.findById(id);
-	        model.addAttribute("workData", work);
-	        // ユーザー詳細画面を表示。
-	        return "work/view";
-	    }
-*/
 
 	    // 勤怠情報の削除
 	    workService.delete(id);
 	    return "redirect:/work/list";
 	  }
+
+
+	  /**
+	   * 数値入力チェック（勤怠情報一覧画面の検索条件など）
+	   * @param StrChk チェックする文字列
+	   * @param StrMsg エラーチェック対象の項目名
+	   * @param model Model
+	   * @return 
+	   */
+		private boolean isValueCheck(String StrChk, String StrMsg, Model model) {
+			
+			// 入力チェック…開始日時(年・月・日)
+			if (StrChk == null || StrChk.isEmpty()) {
+		          model.addAttribute("validationError", StrMsg + "を入力して下さい。");
+		          return false;
+			}
+			boolean isNumeric =  StrChk.matches("[+-]?\\d*(\\.\\d+)?");
+			if (!isNumeric) {
+		          model.addAttribute("validationError", StrMsg + "に正しい数値を入力して下さい。");
+		          return false;
+			}
+
+			return true;
+		}
 
 }

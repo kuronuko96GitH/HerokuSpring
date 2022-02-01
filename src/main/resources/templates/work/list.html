@@ -10,63 +10,54 @@
 
 	<div class="container">
 	  <div class="head_title">勤怠情報一覧</div>
-	  <div class="float-end mb-3">
-	    <a th:href="@{/work/add}" class="btn btn-primary">新規登録はこちら</a>
+
+	  <div th:if="${validationError}" th:each="error : ${validationError}">
+	    <label class="text-danger" th:text="${error}"></label>
 	  </div>
+	  <div th:if="${validationError}">
+	    <hr>
+	  </div>
+
+	  <form th:action="@{/work/search}" th:object="${workRequest}" th:method="post">
+		<div class="mb-3">
+			勤怠開始日：
+			<input type="text" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
+			<input type="text" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
+			<input type="text" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日　～　勤怠終了日：
+			<input type="text" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
+			<input type="text" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
+			<input type="text" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日
+			<input type="submit" value="　検索　" class="btn btn-success">
+		</div>
+		<div th:if="${searchMsg}" th:each="msginfo : ${searchMsg}">
+			<label class="text-danger" th:text="${msginfo}"></label>
+		</div>
+	  </form>
+
+	  <hr>
+
 	  <table class="table table-striped">
 	    <thead>
 	      <tr>
 	        <th>NO</th>
-<!--	        
-	        <th>USER_ID</th>
-  -->
 	        <th>勤怠内容（勤務地など）</th>
 	        <th>勤怠開始日時</th>
 	        <th>勤怠終了日時</th>
 	        <th>更新日時</th>
-<!--	        <th>登録日時</th> -->
-	        <th class="bg-white"></th>
+	        <th><a th:href="@{/work/add}" class="btn btn-primary">新規登録はこちら</a></th>
 	      </tr>
 	    </thead>
 	    <tbody>
 	      <tr th:each="work, workRec : ${worklist}" th:object="${work}" class="align-middle">
 	        <td th:text="${workRec.count}" class="text-center"></td>
-<!--
-	      <td th:text="*{userId}"></td>
-	        
-	      <tr th:each="work, workRec : ${worklist}" th:object="${work}" class="align-middle">
-	        <td th:text="${workRec.count} + '番'"></td>
-  -->
-<!--
-	      <tr th:each="work : ${worklist}" th:object="${work}" class="align-middle">
-	        <td th:text="*{id}"></td>
-  -->
 	        <td th:text="*{content}"></td>
 	        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd HH:mm')}"></td>
 	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd HH:mm')}"></td>
 	        <td th:text="${#dates.format(work.updateDate, 'yyyy/MM/dd')}"></td>
-<!--	        <td th:text="${#dates.format(work.createDate, 'yyyy/MM/dd')}"></td> -->
-	<!--          
-	          <td>2022/XX/XX</td>
-	          <td th:text="${#dates.format(work.deleteDate, 'yyyy/MM/dd')}"></td>
-	        <td class="center"><a th:if="${authId == work.id}" th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-	        <td class="center"><a th:if="${authName == work.content}" th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-	-->
 	        <td class="center">
 	        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
 	        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary">コピー(新規登録)</a>
-<!--
-  -->	        	
 	        </td>
-<!-- ログインしてるユーザしか変更・削除できない
-	        <td class="center"><a th:if="${authworkName == work.content}" th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-  -->
-<!-- 管理者権限を追加したい
-	        <td class="center"><a th:if="${authworkName == work.content || authworkName == work.content}" th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-  -->
-<!-- 初期バージョン：誰でも更新・削除が可能。
-	        <td class="center"><a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-  -->
 	      </tr>
 	    </tbody>
 	  </table>

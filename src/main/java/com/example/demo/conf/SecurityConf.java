@@ -62,7 +62,8 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 		.and()
 			.logout()
 			.logoutUrl("/logout")
-			.logoutSuccessUrl("/login")
+//			.logoutSuccessUrl("/login")
+			.logoutSuccessUrl("/")
 //			.logoutUrl("/Logout.do")	// HTML側でログアウトの実行処理を別名にしたい場合。
 //			.logoutSuccessUrl("/Login.html")
 			.invalidateHttpSession(true)

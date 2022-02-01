@@ -19,7 +19,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 			// メールアドレスが間違っており、データベースから取得したデータがnullだった場合。
 			throw new UsernameNotFoundException(username);
 		}
-		
+				
 		return user;
 	}
 }

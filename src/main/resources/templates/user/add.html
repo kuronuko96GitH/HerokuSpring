@@ -9,10 +9,14 @@
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
 	<div class="container">
+	  <div class="head_title">ユーザー新規登録</div>
+
 	  <div th:if="${validationError}" th:each="error : ${validationError}">
 	    <label class="text-danger" th:text="${error}"></label>
 	  </div>
-	  <div class="head_title">ユーザー新規登録</div>
+	  <div th:if="${validationError}">
+	    <hr>
+	  </div>
 
 	  <form th:action="@{/user/create}" th:object="${userRequest}" th:method="post">
 
