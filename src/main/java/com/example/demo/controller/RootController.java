@@ -37,10 +37,7 @@ import com.example.demo.service.WorkService;
  * ユーザー情報 Controller
  */
 @Controller
-public class UserController {
-// 補足説明：
-// Controllerアノテーションを付けたクラスで、
-// index.htmlなどを呼び出す、ルート管理の処理を作成する。
+public class RootController {
 
   /**
    * ユーザー情報 Service
@@ -66,8 +63,17 @@ public class UserController {
 //
 // setメソッドが必要な時用に
 //	public void setAuthUser(AuthUser authUser) {
-//		this.authUser = authUser;
-//}
+	private void setAuthUser(AuthUser authUser) {
+		// ログイン情報の設定
+		//（ログイン情報を取得するタイミングは、トップページにアクセスした時です。
+		//　ログアウト時にも、トップページに自動アクセスするので、再ログイン時にログイン情報を再取得します。）
+		//
+		// authUser.getId();
+		// authUser.getEmail();
+		// authUser.getUsername();
+		// authUser.getRoles().get(0);	// (出力例)『ROLE_USER』
+		this.authUser = authUser;
+	}
 
 
   /**
@@ -81,35 +87,12 @@ public class UserController {
 
 	  // 他のコントローラ処理でも、ログイン情報を扱えるように、
 	  // トップページにアクセスしたタイミングで、ログイン情報を取得。
-	  authUser = userDetails;
-	  // authUser.getId();
-	  // authUser.getEmail();
-	  // authUser.getUsername();
-	  // authUser.getRoles().get(0);	// (出力例)『ROLE_USER』
+	  setAuthUser(userDetails);
 
 //      System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
 
 	  return "index";
   }
-/*
-  @GetMapping(value = "/")
-  public String root() {
-	  return "index";
-  }
-
-  @PostMapping(value = "/index")
-  public String index() {
-	  return "index";
-  }
-*/  
-/*
-@RequestMapping(value = "/", method = RequestMethod.GET)
-public String helloWorld(Model model) {
-  model.addAttribute("message", "Hello World!!");
-  return "index";
-}
-*/
-  
 
   /**
    * ログイン画面を表示
@@ -197,6 +180,7 @@ public String helloWorld(Model model) {
 
 
 
+
   /**
    * ユーザー情報一覧画面を表示
    * @param model Model
@@ -273,7 +257,6 @@ public String helloWorld(Model model) {
     // (ログイン画面側から新規登録の場合は、強制的にログイン画面へ一度戻されてから、再ログインの流れになります。)
     return "redirect:/user/list";
 //    return "login"; // ログイン画面に戻る
-    
   }
   
   /**
@@ -470,7 +453,6 @@ public String helloWorld(Model model) {
 
 
 
-
 	  /**
 	   * 勤怠情報一覧画面を表示
 	   * @param model Model
@@ -521,21 +503,14 @@ public String helloWorld(Model model) {
 									// "NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
 									// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
 
-		
+
 		// 検索条件の入力チェック(開始年月日)
 		if (workRequest.getStartDateY().isEmpty()
 			&& workRequest.getStartDateM().isEmpty()
 			&& workRequest.getStartDateD().isEmpty() ) {
 			// 年・月・日が空白の場合は、エラーチェックの対象外。
-
 				StrSearchCd = "ALL"; // "ALL"：検索条件指定なし（勤怠開始日と勤怠終了日のどちらも空白。）
-/*
-				// 全検索
-				List<Work> worklist = workService.findByUserID(authUser.getId());
-				model.addAttribute("worklist", worklist);
-	
-			    return "work/list";
-*/
+
 		} else {
 			String StrChk = workRequest.getStartDateY();
 			if (!isValueCheck(StrChk, "勤怠開始日(年)", model)) {
@@ -582,16 +557,7 @@ public String helloWorld(Model model) {
 				// 例）検索条件の入力状態…開始日：空白　～　終了日：空白
 				StrSearchCd = "ALL"; // "ALL"：検索条件指定なし（勤怠開始日と勤怠終了日のどちらも空白。）
 			}
-			
-//			StrSearchCd = "LN"; // "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
-/*
-			// 年・月・日が空白の場合は、エラーチェックの対象外。
-				// 全検索
-				List<Work> worklist = workService.findByUserID(authUser.getId());
-				model.addAttribute("worklist", worklist);
-	
-			    return "work/list";
-*/
+
 		} else {
 			String StrChk = workRequest.getEndDateY();
 			if (!isValueCheck(StrChk, "勤怠終了日(年)", model)) {
@@ -609,7 +575,7 @@ public String helloWorld(Model model) {
 			if ( StrSearchCd == "LN" ) {
 				// 年月日の検索コードが
 				// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
-				
+
 				// 例）検索条件の入力状態…開始日：2022/XX/XX　～　終了日：2022/XX/XX
 				StrSearchCd = "LR"; // "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
 
@@ -651,7 +617,6 @@ public String helloWorld(Model model) {
 			worklist = workService.findByUserID(authUser.getId());
 		}
 
-//		List<Work> worklist = workService.findByDate(authUser.getId(), dateS);
 
 		if (worklist.size() == 0) {
 			// 該当データ無し。
@@ -727,8 +692,8 @@ public String helloWorld(Model model) {
 
 	    return "work/add";
 	  }
-	  
-	  
+
+
 	  /**
 	   * 勤怠情報新規登録
 	   * @param workRequest リクエストデータ
@@ -780,17 +745,15 @@ public String helloWorld(Model model) {
 	   */
 	  @GetMapping("/work/{id}/edit")
 	  public String displayEditWork(@PathVariable Long id, Model model) {
+
 	    Work work = workService.findById(id);
 	    WorkUpdateRequest workUpdateRequest = new WorkUpdateRequest();
 	    workUpdateRequest.setId(work.getId());
-//	    workUpdateRequest.setUserID(authUser.getId()); // ログイン情報のユーザーIDをパラメータで渡す。
 	    workUpdateRequest.setContent(work.getContent());
 
 
 	    // 開始日時
-//	    workUpdateRequest.setStartDate(work.getStartDate());
 	    String strDateS = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getStartDate());
-//	    workUpdateRequest.setStartDate(strDateS);
 
 	    // 開始日時(年)
 	    workUpdateRequest.setStartDateY(strDateS.substring(0, 4));
@@ -805,9 +768,7 @@ public String helloWorld(Model model) {
 
 
 	    // 終了日時
-//	    workUpdateRequest.setEndDate(work.getEndDate());
 	    String strDateE = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getEndDate());
-//	    workUpdateRequest.setEndDate(strDateE);
 
 	    // 終了日時(年)
 	    workUpdateRequest.setEndDateY(strDateE.substring(0, 4));
@@ -833,16 +794,12 @@ public String helloWorld(Model model) {
 	   */
 	  @RequestMapping(value = "/work/update", method = RequestMethod.POST)
 	  public String updateWork(@Validated @ModelAttribute WorkUpdateRequest workUpdateRequest, BindingResult result, Model model) {
-//	    long lngCnt = 0; // デバッグ用
-//	    String strX = ""; // デバッグ用
 
 	    if (result.hasErrors()) {
 	      // 入力チェックエラーの場合
 	      List<String> errorList = new ArrayList<String>();
 	      for (ObjectError error : result.getAllErrors()) {
 	        errorList.add(error.getDefaultMessage());
-//	      strX = workUpdateRequest.getEmail(); // デバッグ用
-//	      lngCnt = workUpdateRequest.getId(); // デバッグ用
 	      }
 	      model.addAttribute("validationError", errorList);
 	      return "work/edit";
@@ -851,7 +808,6 @@ public String helloWorld(Model model) {
 	    // 勤怠情報の更新
 		try {
 			workService.update(workUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
-//		    workService.update(workUpdateRequest);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -896,5 +852,4 @@ public String helloWorld(Model model) {
 
 			return true;
 		}
-
 }
