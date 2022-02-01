@@ -22,20 +22,41 @@
 	    </div>
   -->
 	    <div class="form-group mb-2">
-	      <label>勤務地など：<span class="text-danger">※</span></label>
+	      <label>勤怠内容（勤務地など）：<span class="text-danger">※</span></label>
 	      <input type="text" th:field="*{content}" class="form-control">
 	    </div>
-	
+	    
 	    <div class="form-group mb-2">
-	      <label>開始日時：<span class="text-danger">※</span></label>
+	      <label>勤務開始日時：<span class="text-danger">※</span></label>
+	      <br>
+	      <input type="text" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
+	      <input type="text" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
+	      <input type="text" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日
+	      <input type="text" th:field="*{startDateHH}" class="form-control-inline" maxlength="2" style="width:30px;"> 時
+	      <input type="text" th:field="*{startDateMI}" class="form-control-inline" maxlength="2" style="width:30px;"> 分
+	    </div>
+	    
+	    <div class="form-group mb-2">
+	      <label>勤務終了日時：<span class="text-danger">※</span></label>
+	      <br>
+	      <input type="text" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
+	      <input type="text" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
+	      <input type="text" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日
+	      <input type="text" th:field="*{endDateHH}" class="form-control-inline" maxlength="2" style="width:30px;"> 時
+	      <input type="text" th:field="*{endDateMI}" class="form-control-inline" maxlength="2" style="width:30px;"> 分
+	    </div>
+<!--
+	    <div class="form-group mb-2">
+	      <label>勤務開始日時：<span class="text-danger">※</span></label>
 	      <input type="text" th:field="*{startDate}" class="form-control">
 	    </div>
 	
 	    <div class="form-group mb-2">
-	      <label>終了日時：<span class="text-danger">※</span></label>
+	      <label>勤務終了日時：<span class="text-danger">※</span></label>
 	      <input type="text" th:field="*{endDate}" class="form-control">
 	    </div>
-	
+-->
+
 	    <div class="text-center">
 	      <a href="/work/list" class="btn btn-secondary">キャンセル</a>
 	      <input type="submit" value="　登録　" class="btn btn-primary">

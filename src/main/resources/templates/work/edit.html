@@ -18,23 +18,47 @@
 	    <input type="hidden" th:field="*{id}" />
 	    <div>
 	      <div class="row mx-md-n5">
-	        <div class="col-2 pt-3 border bg-light">勤務地など<span class="text-danger">※</span></div>
+	        <div class="col-2 pt-3 border bg-light">勤怠内容（勤務地など）<span class="text-danger">※</span></div>
 	        <div class="col py-2 border">
 	          <input type="text" class="form-control" th:field="*{content}">
 	        </div>
 	      </div>
+	    
 	      <div class="row mx-md-n5">
-	        <div class="col-2 pt-3 border bg-light">開始日時<span class="text-danger">※</span></div>
+	        <div class="col-2 pt-3 border bg-light">勤務開始日時<span class="text-danger">※</span></div>
+	        <div class="col py-2 border">
+		      <input type="text" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
+		      <input type="text" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
+		      <input type="text" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日
+		      <input type="text" th:field="*{startDateHH}" class="form-control-inline" maxlength="2" style="width:30px;"> 時
+		      <input type="text" th:field="*{startDateMI}" class="form-control-inline" maxlength="2" style="width:30px;"> 分
+	        </div>
+	      </div>
+	    
+	      <div class="row mx-md-n5">
+	        <div class="col-2 pt-3 border bg-light">勤務終了日時<span class="text-danger">※</span></div>
+	        <div class="col py-2 border">
+		      <input type="text" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
+		      <input type="text" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
+		      <input type="text" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日
+		      <input type="text" th:field="*{endDateHH}" class="form-control-inline" maxlength="2" style="width:30px;"> 時
+		      <input type="text" th:field="*{endDateMI}" class="form-control-inline" maxlength="2" style="width:30px;"> 分
+	        </div>
+	      </div>
+<!--
+	      <div class="row mx-md-n5">
+	        <div class="col-2 pt-3 border bg-light">勤務開始日時<span class="text-danger">※</span></div>
 	        <div class="col py-2 border">
 	          <input type="text" class="form-control" th:field="*{startDate}">
 	        </div>
 	      </div>
 	      <div class="row mx-md-n5">
-	        <div class="col-2 pt-3 border bg-light">終了日時<span class="text-danger">※</span></div>
+	        <div class="col-2 pt-3 border bg-light">勤務終了日時<span class="text-danger">※</span></div>
 	        <div class="col py-2 border">
 	          <input type="text" class="form-control" th:field="*{endDate}">
 	        </div>
 	      </div>
+-->
 	    </div>
 	    <br />
 	    <div class="text-center">

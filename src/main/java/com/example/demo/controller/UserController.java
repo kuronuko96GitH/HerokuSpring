@@ -556,12 +556,36 @@ public String helloWorld(Model model) {
 
 	    // 開始日時
 	    String strDateS = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getStartDate());
-	    workRequest.setStartDate(strDateS);
+//	    workRequest.setStartDate(strDateS);
+	    
+	    // 開始日時(年)
+	    workRequest.setStartDateY(strDateS.substring(0, 4));
+	    // 開始日時(月)
+	    workRequest.setStartDateM(strDateS.substring(5, 7));
+	    // 開始日時(日)
+	    workRequest.setStartDateD(strDateS.substring(8, 10));
+	    // 開始日時(時間)
+	    workRequest.setStartDateHH(strDateS.substring(11, 13));
+	    // 開始日時(分)
+	    workRequest.setStartDateMI(strDateS.substring(14, 16));
+
 
 	    // 終了日時
 	    String strDateE = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getEndDate());
-	    workRequest.setEndDate(strDateE);
+//	    workRequest.setEndDate(strDateE);
 
+	    // 終了日時(年)
+	    workRequest.setEndDateY(strDateE.substring(0, 4));
+	    // 終了日時(月)
+	    workRequest.setEndDateM(strDateE.substring(5, 7));
+	    // 終了日時(日)
+	    workRequest.setEndDateD(strDateE.substring(8, 10));
+	    // 終了日時(時間)
+	    workRequest.setEndDateHH(strDateE.substring(11, 13));
+	    // 終了日時(分)
+	    workRequest.setEndDateMI(strDateE.substring(14, 16));
+	    
+	    
 	    model.addAttribute("workRequest", workRequest);
 //	    model.addAttribute("workRequest", new WorkRequest());
 
@@ -652,17 +676,41 @@ public String helloWorld(Model model) {
 //	    workUpdateRequest.setUserID(authUser.getId()); // ログイン情報のユーザーIDをパラメータで渡す。
 	    workUpdateRequest.setContent(work.getContent());
 
+
 	    // 開始日時
 //	    workUpdateRequest.setStartDate(work.getStartDate());
 	    String strDateS = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getStartDate());
-	    workUpdateRequest.setStartDate(strDateS);
+//	    workUpdateRequest.setStartDate(strDateS);
+
+	    // 開始日時(年)
+	    workUpdateRequest.setStartDateY(strDateS.substring(0, 4));
+	    // 開始日時(月)
+	    workUpdateRequest.setStartDateM(strDateS.substring(5, 7));
+	    // 開始日時(日)
+	    workUpdateRequest.setStartDateD(strDateS.substring(8, 10));
+	    // 開始日時(時間)
+	    workUpdateRequest.setStartDateHH(strDateS.substring(11, 13));
+	    // 開始日時(分)
+	    workUpdateRequest.setStartDateMI(strDateS.substring(14, 16));
 
 
 	    // 終了日時
 //	    workUpdateRequest.setEndDate(work.getEndDate());
 	    String strDateE = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getEndDate());
-	    workUpdateRequest.setEndDate(strDateE);
+//	    workUpdateRequest.setEndDate(strDateE);
 
+	    // 終了日時(年)
+	    workUpdateRequest.setEndDateY(strDateE.substring(0, 4));
+	    // 終了日時(月)
+	    workUpdateRequest.setEndDateM(strDateE.substring(5, 7));
+	    // 終了日時(日)
+	    workUpdateRequest.setEndDateD(strDateE.substring(8, 10));
+	    // 終了日時(時間)
+	    workUpdateRequest.setEndDateHH(strDateE.substring(11, 13));
+	    // 終了日時(分)
+	    workUpdateRequest.setEndDateMI(strDateE.substring(14, 16));
+	    
+	    
 	    model.addAttribute("workUpdateRequest", workUpdateRequest);
 	    return "work/edit";
 	  }

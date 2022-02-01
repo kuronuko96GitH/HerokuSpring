@@ -71,15 +71,32 @@ public class WorkService {
 */
 
     // 開始日時
-    String strDateS = workRequest.getStartDate() + ":00";
+//    String strDateS = workRequest.getStartDate() + ":00";
+//    String strDateS = workRequest.getStartDateY() + "/" + workRequest.getStartDateM() + "/" + workRequest.getStartDateD()
+//    					+ " " + workRequest.getStartDateHH() + ":" + workRequest.getStartDateMI() + ":00";
+    String strDateS = workRequest.getStartDateY() + "/"
+    					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateM())) + "/"
+    					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateD())) + " "
+    					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateHH())) + ":"
+    					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateMI())) + ":00";
+
     SimpleDateFormat sdFormatS = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     Date dateS = sdFormatS.parse(strDateS);
 
     work.setStartDate(dateS);
 
 
+
     // 終了日時
-    String strDateE = workRequest.getEndDate() + ":00";
+//    String strDateE = workRequest.getEndDate() + ":00";
+//  String strDateE = workRequest.getEndDateY() + "/" + String.format("%02d", workRequest.getEndDateM()) + "/" + String.format("%02d", workRequest.getEndDateD())
+//	+ " " + String.format("%02d", workRequest.getEndDateHH()) + ":" + String.format("%02d", workRequest.getEndDateMI()) + ":00";
+    String strDateE = workRequest.getEndDateY() + "/"
+			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateM())) + "/"
+			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateD())) + " "
+			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateHH())) + ":"
+			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateMI())) + ":00";
+
     SimpleDateFormat sdFormatE = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     Date dateE = sdFormatE.parse(strDateE);
 
@@ -161,7 +178,15 @@ public class WorkService {
 //  work.setEndDate(workUpdateRequest.getEndDate());
 
     // 開始日時
-    String strDateS = workUpdateRequest.getStartDate() + ":00";
+//    String strDateS = workUpdateRequest.getStartDate() + ":00";
+//    String strDateS = workUpdateRequest.getStartDateY() + "/" + workUpdateRequest.getStartDateM() + "/" + workUpdateRequest.getStartDateD()
+//	+ " " + workUpdateRequest.getStartDateHH() + ":" + workUpdateRequest.getStartDateMI() + ":00";
+    String strDateS = workUpdateRequest.getStartDateY() + "/"
+			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateM())) + "/"
+			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateD())) + " "
+			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateHH())) + ":"
+			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateMI())) + ":00";
+
     SimpleDateFormat sdFormatS = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     Date dateS = sdFormatS.parse(strDateS);
 
@@ -169,7 +194,15 @@ public class WorkService {
 
 
     // 終了日時
-    String strDateE = workUpdateRequest.getEndDate() + ":00";
+//    String strDateE = workUpdateRequest.getEndDate() + ":00";
+//    String strDateE = workUpdateRequest.getEndDateY() + "/" + workUpdateRequest.getEndDateM() + "/" + workUpdateRequest.getEndDateD()
+//	+ " " + workUpdateRequest.getEndDateHH() + ":" + workUpdateRequest.getEndDateMI() + ":00";
+    String strDateE = workUpdateRequest.getEndDateY() + "/"
+			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateM())) + "/"
+			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateD())) + " "
+			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateHH())) + ":"
+			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateMI())) + ":00";
+ 
     SimpleDateFormat sdFormatE = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     Date dateE = sdFormatE.parse(strDateE);
 
