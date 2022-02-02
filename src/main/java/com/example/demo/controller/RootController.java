@@ -27,9 +27,11 @@ import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
 import com.example.demo.dto.WorkRequest;
+import com.example.demo.dto.WorkRequestSearch;
 import com.example.demo.dto.WorkUpdateRequest;
 import com.example.demo.entity.User;
 import com.example.demo.entity.Work;
+import com.example.demo.mdl.DateEdit;
 import com.example.demo.service.UserService;
 import com.example.demo.service.WorkService;
 
@@ -473,13 +475,14 @@ public class RootController {
 
 		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日の空データを作っておく。
 		// ここで作成しておかないと、HTML側でnullエラーになる。
-	    model.addAttribute("workRequest", new WorkRequest());
+	    model.addAttribute("workRequest", new WorkRequestSearch());
+//	    model.addAttribute("workRequest", new WorkRequest());
 
 		return "work/list";
 	  }
 
 	  /**
-	   * 勤怠情報一覧画面(勤怠年月)検索
+	   * 勤怠情報一覧画面(勤怠年月日)検索
 	   * @param WorkRequest workRequest（検索条件：勤怠開始日）
 	   * @param model Model
 	   * @return 勤怠情報一覧画面
@@ -488,11 +491,16 @@ public class RootController {
 //	  @GetMapping(value = "/work/search")
 //	  public String displayListWorkSearch(String startDateY, Model model) throws ParseException {
 	  @RequestMapping(value = "/work/search", method = RequestMethod.POST)
-	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) throws ParseException {
+	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) throws ParseException {
+///	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) throws ParseException {
 
 		// 検索画面に、ログイン情報のパラメータを渡す。
 		model.addAttribute("authId", authUser.getId());
 		model.addAttribute("authName", authUser.getUsername());
+
+		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日のパラメータを渡しておく。
+		// ここで作成しておかないと、HTML側でnullエラーになる。
+	    model.addAttribute("workRequest", workRequest);
 
 		Date dateStart = null; // 勤怠開始年月日
 		Date dateEnd = null; // 勤怠終了年月日
@@ -596,10 +604,6 @@ public class RootController {
 			dateEnd = sdFormatE.parse(strDateE);
 		}
 
-
-		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日のパラメータを渡しておく。
-//	    model.addAttribute("workRequest", workRequest);
-
 		List<Work> worklist;
 		
 		// 年月日の検索コードで検索条件を変更する。
@@ -615,6 +619,95 @@ public class RootController {
 		} else {
 			// "ALL"：検索条件指定なし（勤怠開始日と勤怠終了日のどちらも空白。）
 			worklist = workService.findByUserID(authUser.getId());
+		}
+
+
+		if (worklist.size() == 0) {
+			// 該当データ無し。
+			model.addAttribute("searchMsg", "該当データがありません。");
+		}
+		model.addAttribute("worklist", worklist);
+
+		return "work/list";
+	  }
+
+	  /**
+	   * 勤怠情報一覧画面(勤怠年月)検索
+	   * @param WorkRequest workRequest（検索条件：勤怠開始日）
+	   * @param model Model
+	   * @return 勤怠情報一覧画面
+	   * @throws ParseException 
+	   */
+	  @RequestMapping(value = "/work/searchym", method = RequestMethod.POST)
+	  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) throws ParseException {
+//	  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) throws ParseException {
+
+		// 検索画面に、ログイン情報のパラメータを渡す。
+		model.addAttribute("authId", authUser.getId());
+		model.addAttribute("authName", authUser.getUsername());
+
+		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日のパラメータを渡しておく。
+		// ここで作成しておかないと、HTML側でnullエラーになる。
+	    model.addAttribute("workRequest", workRequest);
+
+		Date dateStart = null; // 勤怠開始年月日
+		Date dateEnd = null; // 勤怠終了年月日
+		
+		String StrSearchCd = "ALL"; // 年月日の検索コード：
+									// "ALL"：検索条件指定なし（検索条件の勤怠年月が空白。）
+
+
+		// 検索条件の入力チェック(検索年月)
+		if (workRequest.getSearchDateY().isEmpty()
+			&& workRequest.getSearchDateM().isEmpty() ) {
+			// 年・月・日が空白の場合は、エラーチェックの対象外。
+//				StrSearchCd = "ALL"; // "ALL"：検索条件指定なし（勤怠開始日と勤怠終了日のどちらも空白。）
+
+		} else {
+			String StrChk = workRequest.getSearchDateY();
+			if (!isValueCheck(StrChk, "勤怠年月(年)", model)) {
+		          return "work/list";
+			}
+			StrChk = workRequest.getSearchDateM();
+			if (!isValueCheck(StrChk, "勤怠年月(月)", model)) {
+		          return "work/list";
+			}
+
+			StrSearchCd = "LR"; // "LR"：勤怠年月入力あり。
+		}
+
+		if ( StrSearchCd != "ALL" ) {
+			// 勤怠年月の入力があった場合
+
+			// 範囲検索の年月
+		    String strDateYM =  String.format("%04d", Integer.parseInt(workRequest.getSearchDateY())) + "/"
+					+ String.format("%02d", Integer.parseInt(workRequest.getSearchDateM()));
+
+
+			// 範囲検索の開始日
+		    String strDateS = strDateYM + "/01 00:00:00";
+
+			SimpleDateFormat sdFormatS = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+			dateStart = sdFormatS.parse(strDateS);
+
+
+			// 範囲検索の終了日
+			// 年月+("/01")を引数として渡し、末日を取得する。
+		    String strDateE = strDateYM + "/" + DateEdit.getLastDayStr(strDateYM + "/01") + " 00:00:00";
+
+			SimpleDateFormat sdFormatE = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+			dateEnd = sdFormatE.parse(strDateE);
+		}
+
+
+		List<Work> worklist;
+		
+		if (StrSearchCd == "ALL") {
+			// "ALL"：検索条件指定なし（勤怠年月が空白。）
+			worklist = workService.findByUserID(authUser.getId());
+		} else {
+			// 年月日の検索コードで検索条件を変更する。
+			worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);
 		}
 
 
@@ -852,4 +945,7 @@ public class RootController {
 
 			return true;
 		}
+
+
+
 }

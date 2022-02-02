@@ -18,6 +18,15 @@
 	    <hr>
 	  </div>
 
+	  <form th:action="@{/work/searchym}" th:object="${workRequest}" th:method="post">
+		<div class="mb-3">
+			勤怠年月：
+			<input type="text" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
+			<input type="text" th:field="*{searchDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
+			<input type="submit" value="　年月検索　" class="btn btn-success">
+		</div>
+	  </form>
+
 	  <form th:action="@{/work/search}" th:object="${workRequest}" th:method="post">
 		<div class="mb-3">
 			勤怠開始日：

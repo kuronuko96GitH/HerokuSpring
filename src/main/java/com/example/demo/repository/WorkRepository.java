@@ -31,6 +31,10 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
 	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND START_AT >= ?2 AND END_AT <= ?3 ORDER BY START_AT, END_AT", nativeQuery=true)
 	List<Work> findByDate(Long userid, Date startDate, Date endDate);
 
+	// ユーザーIDとSQL(WHERE)文で検索する。（※このやり方は、上手くいかないようです。）
+	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 ?2 ORDER BY START_AT, END_AT", nativeQuery=true)
+	List<Work> findSql(Long userid, String sql);
+
 	// ユーザーIDと勤怠内容で検索する。
 //	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND content = ?2 ORDER BY START_AT, END_AT", nativeQuery=true)
 //	List<Work> findByContent(Long userid, String content);
