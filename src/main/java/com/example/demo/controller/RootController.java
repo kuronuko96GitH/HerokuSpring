@@ -93,6 +93,11 @@ public class RootController {
 
 //      System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
 
+	// 検索画面に、ログイン情報のパラメータを渡す。
+//	model.addAttribute("authId", authUser.getId());
+//	model.addAttribute("authName", authUser.getUsername());
+
+
 	  return "index";
   }
 
@@ -195,9 +200,15 @@ public class RootController {
 	model.addAttribute("authId", authUser.getId());
 	model.addAttribute("authName", authUser.getUsername());
 
-	// ユーザー情報の全検索
-	List<User> userlist = userService.searchAll();
-	model.addAttribute("userlist", userlist);
+	if (authUser.getRoles().get(0).equals("ROLE_USER")) {
+		// 『ROLE_USER』の場合は、ユーザー情報一覧を閲覧したとしても、自分のユーザーした検索できない。
+		List<User> userlist = userService.findByUserId(authUser.getId());
+		model.addAttribute("userlist", userlist);
+	} else {
+		// ユーザー情報の全検索
+		List<User> userlist = userService.searchAll();
+		model.addAttribute("userlist", userlist);
+	}
 
 	return "user/list";
   }
@@ -502,6 +513,16 @@ public class RootController {
 		// ここで作成しておかないと、HTML側でnullエラーになる。
 	    model.addAttribute("workRequest", workRequest);
 
+		if (result.hasErrors()) {
+		      // 入力チェックエラーの場合
+		      List<String> errorList = new ArrayList<String>();
+		      for (ObjectError error : result.getAllErrors()) {
+		        errorList.add(error.getDefaultMessage());
+		      }
+		      model.addAttribute("validationError", errorList);
+		      return "work/list";
+		}
+
 		Date dateStart = null; // 勤怠開始年月日
 		Date dateEnd = null; // 勤怠終了年月日
 		
@@ -536,7 +557,7 @@ public class RootController {
 			StrSearchCd = "LN"; // "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
 		}
 
-		if ( StrSearchCd == "LN" ) {
+		if ( StrSearchCd.equals("LN") ) {
 			// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
 		    String strDateS = String.format("%04d", Integer.parseInt(workRequest.getStartDateY())) + "/"
 					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateM())) + "/"
@@ -554,7 +575,7 @@ public class RootController {
 			&& workRequest.getEndDateD().isEmpty() ) {
 			// 年・月・日が空白の場合は、エラーチェックの対象外。
 
-			if ( StrSearchCd == "LN" ) {
+			if ( StrSearchCd.equals("LN") ) {
 				// 年月日の検索コードが
 				// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
 				
@@ -580,7 +601,7 @@ public class RootController {
 		          return "work/list";
 			}
 
-			if ( StrSearchCd == "LN" ) {
+			if ( StrSearchCd.equals("LN") ) {
 				// 年月日の検索コードが
 				// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
 
@@ -593,7 +614,7 @@ public class RootController {
 			}
 		}
 
-		if ( StrSearchCd == "LR" || StrSearchCd == "NR" ) {
+		if ( StrSearchCd.equalsIgnoreCase("LR") || StrSearchCd.equals("NR") ) {
 			// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
 			// または　"NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
 		    String strDateE = String.format("%04d", Integer.parseInt(workRequest.getEndDateY())) + "/"
@@ -607,13 +628,13 @@ public class RootController {
 		List<Work> worklist;
 		
 		// 年月日の検索コードで検索条件を変更する。
-		if (StrSearchCd == "LN") {
+		if (StrSearchCd.equalsIgnoreCase("LN")) {
 			// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白(Null)。
 			worklist = workService.findByDate(authUser.getId(), dateStart, null);
-		} else if (StrSearchCd == "NR") {
+		} else if (StrSearchCd.equals("NR")) {
 			// "NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
 			worklist = workService.findByDate(authUser.getId(), null, dateEnd);
-		} else if (StrSearchCd == "LR") {
+		} else if (StrSearchCd.equals("LR")) {
 			// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
 			worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);
 		} else {
@@ -650,6 +671,16 @@ public class RootController {
 		// ここで作成しておかないと、HTML側でnullエラーになる。
 	    model.addAttribute("workRequest", workRequest);
 
+		if (result.hasErrors()) {
+		      // 入力チェックエラーの場合
+		      List<String> errorList = new ArrayList<String>();
+		      for (ObjectError error : result.getAllErrors()) {
+		        errorList.add(error.getDefaultMessage());
+		      }
+		      model.addAttribute("validationError", errorList);
+		      return "work/list";
+		}
+
 		Date dateStart = null; // 勤怠開始年月日
 		Date dateEnd = null; // 勤怠終了年月日
 		
@@ -676,7 +707,7 @@ public class RootController {
 			StrSearchCd = "LR"; // "LR"：勤怠年月入力あり。
 		}
 
-		if ( StrSearchCd != "ALL" ) {
+		if ( !StrSearchCd.equals("ALL") ) {
 			// 勤怠年月の入力があった場合
 
 			// 範囲検索の年月
@@ -702,7 +733,7 @@ public class RootController {
 
 		List<Work> worklist;
 		
-		if (StrSearchCd == "ALL") {
+		if (StrSearchCd.equals("ALL")) {
 			// "ALL"：検索条件指定なし（勤怠年月が空白。）
 			worklist = workService.findByUserID(authUser.getId());
 		} else {

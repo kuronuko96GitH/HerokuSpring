@@ -14,6 +14,10 @@ import com.example.demo.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	// idで検索する。
+	@Query(value = "SELECT * FROM USERS WHERE USERS.ID = ?1", nativeQuery=true)
+	List<User> findByUserId(Long Id);
+
 	// emailで検索する。
 	List<User> findByEmail(String Email);
 

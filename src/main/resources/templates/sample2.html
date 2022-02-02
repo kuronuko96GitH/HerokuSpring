@@ -10,7 +10,6 @@
 	th:replace="common/head :: head_fragment(title = 'Sample画面', scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
-	<!-- th:replaceを使用して、 Navbarを読込みます -->
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
 	<div class="container">
@@ -22,13 +21,29 @@
 
 	<hr />
 
+<div th:object="${authenticatedUser}">
+<!--
+	<span th:text="*{username}">Username</span>
+-->
+</div>
+
+
 <!--  残念ながら取得でいるのはユーザー名です -->
-<span th:text="${#authentication.name}">email</span>
+name：<span th:text="${#authentication.name}">name</span>
+<!--<span th:text="${#authentication.email}">email</span> -->
 
 	<hr />
 
 <br>
-<span th:text="${#authentication.principal.username}">username</span>
+userid：<span th:text="${#authentication.principal.id}">userid</span>
+<br>
+username：<span th:text="${#authentication.principal.username}">username</span>
+<br>
+email：<span th:text="${#authentication.principal.email}">email</span>
+<br>
+roles(List型)：<span th:text="${#authentication.principal.roles}">roles</span>
+<br>
+roles(String型)：<span th:text="${#authentication.principal.roles.get(0)}">roles</span>
 
 	</div>
 

@@ -5,18 +5,12 @@
 	th:replace="common/head :: head_fragment(title = '勤怠情報一覧', scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
-	<!-- th:replaceを使用して、 Navbarを読込みます -->
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
 	<div class="container">
 	  <div class="head_title">勤怠情報一覧</div>
 
-	  <div th:if="${validationError}" th:each="error : ${validationError}">
-	    <label class="text-danger" th:text="${error}"></label>
-	  </div>
-	  <div th:if="${validationError}">
-	    <hr>
-	  </div>
+	  <div th:replace="common/footerMsg :: footer_fragment"></div>
 
 	  <form th:action="@{/work/searchym}" th:object="${workRequest}" th:method="post">
 		<div class="mb-3">
@@ -37,9 +31,6 @@
 			<input type="text" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
 			<input type="text" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日
 			<input type="submit" value="　検索　" class="btn btn-success">
-		</div>
-		<div th:if="${searchMsg}" th:each="msginfo : ${searchMsg}">
-			<label class="text-danger" th:text="${msginfo}"></label>
 		</div>
 	  </form>
 

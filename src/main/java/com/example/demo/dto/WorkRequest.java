@@ -16,8 +16,8 @@ public class WorkRequest implements Serializable {
   /**
    * コンテンツ
    */
-  @NotEmpty(message = "勤務地情報を入力して下さい。")
-  @Size(max = 100, message = "勤務地情報は100桁以内で入力して下さい。")
+  @NotEmpty(message = "勤怠内容を入力して下さい。")
+  @Size(max = 100, message = "勤怠内容は100桁以内で入力して下さい。")
   private String content;
 
 

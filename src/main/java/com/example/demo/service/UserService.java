@@ -49,6 +49,14 @@ public class UserService {
   }
 
   /**
+   * ユーザー情報 主キー検索
+   * @return 検索結果
+   */
+  public List<User> findByUserId(Long id) {
+    return userRepository.findByUserId(id);
+  }
+
+  /**
    * ユーザー情報 新規登録
    * @param user ユーザー情報
    */
