@@ -13,6 +13,8 @@ public class AuthUser implements UserDetails {
 
 	private static final long serialVersionUID = -4292831594774687625L;
 
+	private String title;
+
 	private long id;
 
 	private String email;
@@ -29,6 +31,15 @@ public class AuthUser implements UserDetails {
 
 	private boolean expired;
 
+
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 
 	@Override

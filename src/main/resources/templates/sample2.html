@@ -1,24 +1,73 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <!-- 『spring-security』は記述しなくても問題無い？
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   -->
-<head
-	th:replace="common/head :: head_fragment(title = 'Sample画面', scripts = ~{::script}, links = ~{::link})"></head>
-  <body>
+<head th:replace="common/head :: head_fragment(title = 'Sample2画面', scripts = ~{::script}, links = ~{::link})"></head>
+  <body th:if="${#authentication.principal.roles.get(0) != 'ROLE_ADMIN'}">
+	<div th:replace="common/footerNavbar :: footer_fragment"></div>
+	    <h1><span class="text-danger">閲覧はできません。</span></h1>
+	    <h1><span class="text-danger">※管理者権限がありません。</span></h1>
+  </body>
+  <body th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
 
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
 	<div class="container">
+
+	  <div class="head_title" th:text="${authUser.title}">title</div>
 	  <div class="head_title">サンプル画面（ユーザー認証情報を取得したい）</div>
 
 <strong sec:authorize="isAuthenticated()">認証済み</strong>
 <br>
 <strong sec:authorize="!isAuthenticated()">未認証</strong>
 
+	<hr />
+●RootControllerクラスでmodel.addAttribute("authUser", authUser)を事前にする必要あり。
+<br>
+${authUser.title}：<span th:text="${authUser.title}">title</span>
+<br>
+${authUser.id}：<span th:text="${authUser.id}">id</span>
+<br>
+${authUser.username}：<span th:text="${authUser.username}">name</span>
+<br>
+${authUser.email}：<span th:text="${authUser.email}">email</span>
+
+<br>
+<br>
+${authUser.roles.get(0)}(String型)：<span th:text="${authUser.roles.get(0)}">roles</span>
+<br>
+${authUser.roles}(List型)：<span th:text="${authUser.roles}">roles</span>
+
+
+	<hr />
+●RootControllerクラスでmodel.addAttribute("authId", authUser.getId())を事前にする必要あり。
+<br>
+${authId}：<span th:text="${authId}">userid</span>
+<br>
+<br>RootControllerクラスでmodel.addAttribute("authName", authUser.getUsername())を事前にする必要あり。
+<br>
+${authName}：<span th:text="${authName}">username</span>
+
+
+<!--  ユーザー情報一覧(list.html)　のログイン認証情報を使った処理(※詳細ボタンの表示・非表示)のソース文を退避　-->
+	<!--          
+	          <td>2022/XX/XX</td>
+	          <td th:text="${#dates.format(user.deleteDate, 'yyyy/MM/dd')}"></td>
+	        <td class="center"><a th:if="${authId == user.id}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
+	        <td class="center"><a th:if="${authName == user.name}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
+	-->
+<!-- ログインしてるユーザしか変更・削除できない
+	        <td class="center"><a th:if="${authUserName == user.name}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
+  -->
+<!-- 管理者権限を追加したい
+	        <td class="center"><a th:if="${authUserName == user.name || authId == user.name}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
+  -->
+<!-- 初期バージョン：誰でも更新・削除が可能。
+	        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
+  -->
 	<hr />
 
 <div th:object="${authenticatedUser}">

@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
-<head
-	th:replace="common/head :: head_fragment(title = 'ユーザー情報一覧', scripts = ~{::script}, links = ~{::link})"></head>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head_fragment(title = ${authUser.title}, scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
@@ -17,9 +15,6 @@
 	    <thead>
 	      <tr>
 	        <th>NO</th>
-<!--	        
-	        <th>ID</th>
-  -->
 	        <th>名前</th>
 	        <th>メールアドレス</th>
 	        <th>住所</th>
@@ -32,36 +27,13 @@
 	    <tbody>
 	      <tr th:each="user, userRec : ${userlist}" th:object="${user}" class="align-middle">
 	        <td th:text="${userRec.count}" class="text-center"></td>
-<!--
-	      <tr th:each="user, userRec : ${userlist}" th:object="${user}" class="align-middle">
-	        <td th:text="${userRec.count} + '番'"></td>
-  -->
-<!--
-	      <tr th:each="user : ${userlist}" th:object="${user}" class="align-middle">
-	        <td th:text="*{id}"></td>
-  -->
 	        <td th:text="*{name}"></td>
 	        <td th:text="*{email}"></td>
 	        <td th:text="*{address}"></td>
 	        <td th:text="*{phone}"></td>
 	        <td th:text="${#dates.format(user.updateDate, 'yyyy/MM/dd')}"></td>
 	        <td th:text="${#dates.format(user.createDate, 'yyyy/MM/dd')}"></td>
-	<!--          
-	          <td>2022/XX/XX</td>
-	          <td th:text="${#dates.format(user.deleteDate, 'yyyy/MM/dd')}"></td>
-	        <td class="center"><a th:if="${authId == user.id}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-	        <td class="center"><a th:if="${authName == user.name}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-	-->
 	        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-<!-- ログインしてるユーザしか変更・削除できない
-	        <td class="center"><a th:if="${authUserName == user.name}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-  -->
-<!-- 管理者権限を追加したい
-	        <td class="center"><a th:if="${authUserName == user.name || authId == user.name}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-  -->
-<!-- 初期バージョン：誰でも更新・削除が可能。
-	        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-  -->
 	      </tr>
 	    </tbody>
 	  </table>

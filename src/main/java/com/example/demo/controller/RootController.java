@@ -58,23 +58,24 @@ public class RootController {
    */
   private AuthUser authUser;
 
-// extends用に作成（※extendsした別クラスからも、ログイン情報を取得できるようにする。）
-//  public AuthUser getAuthUser() {
-//	return authUser;
-//  }
-//
-// setメソッドが必要な時用に
-//	public void setAuthUser(AuthUser authUser) {
+  /**
+   * ログイン情報の設定
+   * @param AuthUser authUser
+   * @return
+   * 補足説明（ログイン情報を取得するタイミングは、トップページにアクセスした時です。
+   * ログアウト時にも、トップページに自動アクセスするので、再ログイン時にログイン情報を再取得します。）
+   */
 	private void setAuthUser(AuthUser authUser) {
-		// ログイン情報の設定
-		//（ログイン情報を取得するタイミングは、トップページにアクセスした時です。
-		//　ログアウト時にも、トップページに自動アクセスするので、再ログイン時にログイン情報を再取得します。）
-		//
+		this.authUser = authUser;
+		this.authUser.setTitle("Java(Spring Boot)ポートフォリオ");
+
+		// よく使うパラメータをメモ
 		// authUser.getId();
 		// authUser.getEmail();
 		// authUser.getUsername();
 		// authUser.getRoles().get(0);	// (出力例)『ROLE_USER』
-		this.authUser = authUser;
+
+		// System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
 	}
 
 
@@ -85,20 +86,17 @@ public class RootController {
    * 補足(ローカル環境)：URL…http://localhost:8080/
    */
   @GetMapping(value = "/")
-  public String root(@AuthenticationPrincipal AuthUser userDetails) {
+  public String root(@AuthenticationPrincipal AuthUser userDetails, Model model) {
 
-	  // 他のコントローラ処理でも、ログイン情報を扱えるように、
-	  // トップページにアクセスしたタイミングで、ログイン情報を取得。
-	  setAuthUser(userDetails);
+	// 他のコントローラ処理でも、ログイン情報を扱えるように、
+	// トップページにアクセスしたタイミングで、ログイン情報を取得。
+	setAuthUser(userDetails);
 
-//      System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
-
-	// 検索画面に、ログイン情報のパラメータを渡す。
-//	model.addAttribute("authId", authUser.getId());
-//	model.addAttribute("authName", authUser.getUsername());
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
 
 
-	  return "index";
+	return "index";
   }
 
   /**
@@ -147,7 +145,14 @@ public class RootController {
    * @return サンプル画面
    */
   @GetMapping(value = "/sample2")
-  public String sample2() {
+  public String sample2(Model model) {
+
+		// サンプル画面に、ログイン情報のパラメータを渡す。
+		model.addAttribute("authId", authUser.getId());
+		model.addAttribute("authName", authUser.getUsername());
+
+		model.addAttribute("authUser", authUser);
+
 	  return "sample2";
   }
 
@@ -161,8 +166,11 @@ public class RootController {
    * 補足(ローカル環境)：URL…http://localhost:8080/others/aboutme.html
    */
   @GetMapping(value = "/others/aboutme")
-  public String aboutme() {
-	  return "others/aboutme";
+  public String aboutme(Model model) {
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+	
+	return "others/aboutme";
   }
 
   /**
@@ -171,8 +179,11 @@ public class RootController {
    * @return Link画面
    */
   @GetMapping(value = "/others/portfolio")
-  public String portfolio() {
-	  return "others/portfolio";
+  public String portfolio(Model model) {
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+	
+	return "others/portfolio";
   }
 
   /**
@@ -181,8 +192,11 @@ public class RootController {
    * @return 開発ドキュメント画面
    */
   @GetMapping(value = "/others/devdoc")
-  public String devdoc() {
-	  return "others/devdoc";
+  public String devdoc(Model model) {
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+		
+	return "others/devdoc";
   }
 
 
@@ -196,9 +210,8 @@ public class RootController {
   @GetMapping(value = "/user/list")
   public String displayList(Model model) {
 
-	// 検索画面に、ログイン情報のパラメータを渡す。
-	model.addAttribute("authId", authUser.getId());
-	model.addAttribute("authName", authUser.getUsername());
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
 
 	if (authUser.getRoles().get(0).equals("ROLE_USER")) {
 		// 『ROLE_USER』の場合は、ユーザー情報一覧を閲覧したとしても、自分のユーザーした検索できない。
@@ -220,6 +233,9 @@ public class RootController {
    */
   @GetMapping(value = "/user/add")
   public String displayAdd(Model model) {
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+
     model.addAttribute("userRequest", new UserRequest());
     return "user/add";
   }
@@ -232,6 +248,9 @@ public class RootController {
    */
   @RequestMapping(value = "/user/create", method = RequestMethod.POST)
   public String create(@Validated @ModelAttribute UserRequest userRequest, BindingResult result, Model model) {
+
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
 
 //    int intCnt = 0; // デバッグ用
 //    String strX = ""; // デバッグ用
@@ -280,6 +299,10 @@ public class RootController {
    */
   @GetMapping("/user/{id}")
   public String displayView(@PathVariable Long id, Model model) {
+
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+
     User user = userService.findById(id);
     model.addAttribute("userData", user);
     return "user/view";
@@ -293,6 +316,10 @@ public class RootController {
    */
   @GetMapping("/user/{id}/edit")
   public String displayEdit(@PathVariable Long id, Model model) {
+
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+
     User user = userService.findById(id);
     UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
     userUpdateRequest.setId(user.getId());
@@ -313,6 +340,10 @@ public class RootController {
    */
   @RequestMapping(value = "/user/update", method = RequestMethod.POST)
   public String update(@Validated @ModelAttribute UserUpdateRequest userUpdateRequest, BindingResult result, Model model) {
+
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+
 //    long lngCnt = 0; // デバッグ用
 //    String strX = ""; // デバッグ用
 
@@ -364,6 +395,10 @@ public class RootController {
    */
   @GetMapping("/user/{id}/editpass")
   public String displayEditPass(@PathVariable Long id, Model model) {
+
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+
     User user = userService.findById(id);
     UserUpdateRequestPass userUpdateRequest = new UserUpdateRequestPass();
     // パスワードの情報は、セキュリィ対策として保持しない
@@ -381,6 +416,10 @@ public class RootController {
    */
   @RequestMapping(value = "/user/updatepass", method = RequestMethod.POST)
   public String updatePass(@Validated @ModelAttribute UserUpdateRequestPass userUpdateRequestPass, BindingResult result, Model model) {
+
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+
     if (result.hasErrors()) {
       List<String> errorList = new ArrayList<String>();
       for (ObjectError error : result.getAllErrors()) {
@@ -411,6 +450,10 @@ public class RootController {
    */
   @GetMapping("/user/{id}/delete")
   public String delete(@PathVariable Long id, Model model) {
+
+	// ログイン情報のパラメータを渡す。
+	model.addAttribute("authUser", authUser);
+
 
 	boolean blnErrCnk = true;
 	Long lngAuthId = authUser.getId(); // ログイン情報のユーザーIDを取得
@@ -474,9 +517,8 @@ public class RootController {
 	  @GetMapping(value = "/work/list")
 	  public String displayListWork(Model model) {
 
-		// 検索画面に、ログイン情報のパラメータを渡す。
-		model.addAttribute("authId", authUser.getId());
-		model.addAttribute("authName", authUser.getUsername());
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
 
 		// ユーザー情報の全検索
 //		List<Work> worklist = workService.searchAll();
@@ -505,9 +547,8 @@ public class RootController {
 	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) throws ParseException {
 ///	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) throws ParseException {
 
-		// 検索画面に、ログイン情報のパラメータを渡す。
-		model.addAttribute("authId", authUser.getId());
-		model.addAttribute("authName", authUser.getUsername());
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
 
 		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日のパラメータを渡しておく。
 		// ここで作成しておかないと、HTML側でnullエラーになる。
@@ -663,9 +704,8 @@ public class RootController {
 	  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) throws ParseException {
 //	  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) throws ParseException {
 
-		// 検索画面に、ログイン情報のパラメータを渡す。
-		model.addAttribute("authId", authUser.getId());
-		model.addAttribute("authName", authUser.getUsername());
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
 
 		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日のパラメータを渡しておく。
 		// ここで作成しておかないと、HTML側でnullエラーになる。
@@ -759,6 +799,9 @@ public class RootController {
 	  @GetMapping(value = "/work/add")
 	  public String displayAddWork(Model model) {
 
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
+
 	    model.addAttribute("workRequest", new WorkRequest());
 		    
 	    return "work/add";
@@ -777,6 +820,9 @@ public class RootController {
 	  @GetMapping("/work/addcopy{id}")
 	  public String displayAddCopyWork(@PathVariable Long id, Model model) {
 
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
+		
 		Work work = workService.findById(id);
 	    WorkRequest workRequest = new WorkRequest();
 	    
@@ -828,6 +874,9 @@ public class RootController {
 	  @RequestMapping(value = "/work/create", method = RequestMethod.POST)
 	  public String createWork(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) {
 
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
+	
 		if (result.hasErrors()) {
 	      // 入力チェックエラーの場合
 	      List<String> errorList = new ArrayList<String>();
@@ -856,6 +905,10 @@ public class RootController {
 	   */
 	  @GetMapping("/work/{id}")
 	  public String displayViewWork(@PathVariable Long id, Model model) {
+
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
+
 	    Work work = workService.findById(id);
 	    model.addAttribute("workData", work);
 	    return "work/view";
@@ -869,6 +922,9 @@ public class RootController {
 	   */
 	  @GetMapping("/work/{id}/edit")
 	  public String displayEditWork(@PathVariable Long id, Model model) {
+
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
 
 	    Work work = workService.findById(id);
 	    WorkUpdateRequest workUpdateRequest = new WorkUpdateRequest();
