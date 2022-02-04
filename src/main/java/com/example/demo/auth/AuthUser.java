@@ -13,8 +13,6 @@ public class AuthUser implements UserDetails {
 
 	private static final long serialVersionUID = -4292831594774687625L;
 
-	private String title;
-
 	private long id;
 
 	private String email;
@@ -32,6 +30,11 @@ public class AuthUser implements UserDetails {
 	private boolean expired;
 
 
+	private String title;
+
+	private String sysdateymd;
+
+
 
 	public String getTitle() {
 		return title;
@@ -40,6 +43,15 @@ public class AuthUser implements UserDetails {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	public String getSysdateYMD() {
+		return sysdateymd;
+	}
+
+	public void setSysdateYMD(String sysdateymd) {
+		this.sysdateymd = sysdateymd;
+	}
+
 
 
 	@Override

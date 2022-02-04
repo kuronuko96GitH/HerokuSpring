@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+//import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,6 +70,10 @@ public class RootController {
 	private void setAuthUser(AuthUser authUser) {
 		this.authUser = authUser;
 		this.authUser.setTitle("Java(Spring Boot)ポートフォリオ");
+
+		String strDateYMD = DateEdit.getSysDate("yyyy年M月d日");
+		this.authUser.setSysdateYMD(strDateYMD);
+		// sysdateYmd(YYYY年M月D日)
 
 		// よく使うパラメータをメモ
 		// authUser.getId();
@@ -365,7 +371,7 @@ public class RootController {
       model.addAttribute("validationError", "管理者権限が無いため、編集はできません。");
       return "user/edit";
     }
-    
+
 
 
     // 更新しようしたメールアドレスが、データベースに存在してないかを検索
@@ -520,16 +526,15 @@ public class RootController {
 		// ログイン情報のパラメータを渡す。
 		model.addAttribute("authUser", authUser);
 
-		// ユーザー情報の全検索
-//		List<Work> worklist = workService.searchAll();
-		List<Work> worklist = workService.findByUserID(authUser.getId());
-		model.addAttribute("worklist", worklist);
-
-
 		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日の空データを作っておく。
 		// ここで作成しておかないと、HTML側でnullエラーになる。
 	    model.addAttribute("workRequest", new WorkRequestSearch());
-//	    model.addAttribute("workRequest", new WorkRequest());
+
+
+		// 勤怠情報の検索
+		List<Work> worklist = workService.findByUserID(authUser.getId());
+		model.addAttribute("worklist", worklist);
+
 
 		return "work/list";
 	  }
@@ -542,10 +547,9 @@ public class RootController {
 	   * @throws ParseException 
 	   */
 //	  @GetMapping(value = "/work/search")
-//	  public String displayListWorkSearch(String startDateY, Model model) throws ParseException {
 	  @RequestMapping(value = "/work/search", method = RequestMethod.POST)
-	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) throws ParseException {
-///	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) throws ParseException {
+	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) {
+//	  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) throws ParseException {
 
 		// ログイン情報のパラメータを渡す。
 		model.addAttribute("authUser", authUser);
@@ -600,12 +604,15 @@ public class RootController {
 
 		if ( StrSearchCd.equals("LN") ) {
 			// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白。
+			dateStart = DateEdit.getDate(workRequest.getStartDateY(), workRequest.getStartDateM(), workRequest.getStartDateD());
+/*
 		    String strDateS = String.format("%04d", Integer.parseInt(workRequest.getStartDateY())) + "/"
 					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateM())) + "/"
 					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateD())) + " 00:00:00";
 
 			SimpleDateFormat sdFormatS = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			dateStart = sdFormatS.parse(strDateS);
+*/
 		}
 
 
@@ -658,12 +665,15 @@ public class RootController {
 		if ( StrSearchCd.equalsIgnoreCase("LR") || StrSearchCd.equals("NR") ) {
 			// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
 			// または　"NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
+/*
 		    String strDateE = String.format("%04d", Integer.parseInt(workRequest.getEndDateY())) + "/"
 					+ String.format("%02d", Integer.parseInt(workRequest.getEndDateM())) + "/"
 					+ String.format("%02d", Integer.parseInt(workRequest.getEndDateD())) + " 23:59:59";
 
 			SimpleDateFormat sdFormatE = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			dateEnd = sdFormatE.parse(strDateE);
+*/
+			dateEnd = DateEdit.getDateTime(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD(), "23", "59", "59");
 		}
 
 		List<Work> worklist;
@@ -701,7 +711,8 @@ public class RootController {
 	   * @throws ParseException 
 	   */
 	  @RequestMapping(value = "/work/searchym", method = RequestMethod.POST)
-	  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) throws ParseException {
+	  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) {
+//	  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) throws ParseException {
 //	  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) throws ParseException {
 
 		// ログイン情報のパラメータを渡す。
@@ -750,6 +761,12 @@ public class RootController {
 		if ( !StrSearchCd.equals("ALL") ) {
 			// 勤怠年月の入力があった場合
 
+			// 範囲検索の開始日（該当月の初日）
+			dateStart = DateEdit.getDate(workRequest.getSearchDateY(), workRequest.getSearchDateM(), "1");
+
+			// 範囲検索の終了日(該当月の末日)
+			dateEnd = DateEdit.getDateLastDay(workRequest.getSearchDateY(), workRequest.getSearchDateM());
+/*
 			// 範囲検索の年月
 		    String strDateYM =  String.format("%04d", Integer.parseInt(workRequest.getSearchDateY())) + "/"
 					+ String.format("%02d", Integer.parseInt(workRequest.getSearchDateM()));
@@ -764,10 +781,11 @@ public class RootController {
 
 			// 範囲検索の終了日
 			// 年月+("/01")を引数として渡し、末日を取得する。
-		    String strDateE = strDateYM + "/" + DateEdit.getLastDayStr(strDateYM + "/01") + " 00:00:00";
+		    String strDateE = strDateYM + "/" + DateEdit.getLastDay(strDateYM + "/01") + " 00:00:00";
 
 			SimpleDateFormat sdFormatE = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			dateEnd = sdFormatE.parse(strDateE);
+*/
 		}
 
 
@@ -792,7 +810,7 @@ public class RootController {
 	  }
 
 	  /**
-	   * 勤怠情報新規登録画面を表示
+	   * 勤怠情報の新規登録画面を表示
 	   * @param model Model
 	   * @return 勤怠情報一覧画面
 	   */
@@ -809,14 +827,12 @@ public class RootController {
 
 
 	  /**
-	   * 勤怠情報(コピー)新規登録画面を表示
+	   * 勤怠情報の新規登録画面を表示
 	   * (勤怠情報一覧のコピーボタンを押した時のイベント)
 	   * @param id 表示するワークID
 	   * @param model Model
-	   * @return 勤怠情報新規登録画面
+	   * @return 勤怠情報の新規登録画面
 	   */
-//	  @GetMapping(value = "/work/addcopy")
-//	  public String displayAddCopyWork(Model model) {
 	  @GetMapping("/work/addcopy{id}")
 	  public String displayAddCopyWork(@PathVariable Long id, Model model) {
 
@@ -828,6 +844,31 @@ public class RootController {
 	    
 	    workRequest.setContent(work.getContent());
 
+
+	    // 開始日時(年)
+	    workRequest.setStartDateY(DateEdit.getDate(work.getStartDate(), "yyyy"));
+	    // 開始日時(月)
+	    workRequest.setStartDateM(DateEdit.getDate(work.getStartDate(), "M"));
+	    // 開始日時(日)
+	    workRequest.setStartDateD(DateEdit.getDate(work.getStartDate(), "d"));
+	    // 開始日時(時間)
+	    workRequest.setStartDateHH(DateEdit.getDate(work.getStartDate(), "H"));
+	    // 開始日時(分)
+	    workRequest.setStartDateMI(DateEdit.getDate(work.getStartDate(), "m"));
+
+
+	    // 終了日時(年)
+	    workRequest.setEndDateY(DateEdit.getDate(work.getEndDate(), "yyyy"));
+	    // 終了日時(月)
+	    workRequest.setEndDateM(DateEdit.getDate(work.getEndDate(), "M"));
+	    // 終了日時(日)
+	    workRequest.setEndDateD(DateEdit.getDate(work.getEndDate(), "d"));
+	    // 終了日時(時間)
+	    workRequest.setEndDateHH(DateEdit.getDate(work.getEndDate(), "H"));
+	    // 終了日時(分)
+	    workRequest.setEndDateMI(DateEdit.getDate(work.getEndDate(), "m"));
+
+/*
 	    // 開始日時
 	    String strDateS = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getStartDate());
 	    
@@ -856,8 +897,8 @@ public class RootController {
 	    workRequest.setEndDateHH(strDateE.substring(11, 13));
 	    // 終了日時(分)
 	    workRequest.setEndDateMI(strDateE.substring(14, 16));
-	    
-	    
+*/
+
 	    model.addAttribute("workRequest", workRequest);
 
 	    return "work/add";
@@ -888,13 +929,149 @@ public class RootController {
 	    }
 
 	    // 勤怠情報の新規登録
+	    workService.create(workRequest, authUser.getId()); // ログイン時のユーザーIDを設定。
+/*
 		try {
 		    workService.create(workRequest, authUser.getId()); // ログイン時のユーザーIDを設定。
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+*/
 	    return "redirect:/work/list";
+	  }
+
+
+	  /**
+	   * 打刻登録画面を表示
+	   * @param model Model
+	   * @return 打刻登録画面
+	   * @throws ParseException 
+	   */
+	  @GetMapping(value = "/work/stamping")
+	  public String displayStamping(Model model) {
+
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
+
+		// 勤怠情報一覧画面(勤怠年月)検索のために、検索条件の年月日の空データを作っておく。
+		// ここで作成しておかないと、HTML側でnullエラーになる。
+	    model.addAttribute("workRequest", new WorkRequestSearch());
+
+
+	    Date dateStart;
+	    Date dateEnd;
+	    
+		List<Work> worklist = new ArrayList<>();
+
+
+        // 現在日を取得する
+//        Date dateNow = new Date();
+//        Date dateNow = DateEdit.getDate(DateEdit.getSysDate("yyyy"), DateEdit.getSysDate("MM"), DateEdit.getSysDate("dd"));
+        dateStart = DateEdit.getDate(DateEdit.getSysDate("yyyy"), DateEdit.getSysDate("MM"), DateEdit.getSysDate("dd"));
+		dateEnd = DateEdit.getDateTime(DateEdit.getSysDate("yyyy"), DateEdit.getSysDate("MM"), DateEdit.getSysDate("dd"), "23", "59", "59");
+
+		// 今日の日付で検索。
+		worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);
+
+
+
+		if (worklist.size() == 0) {
+			// 該当データ無し。(今日の勤怠データが作成されてない場合)
+//			model.addAttribute("searchMsg", "該当データがありません。");
+
+		    // 本日の勤怠情報（１レコード・一件分のデータ）
+		    Work work = new Work();
+
+//		    work.setUserId(userID);
+//		    work.setContent(workRequest.getContent());
+		    work.setContent("未登録");
+
+			// 当月の１日～末日で検索。
+//			worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);
+		    worklist.add(work);
+
+			model.addAttribute("worklistNow", worklist);
+
+		} else {
+			// 今日の勤退データ一件あり
+
+			model.addAttribute("worklistNow", worklist);
+		}
+
+
+
+		// 今月分の勤怠情報を取得する。
+		// 今月の初日
+		dateStart = DateEdit.getDate(DateEdit.getSysDate("yyyy"), DateEdit.getSysDate("MM"), "1");
+
+		// 今月の末日
+		dateEnd  = DateEdit.getDateLastDay(DateEdit.getSysDate("yyyy"), DateEdit.getSysDate("MM"));
+
+//		List<Work> worklist;
+		
+		// 当月の１日～末日で勤怠情報を検索。
+		worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);
+
+
+		if (worklist.size() == 0) {
+			// 該当データ無し。
+			model.addAttribute("searchMsg", "該当データがありません。");
+		}
+		model.addAttribute("worklist", worklist);
+
+
+		return "work/stamping";
+	  }
+
+	  /**
+	   * 打刻情報登録（出勤・登録）
+	   * @param model Model
+	   * @return 打刻登録画面
+	   */
+	  @GetMapping(value = "/work/stampin")
+	  public String stampInAdd(Model model) {
+
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
+
+	    // 打刻情報の新規登録
+	    workService.createStampIn(authUser.getId()); // ログイン時のユーザーIDを設定。
+
+	    return "redirect:/work/stamping";
+	  }
+
+	  /**
+	   * 打刻情報登録（出勤・更新）
+	   * @param model Model
+	   * @return 打刻登録画面
+	   */
+	  @GetMapping(value = "/work/stampin{id}")
+	  public String stampInUpd(@PathVariable Long id, Model model) {
+
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
+
+	    // 打刻情報の(出勤)更新処理
+	    workService.updateStampIn(id);
+
+	    return "redirect:/work/stamping";
+	  }
+
+	  /**
+	   * 打刻情報登録（退勤・更新）
+	   * @param model Model
+	   * @return 打刻登録画面
+	   */
+	  @GetMapping(value = "/work/stampout{id}")
+	  public String stampOutUpd(@PathVariable Long id, Model model) {
+
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
+
+	    // 打刻情報の(退勤)更新処理
+	    workService.updateStampOut(id);
+
+	    return "redirect:/work/stamping";
 	  }
 
 	  /**
@@ -932,6 +1109,29 @@ public class RootController {
 	    workUpdateRequest.setContent(work.getContent());
 
 
+	    // 開始日時(年)
+	    workUpdateRequest.setStartDateY(DateEdit.getDate(work.getStartDate(), "yyyy"));
+	    // 開始日時(月)
+	    workUpdateRequest.setStartDateM(DateEdit.getDate(work.getStartDate(), "M"));
+	    // 開始日時(日)
+	    workUpdateRequest.setStartDateD(DateEdit.getDate(work.getStartDate(), "d"));
+	    // 開始日時(時間)
+	    workUpdateRequest.setStartDateHH(DateEdit.getDate(work.getStartDate(), "H"));
+	    // 開始日時(分)
+	    workUpdateRequest.setStartDateMI(DateEdit.getDate(work.getStartDate(), "m"));
+
+
+	    // 終了日時(年)
+	    workUpdateRequest.setEndDateY(DateEdit.getDate(work.getEndDate(), "yyyy"));
+	    // 終了日時(月)
+	    workUpdateRequest.setEndDateM(DateEdit.getDate(work.getEndDate(), "M"));
+	    // 終了日時(日)
+	    workUpdateRequest.setEndDateD(DateEdit.getDate(work.getEndDate(), "d"));
+	    // 終了日時(時間)
+	    workUpdateRequest.setEndDateHH(DateEdit.getDate(work.getEndDate(), "H"));
+	    // 終了日時(分)
+	    workUpdateRequest.setEndDateMI(DateEdit.getDate(work.getEndDate(), "m"));
+/*
 	    // 開始日時
 	    String strDateS = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(work.getStartDate());
 
@@ -960,8 +1160,8 @@ public class RootController {
 	    workUpdateRequest.setEndDateHH(strDateE.substring(11, 13));
 	    // 終了日時(分)
 	    workUpdateRequest.setEndDateMI(strDateE.substring(14, 16));
-	    
-	    
+*/
+
 	    model.addAttribute("workUpdateRequest", workUpdateRequest);
 	    return "work/edit";
 	  }
@@ -986,12 +1186,14 @@ public class RootController {
 	    }
 
 	    // 勤怠情報の更新
+		workService.update(workUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
+/*
 		try {
 			workService.update(workUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	    
+*/
 	    return String.format("redirect:/work/%d", workUpdateRequest.getId());
 	  }
 
@@ -1032,7 +1234,4 @@ public class RootController {
 
 			return true;
 		}
-
-
-
 }

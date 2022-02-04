@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.example.demo.dto.WorkRequest;
 import com.example.demo.dto.WorkUpdateRequest;
 import com.example.demo.entity.Work;
+import com.example.demo.mdl.DateEdit;
 import com.example.demo.repository.WorkRepository;
 
 /**
@@ -41,17 +40,27 @@ public class WorkService {
   /**
    * 勤怠情報 新規登録
    * @param user 勤怠情報
-   * @throws ParseException 
    */
 //  public void create(WorkRequest workRequest) {
-  public void create(WorkRequest workRequest, Long userID) throws ParseException {
+  public void create(WorkRequest workRequest, Long userID) {
+//  public void create(WorkRequest workRequest, Long userID) throws ParseException {
     Date now = new Date();
     Work work = new Work();
 
-    work.setUserId(userID);
+    work.setUserId(userID); // ユーザーID
     work.setContent(workRequest.getContent());
 
 
+    // 開始日時
+    Date dateS = DateEdit.getDateTime(workRequest.getStartDateY(), workRequest.getStartDateM(), workRequest.getStartDateD(),
+    		workRequest.getStartDateHH(), workRequest.getStartDateMI(), "0");
+    work.setStartDate(dateS);
+
+    // 終了日時
+    Date dateE = DateEdit.getDateTime(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD(),
+    		workRequest.getEndDateHH(), workRequest.getEndDateMI(), "0");
+    work.setEndDate(dateE);
+/*
     // 開始日時
     String strDateS = workRequest.getStartDateY() + "/"
     					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateM())) + "/"
@@ -77,13 +86,79 @@ public class WorkService {
     Date dateE = sdFormatE.parse(strDateE);
 
     work.setEndDate(dateE);
+*/
+    // 登録日
+    work.setCreateDate(now);
+    // 更新日
+    work.setUpdateDate(now);
+ 
+    workRepository.save(work);
+  }
 
+  /**
+   * 打刻(出勤)情報の新規登録
+   * @param userID ユーザーID(ログインID)
+   */
+  public void createStampIn(Long userID) {
+
+    Date now = new Date();
+    Work work = new Work();
+
+    work.setUserId(userID); // ユーザーID
+//    work.setContent(workRequest.getContent());
+    work.setContent("未登録");
+
+    // 開始日時
+    work.setStartDate(now);
+    // 終了日時
+    work.setEndDate(now);
 
     work.setCreateDate(now);
     work.setUpdateDate(now);
  
     workRepository.save(work);
   }
+
+  /**
+   * 打刻(出勤)情報の更新処理
+   * @param userID ユーザーID(ログインID)
+   */
+  public void updateStampIn(Long id) {
+
+	Date now = new Date();
+    Work work = findById(id); // 更新対象のワークID
+
+    // 開始日時
+    work.setStartDate(now);
+    // 終了日時
+    work.setEndDate(now);
+
+	// 更新日
+    work.setUpdateDate(new Date());
+
+    workRepository.save(work);
+  }
+
+  /**
+   * 打刻(退勤)情報の更新処理
+   * @param userID ユーザーID(ログインID)
+   */
+  public void updateStampOut(Long id) {
+
+	Date now = new Date();
+    Work work = findById(id); // 更新対象のワークID
+
+//    // 開始日時
+//    work.setStartDate(now);
+    // 終了日時
+    work.setEndDate(now);
+
+	// 更新日
+    work.setUpdateDate(new Date());
+
+    workRepository.save(work);
+  }
+
 
   /**
    * 勤怠情報 主キー検索
@@ -125,13 +200,22 @@ public class WorkService {
    * 勤怠情報 更新
    * @param user 勤怠情報
    */
-//  public void update(WorkUpdateRequest workUpdateRequest, Long userID) {
-  public void update(WorkUpdateRequest workUpdateRequest, Long userID) throws ParseException {
+  public void update(WorkUpdateRequest workUpdateRequest, Long userID) {
     Work work = findById(workUpdateRequest.getId());
 
     work.setUserId(userID);
     work.setContent(workUpdateRequest.getContent());
 
+    // 開始日時
+    Date dateS = DateEdit.getDateTime(workUpdateRequest.getStartDateY(), workUpdateRequest.getStartDateM(), workUpdateRequest.getStartDateD(),
+    		workUpdateRequest.getStartDateHH(), workUpdateRequest.getStartDateMI(), "0");
+    work.setStartDate(dateS);
+
+    // 終了日時
+    Date dateE = DateEdit.getDateTime(workUpdateRequest.getEndDateY(), workUpdateRequest.getEndDateM(), workUpdateRequest.getEndDateD(),
+    		workUpdateRequest.getEndDateHH(), workUpdateRequest.getEndDateMI(), "0");
+    work.setEndDate(dateE);
+/*
     // 開始日時
     String strDateS = workUpdateRequest.getStartDateY() + "/"
 			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateM())) + "/"
@@ -156,7 +240,8 @@ public class WorkService {
     Date dateE = sdFormatE.parse(strDateE);
 
     work.setEndDate(dateE);
-    
+*/
+	// 更新日
     work.setUpdateDate(new Date());
 
     workRepository.save(work);

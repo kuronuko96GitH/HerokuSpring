@@ -23,12 +23,14 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
 	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND START_AT >= ?2 ORDER BY START_AT, END_AT", nativeQuery=true)
 	List<Work> findByStartDate(Long userid, Date startDate);
 
-	// ユーザーIDと勤怠終了日で検索する。
-	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND END_AT <= ?2 ORDER BY START_AT, END_AT", nativeQuery=true)
+//	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND END_AT <= ?2 ORDER BY START_AT, END_AT", nativeQuery=true)
+	// ユーザーIDと勤怠終了日(勤怠開始日)で検索する。
+	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND START_AT <= ?2 ORDER BY START_AT, END_AT", nativeQuery=true)
 	List<Work> findByEndDate(Long userid, Date endDate);
 
-	// ユーザーIDと勤怠開始日と勤怠終了日で検索する。
-	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND START_AT >= ?2 AND END_AT <= ?3 ORDER BY START_AT, END_AT", nativeQuery=true)
+	// ユーザーIDと勤怠開始日～勤怠終了日(勤怠開始日)で検索する。
+//	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND START_AT >= ?2 AND END_AT <= ?3 ORDER BY START_AT, END_AT", nativeQuery=true)
+	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND START_AT >= ?2 AND START_AT <= ?3 ORDER BY START_AT, END_AT", nativeQuery=true)
 	List<Work> findByDate(Long userid, Date startDate, Date endDate);
 
 	// ユーザーIDとSQL(WHERE)文で検索する。（※このやり方は、上手くいかないようです。）
