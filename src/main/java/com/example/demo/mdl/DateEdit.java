@@ -160,8 +160,6 @@ public class DateEdit {
 	}
 
 
-
-
 	/**
 	 * 指定された書式で、(String型)日付を取得
 	 * 
@@ -188,5 +186,41 @@ public class DateEdit {
 	    String strDate = new SimpleDateFormat(strFormat).format(dateValue);
 
 		return strDate;
+	}
+
+
+
+	/**
+	 * 指定された日付の曜日を取得します。
+	 * 
+	 * @param 文字列型の日付（yyyyMMdd のフォーマットを想定）
+	 * @return 曜日
+	 */
+	public static String getYoubi(String strdate) {
+
+		try{
+		    //曜日
+		    String strYoubi[] = {"日","月","火","水","木","金","土"};
+	
+		    //日付チェック
+		    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		    sdf.setLenient(false);
+		    sdf.parse(strdate);
+	
+		    //年・月を取得する
+		    Integer intY = Integer.parseInt(strdate.substring(0,4));
+		    Integer intM = Integer.parseInt(strdate.substring(4,6))-1;
+		    Integer intD = Integer.parseInt(strdate.substring(6,8));
+	
+		    //取得した年月の最終年月日を取得する
+		    Calendar cal = Calendar.getInstance();
+		    cal.set(intY, intM, intD);
+	
+		    //YYYYMMDD形式にして変換して返す
+		    return strYoubi[cal.get(Calendar.DAY_OF_WEEK)-1];
+	
+		} catch (Exception ex){
+		    return null;
+		}
 	}
 }

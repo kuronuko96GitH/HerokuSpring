@@ -11,7 +11,8 @@
 	  <div th:replace="common/footerMsg :: footer_fragment"></div>
 
 	  <div class="mb-3">
-		<h5>◆出勤日『<span th:text="${authUser.SysdateYMD}">sysdate</span>』の打刻登録ができます。
+		<h5>◆今日は『<span th:text="${authUser.SysdateYMD + '(' + authUser.SysdateYoubi + '曜日)'}">sysdate</span>』
+		<br>　出退勤の打刻登録ができます。
 		</h5>
 	  </div>
 
@@ -30,12 +31,12 @@
 	      <tr th:each="work, workRec : ${worklistNow}" th:object="${work}" class="align-middle">
 	        <td th:text="${workRec.count}" class="text-center"></td>
 	        <td th:text="*{content}"></td>
-	        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd HH:mm')}"></td>
+	        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}"></td>
 	        <td class="center">
 	        	<a th:href="@{/work/stampin}" class="btn btn-success" th:if="${work.startDate == null}">　打刻登録(出勤)　</a>
 	        	<a th:href="@{/work/stampin{id}(id=*{id})}" class="btn btn-success" th:if="${work.startDate != null}">打刻登録(出勤更新)</a>
 	        </td>
-	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd HH:mm')}"></td>
+	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}"></td>
 	        <td class="center">
 	        	<span th:if="${work.endDate == null}">未登録</span>
 	        	<a th:href="@{/work/stampout{id}(id=*{id})}" class="btn btn-success" th:if="${work.endDate != null}">打刻登録(退勤)</a>
@@ -67,9 +68,9 @@
 	      <tr th:each="work, workRec : ${worklist}" th:object="${work}" class="align-middle">
 	        <td th:text="${workRec.count}" class="text-center"></td>
 	        <td th:text="*{content}"></td>
-	        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd HH:mm')}"></td>
-	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd HH:mm')}"></td>
-	        <td th:text="${#dates.format(work.updateDate, 'yyyy/MM/dd')}"></td>
+	        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}"></td>
+	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}"></td>
+	        <td th:text="${#dates.format(work.updateDate, 'yyyy/MM/dd H:mm')}"></td>
 	        <td class="center">
 	        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
 	        </td>

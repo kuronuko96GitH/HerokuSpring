@@ -27,13 +27,13 @@
 	    <div class="row mx-md-n5">
 	      <div class="col-2 pt-3 border bg-light">開始日時</div>
 	      <div class="col pt-3 border bg-white">
-	        <p th:text="${#dates.format(workData.startDate, 'yyyy/MM/dd HH:mm')}"></p>
+	        <p th:text="${#dates.format(workData.startDate, 'yyyy/MM/dd H:mm')}"></p>
 	      </div>
 	    </div>
 	    <div class="row mx-md-n5">
 	      <div class="col-2 pt-3 border bg-light">終了日時</div>
 	      <div class="col pt-3 border bg-white">
-	        <p th:text="${#dates.format(workData.endDate, 'yyyy/MM/dd HH:mm')}"></p>
+	        <p th:text="${#dates.format(workData.endDate, 'yyyy/MM/dd H:mm')}"></p>
 	      </div>
 	    </div>
 	  </div>

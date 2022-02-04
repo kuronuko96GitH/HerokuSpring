@@ -34,6 +34,7 @@ public class AuthUser implements UserDetails {
 
 	private String sysdateymd;
 
+	private String sysdateyoubi;
 
 
 	public String getTitle() {
@@ -50,6 +51,14 @@ public class AuthUser implements UserDetails {
 
 	public void setSysdateYMD(String sysdateymd) {
 		this.sysdateymd = sysdateymd;
+	}
+
+	public String getSysdateYoubi() {
+		return sysdateyoubi;
+	}
+
+	public void setSysdateYoubi(String sysdateyoubi) {
+		this.sysdateyoubi = sysdateyoubi;
 	}
 
 

@@ -86,7 +86,7 @@ public class WorkRequest implements Serializable {
   private String endDateM;
 
   /**
-   * 終了日時(年)
+   * 終了日時(日)
    */
   @NotEmpty(message = "終了日時(日)を入力して下さい。")
   @Pattern(regexp = "\\d{1,2}", message = "終了日時(日)に正しい日付を入力して下さい。")
