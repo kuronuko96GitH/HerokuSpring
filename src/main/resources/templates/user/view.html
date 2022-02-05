@@ -51,9 +51,8 @@
 	    <a href="/" class="btn btn-secondary" th:if="${#authentication.principal.roles.get(0) == 'ROLE_USER'}">メニューへ戻る</a>
 	  </div>
 	</div>
-	  
-	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
+
 	<div th:replace="common/footerScript :: footer_fragment"></div>
-	
+
   </body>
 </html>

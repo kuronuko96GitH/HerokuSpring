@@ -46,6 +46,11 @@ public class Work implements Serializable {
    */
   @Column(name = "end_at")
   private Date endDate;
+  /**
+   * 労働時間数
+   */
+  @Column(name = "worktime")
+  private double worktime;
  /**
    * 更新日時
    */

@@ -33,9 +33,14 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
 	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND START_AT >= ?2 AND START_AT <= ?3 ORDER BY START_AT, END_AT", nativeQuery=true)
 	List<Work> findByDate(Long userid, Date startDate, Date endDate);
 
+	// 選択中のIDは除外して、ユーザーIDと勤怠開始日～勤怠終了日(勤怠開始日)で検索する。
+	// 更新時の重複チェックなどに使用。
+	@Query(value = "SELECT * FROM WORKS WHERE ID <> ?1 AND USER_ID = ?2 AND START_AT >= ?3 AND START_AT <= ?4 ORDER BY START_AT, END_AT", nativeQuery=true)
+	List<Work> findByDateDuplicate(Long id, Long userid, Date startDate, Date endDate);
+
 	// ユーザーIDとSQL(WHERE)文で検索する。（※このやり方は、上手くいかないようです。）
-	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 ?2 ORDER BY START_AT, END_AT", nativeQuery=true)
-	List<Work> findSql(Long userid, String sql);
+//	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 ?2 ORDER BY START_AT, END_AT", nativeQuery=true)
+//	List<Work> findSql(Long userid, String sql);
 
 	// ユーザーIDと勤怠内容で検索する。
 //	@Query(value = "SELECT * FROM WORKS WHERE USER_ID = ?1 AND content = ?2 ORDER BY START_AT, END_AT", nativeQuery=true)

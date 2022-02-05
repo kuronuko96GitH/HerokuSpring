@@ -6,28 +6,28 @@
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 
 	<div class="container">
-	  <div class="head_title">勤怠情報一覧</div>
+	  <div class="head_title">勤退情報一覧</div>
 
 	  <div th:replace="common/footerMsg :: footer_fragment"></div>
 
 	  <form th:action="@{/work/searchym}" th:object="${workRequest}" th:method="post">
 		<div class="mb-3">
-			勤怠年月：
-			<input type="text" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
-			<input type="text" th:field="*{searchDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
+			勤退年月：
+			<input type="number" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+			<input type="number" th:field="*{searchDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
 			<input type="submit" value="　年月検索　" class="btn btn-success">
 		</div>
 	  </form>
 
 	  <form th:action="@{/work/search}" th:object="${workRequest}" th:method="post">
 		<div class="mb-3">
-			勤怠開始日：
-			<input type="text" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
-			<input type="text" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
-			<input type="text" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日　～　勤怠終了日：
-			<input type="text" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:50px;"> 年
-			<input type="text" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:30px;"> 月
-			<input type="text" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:30px;"> 日
+			勤退開始日：
+			<input type="number" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+			<input type="number" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+			<input type="number" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日　～　勤退終了日：
+			<input type="number" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+			<input type="number" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+			<input type="number" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
 			<input type="submit" value="　検索　" class="btn btn-success">
 		</div>
 	  </form>
@@ -38,10 +38,10 @@
 	    <thead>
 	      <tr>
 	        <th>NO</th>
-	        <th>勤怠内容（勤務地など）</th>
-	        <th>勤怠開始日時</th>
-	        <th>勤怠終了日時</th>
-	        <th>更新日時</th>
+	        <th>勤退内容（勤務地など）</th>
+	        <th>出勤日時</th>
+	        <th>退勤日時</th>
+	        <th>労働時間</th>
 	        <th><a th:href="@{/work/add}" class="btn btn-primary">新規登録はこちら</a></th>
 	      </tr>
 	    </thead>
@@ -51,7 +51,7 @@
 	        <td th:text="*{content}"></td>
 	        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}"></td>
 	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}"></td>
-	        <td th:text="${#dates.format(work.updateDate, 'yyyy/MM/dd H:mm')}"></td>
+	        <td th:text="${work.worktime}"></td>
 	        <td class="center">
 	        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
 	        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary">コピー(新規登録)</a>
@@ -60,9 +60,8 @@
 	    </tbody>
 	  </table>
 	</div>
-	  
-	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
+
 	<div th:replace="common/footerScript :: footer_fragment"></div>
-	
+
   </body>
 </html>

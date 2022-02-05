@@ -13,6 +13,7 @@ import com.example.demo.dto.WorkRequest;
 import com.example.demo.dto.WorkUpdateRequest;
 import com.example.demo.entity.Work;
 import com.example.demo.mdl.DateEdit;
+import com.example.demo.mdl.DateTimeRange;
 import com.example.demo.repository.WorkRepository;
 
 /**
@@ -41,10 +42,9 @@ public class WorkService {
    * 勤怠情報 新規登録
    * @param user 勤怠情報
    */
-//  public void create(WorkRequest workRequest) {
   public void create(WorkRequest workRequest, Long userID) {
-//  public void create(WorkRequest workRequest, Long userID) throws ParseException {
-    Date now = new Date();
+
+	Date now = new Date();
     Work work = new Work();
 
     work.setUserId(userID); // ユーザーID
@@ -60,33 +60,13 @@ public class WorkService {
     Date dateE = DateEdit.getDateTime(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD(),
     		workRequest.getEndDateHH(), workRequest.getEndDateMI(), "0");
     work.setEndDate(dateE);
-/*
-    // 開始日時
-    String strDateS = workRequest.getStartDateY() + "/"
-    					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateM())) + "/"
-    					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateD())) + " "
-    					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateHH())) + ":"
-    					+ String.format("%02d", Integer.parseInt(workRequest.getStartDateMI())) + ":00";
 
-    SimpleDateFormat sdFormatS = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-    Date dateS = sdFormatS.parse(strDateS);
+	// 労働時間数を取得。
+    String strStartDate = DateEdit.getDate(dateS, "yyyy/MM/dd HH:mm:ss");
+    String strEndDate = DateEdit.getDate(dateE, "yyyy/MM/dd HH:mm:ss");
+	double dblHours = DateTimeRange.getRangeHours(strStartDate, strEndDate, DateTimeRange.INT_KIRISUTE);
+    work.setWorktime(dblHours);
 
-    work.setStartDate(dateS);
-
-
-
-    // 終了日時
-    String strDateE = workRequest.getEndDateY() + "/"
-			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateM())) + "/"
-			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateD())) + " "
-			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateHH())) + ":"
-			+ String.format("%02d", Integer.parseInt(workRequest.getEndDateMI())) + ":00";
-
-    SimpleDateFormat sdFormatE = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-    Date dateE = sdFormatE.parse(strDateE);
-
-    work.setEndDate(dateE);
-*/
     // 登録日
     work.setCreateDate(now);
     // 更新日
@@ -105,15 +85,17 @@ public class WorkService {
     Work work = new Work();
 
     work.setUserId(userID); // ユーザーID
-//    work.setContent(workRequest.getContent());
-    work.setContent("未登録");
+    // 勤退内容
+    work.setContent("");
 
     // 開始日時
     work.setStartDate(now);
     // 終了日時
-    work.setEndDate(now);
+//    work.setEndDate(now);
 
+    // 登録日
     work.setCreateDate(now);
+    // 更新日
     work.setUpdateDate(now);
  
     workRepository.save(work);
@@ -132,6 +114,9 @@ public class WorkService {
     work.setStartDate(now);
     // 終了日時
     work.setEndDate(now);
+
+	// 労働時間数を取得。
+    work.setWorktime(0);
 
 	// 更新日
     work.setUpdateDate(new Date());
@@ -152,6 +137,12 @@ public class WorkService {
 //    work.setStartDate(now);
     // 終了日時
     work.setEndDate(now);
+
+	// 労働時間数を取得。
+    String strStartDate = DateEdit.getDate(work.getStartDate(), "yyyy/MM/dd HH:mm:ss");
+    String strEndDate = DateEdit.getDate(work.getEndDate(), "yyyy/MM/dd HH:mm:ss");
+	double dblHours = DateTimeRange.getRangeHours(strStartDate, strEndDate, DateTimeRange.INT_KIRISUTE);
+    work.setWorktime(dblHours);
 
 	// 更新日
     work.setUpdateDate(new Date());
@@ -193,12 +184,21 @@ public class WorkService {
 			// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
 			return workRepository.findByDate(userId, startDate, endDate);
 		}
+  }
 
+  /**
+   * 勤怠情報 該当する『ユーザーID』と『出勤日』で同日の重複チェック
+   * @return 検索結果
+   */
+  public List<Work> findByDateDuplicate(Long id, Long userId, Date startDate, Date endDate) {
+
+	// 選択したデータのIDを除いた、同日のデータを検索。
+	return workRepository.findByDateDuplicate(id, userId, startDate, endDate);
   }
 
   /**
    * 勤怠情報 更新
-   * @param user 勤怠情報
+   * @param 
    */
   public void update(WorkUpdateRequest workUpdateRequest, Long userID) {
     Work work = findById(workUpdateRequest.getId());
@@ -215,32 +215,13 @@ public class WorkService {
     Date dateE = DateEdit.getDateTime(workUpdateRequest.getEndDateY(), workUpdateRequest.getEndDateM(), workUpdateRequest.getEndDateD(),
     		workUpdateRequest.getEndDateHH(), workUpdateRequest.getEndDateMI(), "0");
     work.setEndDate(dateE);
-/*
-    // 開始日時
-    String strDateS = workUpdateRequest.getStartDateY() + "/"
-			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateM())) + "/"
-			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateD())) + " "
-			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateHH())) + ":"
-			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getStartDateMI())) + ":00";
 
-    SimpleDateFormat sdFormatS = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-    Date dateS = sdFormatS.parse(strDateS);
-
-    work.setStartDate(dateS);
-
-
-    // 終了日時
-    String strDateE = workUpdateRequest.getEndDateY() + "/"
-			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateM())) + "/"
-			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateD())) + " "
-			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateHH())) + ":"
-			+ String.format("%02d", Integer.parseInt(workUpdateRequest.getEndDateMI())) + ":00";
+	// 労働時間数を取得。
+    String strStartDate = DateEdit.getDate(dateS, "yyyy/MM/dd HH:mm:ss");
+    String strEndDate = DateEdit.getDate(dateE, "yyyy/MM/dd HH:mm:ss");
+	double dblHours = DateTimeRange.getRangeHours(strStartDate, strEndDate, DateTimeRange.INT_KIRISUTE);
+    work.setWorktime(dblHours);
  
-    SimpleDateFormat sdFormatE = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-    Date dateE = sdFormatE.parse(strDateE);
-
-    work.setEndDate(dateE);
-*/
 	// 更新日
     work.setUpdateDate(new Date());
 
@@ -255,5 +236,4 @@ public class WorkService {
     Work work = findById(id);
     workRepository.delete(work);
   }
- 
 }

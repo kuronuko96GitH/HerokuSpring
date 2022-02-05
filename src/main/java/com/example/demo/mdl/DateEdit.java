@@ -2,12 +2,103 @@ package com.example.demo.mdl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateEdit {
+
+	/**
+	 * 日付チェック
+	 * @param value 検証対象の値（「yyyyMMdd」「yyyy/MM/dd」「yyyy-MM-dd」形式を対象とする）
+	 * @return 結果（true：日付、false：日付ではない）
+	 */
+	public static boolean isDate(String value) {
+	    boolean result = false;
+	    if (value != null) {
+	        try {
+			    // "-"と"/"は、空白("")に置き替える。
+	            String strChkDate = value.replace("-", "").replace("/", "");
+
+	            // 日付チェック
+	            DateTimeFormatter.ofPattern("uuuuMMdd").withResolverStyle(ResolverStyle.STRICT).parse(strChkDate, LocalDate::from);
+	            // withResolverStyle(ResolverStyle.STRICT)を指定することで、有効な日付（存在する日付）のみチェックOKとしています。
+	            // ※withResolverStyle(ResolverStyle.STRICT)を指定しないと、「2021-02-29」のような存在しない日付は「2021-02-28」に勝手にパースされてしまうので要注意です。
+	            // また、DateTimeFormatterでは「yyyy」ではなく「uuuu」で指定します。
+
+	            result = true;
+	        } catch (Exception e) {
+	            result = false;
+	        }
+	    }
+	    return result;
+	}
+
+	/**
+	 * 文字列の『年』『月』『日』が、正しい日付かをチェックする。
+	 * @param 文字列の『年』『月』『日』
+	 * @return 結果（true：日付、false：日付ではない）
+	 */
+	public static boolean isDate(String strDateY, String strDateM, String strDateD) {
+
+		boolean result = false;
+	    boolean isNumeric = false; // 数値チェック用
+
+		// 入力チェック(年)
+		if (strDateY == null || strDateY.isEmpty()) {
+			return false;
+		}
+		// 数値チェック(年)
+		isNumeric =  strDateY.matches("[+-]?\\d*(\\.\\d+)?");
+		if (!isNumeric) {
+			return false;
+		}
+		// 年数チェック(年)
+		if (Integer.parseInt(strDateY) < 2000) {
+			// ※今回のプロジェクトにおいては、2000年以上を有効な日付とします。
+			return false;
+		}
+		// 入力チェック(月)
+		if (strDateM == null || strDateM.isEmpty()) {
+			return false;
+		}
+		// 数値チェック(月)
+		isNumeric =  strDateM.matches("[+-]?\\d*(\\.\\d+)?");
+		if (!isNumeric) {
+			return false;
+		}
+		// 入力チェック(日)
+		if (strDateD == null || strDateD.isEmpty()) {
+			return false;
+		}
+		// 数値チェック(日)
+		isNumeric =  strDateD.matches("[+-]?\\d*(\\.\\d+)?");
+		if (!isNumeric) {
+			return false;
+		}
+
+
+        try {
+    	    String strChkDate =  String.format("%04d", Integer.parseInt(strDateY))
+					+ String.format("%02d", Integer.parseInt(strDateM))
+					+ String.format("%02d", Integer.parseInt(strDateD));
+            
+            // 日付チェック
+            DateTimeFormatter.ofPattern("uuuuMMdd").withResolverStyle(ResolverStyle.STRICT).parse(strChkDate, LocalDate::from);
+            // withResolverStyle(ResolverStyle.STRICT)を指定することで、有効な日付（存在する日付）のみチェックOKとしています。
+            // ※withResolverStyle(ResolverStyle.STRICT)を指定しないと、「2021-02-29」のような存在しない日付は「2021-02-28」に勝手にパースされてしまうので要注意です。
+            // また、DateTimeFormatterでは「yyyy」ではなく「uuuu」で指定します。
+
+            result = true;
+        } catch (Exception e) {
+            result = false;
+        }
+
+	    return result;
+	}
 
 	/**
 	 * 指定した日付文字列（yyyy/MM/dd or yyyy-MM-dd）
@@ -54,7 +145,7 @@ public class DateEdit {
 						+ String.format("%02d", Integer.parseInt(strDateM)) + "/"
 						+ String.format("%02d", Integer.parseInt(strDateD)) + " 00:00:00";
 
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 		Date dateValue = null;
 		
@@ -67,6 +158,35 @@ public class DateEdit {
 	    return dateValue;
 	}
 
+	/**
+	 * 文字列の『年』『月』『日』を、指定された書式のString型で返します。
+	 * 
+	 * @param 文字列の『年』『月』『日』
+	 * @param strFormat…書式の指定
+	 * @return String型の戻り値
+	 */
+	public static String getFormatDate(String strDateY, String strDateM, String strDateD, String strFormat) {
+
+		Date dateValue = null;
+
+	    String strDate =  String.format("%04d", Integer.parseInt(strDateY)) + "/"
+				+ String.format("%02d", Integer.parseInt(strDateM)) + "/"
+				+ String.format("%02d", Integer.parseInt(strDateD)) + " 00:00:00";
+
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+
+		try {
+			dateValue = sdFormat.parse(strDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+	    // 引数で指定された書式の文字列を取得
+	    strDate = new SimpleDateFormat(strFormat).format(dateValue);
+
+	    return strDate;
+	}
 
 	/**
 	 * 文字列の『年』『月』『日』『時』『分』『秒』を、Date型で返します。
@@ -84,7 +204,7 @@ public class DateEdit {
 	    				+ String.format("%02d", Integer.parseInt(strTimeS));
 
 
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 		Date dateValue = null;
 		
@@ -95,6 +215,38 @@ public class DateEdit {
 		}
 
 	    return dateValue;
+	}
+
+	/**
+	 * 文字列の『年』『月』『日』『時』『分』『秒』を、指定された書式のString型で返します。
+	 * 
+	 * @param 文字列の『年』『月』『日』『時』『分』『秒』
+	 * @param strFormat…書式の指定
+	 * @return String型の戻り値
+	 */
+	public static String getFormatDateTime(String strDateY, String strDateM, String strDateD, String strTimeH, String strTimeM, String strTimeS, String strFormat) {
+
+		Date dateValue = null;
+	    String strDate =  String.format("%04d", Integer.parseInt(strDateY)) + "/"
+				+ String.format("%02d", Integer.parseInt(strDateM)) + "/"
+				+ String.format("%02d", Integer.parseInt(strDateD)) + " "
+				+ String.format("%02d", Integer.parseInt(strTimeH)) + ":"
+				+ String.format("%02d", Integer.parseInt(strTimeM)) + ":"
+				+ String.format("%02d", Integer.parseInt(strTimeS));
+
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+
+		try {
+			dateValue = sdFormat.parse(strDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+	    // 引数で指定された書式の文字列を取得
+	    strDate = new SimpleDateFormat(strFormat).format(dateValue);
+
+	    return strDate;
 	}
 
 
@@ -112,7 +264,7 @@ public class DateEdit {
 	    String strDate =  strDateYM + "/" + strLastDay	+ " 00:00:00";
 
 
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 		Date dateValue = null;
 		
@@ -193,15 +345,18 @@ public class DateEdit {
 	/**
 	 * 指定された日付の曜日を取得します。
 	 * 
-	 * @param 文字列型の日付（yyyyMMdd のフォーマットを想定）
+	 * @param 検証対象の値（「yyyyMMdd」「yyyy/MM/dd」「yyyy-MM-dd」形式を対象とする）
 	 * @return 曜日
 	 */
-	public static String getYoubi(String strdate) {
+	public static String getYoubi(String strCheckDate) {
 
 		try{
 		    //曜日
 		    String strYoubi[] = {"日","月","火","水","木","金","土"};
-	
+
+		    // "-"と"/"は、空白("")に置き替える。
+            String strdate = strCheckDate.replace("-", "").replace("/", "");
+
 		    //日付チェック
 		    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		    sdf.setLenient(false);

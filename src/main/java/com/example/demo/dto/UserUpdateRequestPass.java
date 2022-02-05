@@ -35,8 +35,8 @@ public class UserUpdateRequestPass implements Serializable {
   @NotEmpty(message = "パスワード（確認用）を入力して下さい。")
   @Size(min = 8, max = 20, message = "パスワード（確認用）は８桁以上、２０桁以内で入力して下さい。")
   private String passwordConfirm;
-  
-  
+
+
   /**
    * パスワードとパスワード（確認用）のチェック
    */

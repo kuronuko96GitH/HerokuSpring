@@ -20,7 +20,7 @@ import com.example.demo.mdl.DateEdit;
 @Controller
 public class RootController {
 	/**
-	* セッション情報（複数のコンローラ間で共有したい、ログイン情報などを格納する）
+	* セッション情報（複数のコンローラ間で共有したいログイン情報などを格納する）
 	*/
 	@Autowired
 	private HttpSession session;
@@ -33,20 +33,24 @@ public class RootController {
   /**
    * ログイン情報の設定
    * @param AuthUser authUser
+   * @param model Model
    * @return
    * 補足説明（ログイン情報を取得するタイミングは、トップページにアクセスした時です。
    * ログアウト時にも、トップページに自動アクセスするので、再ログイン時にログイン情報を再取得します。）
    */
 	private void setAuthUser(AuthUser authUser, Model model) {
+
 		this.authUser = authUser;
 		this.authUser.setTitle("Java(Spring Boot)ポートフォリオ");
 
+		// システム日付を取得
 		String strDateYMD = DateEdit.getSysDate("yyyy年M月d日");
 		this.authUser.setSysdateYMD(strDateYMD);
 
-		strDateYMD = DateEdit.getSysDate("yyyyMMdd");
+		// システム日付の曜日を取得
+		strDateYMD = DateEdit.getSysDate("yyyy/MM/dd");
 		String strYoubi = DateEdit.getYoubi(strDateYMD);
-		
+
 		this.authUser.setSysdateYoubi(strYoubi);
 
 		// よく使うパラメータをメモ
@@ -65,6 +69,7 @@ public class RootController {
 
   /**
    * トップページを表示
+   * @param AuthUser authUser
    * @param model Model
    * @return トップページ
    * 補足(ローカル環境)：URL…http://localhost:8080/
@@ -79,13 +84,12 @@ public class RootController {
 	// ログイン情報のパラメータを渡す。
 	model.addAttribute("authUser", authUser);
 
-
 	return "index";
   }
 
+
   /**
    * ログイン画面を表示
-   * @param model Model
    * @return ログイン画面
    */
   @GetMapping(value = "/login")

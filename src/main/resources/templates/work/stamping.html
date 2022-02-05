@@ -20,10 +20,10 @@
 	    <thead>
 	      <tr>
 	        <th>NO</th>
-	        <th>勤怠内容（勤務地など）</th>
-	        <th>勤怠開始日時</th>
+	        <th>勤退内容（勤務地など）</th>
+	        <th>出勤日</th>
 	        <th></th>
-	        <th>勤怠終了日時</th>
+	        <th>退勤日</th>
 	        <th></th>
 	      </tr>
 	    </thead>
@@ -38,8 +38,8 @@
 	        </td>
 	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}"></td>
 	        <td class="center">
-	        	<span th:if="${work.endDate == null}">未登録</span>
-	        	<a th:href="@{/work/stampout{id}(id=*{id})}" class="btn btn-success" th:if="${work.endDate != null}">打刻登録(退勤)</a>
+	        	<span th:if="${work.startDate == null}">未登録</span>
+	        	<a th:href="@{/work/stampout{id}(id=*{id})}" class="btn btn-success" th:if="${work.startDate != null}">打刻登録(退勤)</a>
 	        </td>
 	      </tr>
 	    </tbody>
@@ -57,10 +57,10 @@
 	    <thead>
 	      <tr>
 	        <th>NO</th>
-	        <th>勤怠内容（勤務地など）</th>
-	        <th>勤怠開始日時</th>
-	        <th>勤怠終了日時</th>
-	        <th>更新日時</th>
+	        <th>勤退内容（勤務地など）</th>
+	        <th>出勤日</th>
+	        <th>退勤日</th>
+	        <th>労働時間</th>
 	        <th></th>
 	      </tr>
 	    </thead>
@@ -70,7 +70,7 @@
 	        <td th:text="*{content}"></td>
 	        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}"></td>
 	        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}"></td>
-	        <td th:text="${#dates.format(work.updateDate, 'yyyy/MM/dd H:mm')}"></td>
+	        <td th:text="${work.worktime}"></td>
 	        <td class="center">
 	        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
 	        </td>
@@ -78,9 +78,8 @@
 	    </tbody>
 	  </table>
 	</div>
-	  
-	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
+
 	<div th:replace="common/footerScript :: footer_fragment"></div>
-	
+
   </body>
 </html>

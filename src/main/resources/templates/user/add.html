@@ -16,17 +16,17 @@
 	      <label>名前：<span class="text-danger">※</span></label>
 	      <input type="text" th:field="*{name}" class="form-control">
 	    </div>
-	
+
 	    <div class="form-group mb-2">
 	      <label>メールアドレス：<span class="text-danger">※</span></label>
 	      <input type="text" th:field="*{email}" class="form-control">
 	    </div>
-	
+
 	    <div class="form-group mb-2">
 	      <label>パスワード：<span class="text-danger">※</span></label>
 	      <input type="password" th:field="*{password}" class="form-control">
 	    </div>
-	
+
 	    <div class="form-group mb-2">
 	      <label>住所：</label>
 	      <input type="text" th:field="*{address}" class="form-control">
@@ -34,7 +34,7 @@
 
 	    <div class="form-group">
 	      <label>電話番号：</label>
-	      <input type="text" th:field="*{phone}" class="form-control">
+	      <input type="number" th:field="*{phone}" class="form-control">
 	    </div>
 	    <br />
 	    <div class="text-center">
@@ -43,8 +43,7 @@
 	    </div>
 	  </form>
 	</div>
-	  
-	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
+
 	<div th:replace="common/footerScript :: footer_fragment"></div>
 	
   </body>
