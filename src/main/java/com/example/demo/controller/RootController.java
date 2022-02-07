@@ -30,6 +30,7 @@ public class RootController {
 	*/
 	private AuthUser authUser;
 
+
   /**
    * ログイン情報の設定
    * @param AuthUser authUser

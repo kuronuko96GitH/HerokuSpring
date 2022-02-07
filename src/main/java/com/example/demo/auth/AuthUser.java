@@ -32,9 +32,12 @@ public class AuthUser implements UserDetails {
 
 	private String title;
 
-	private String sysdateymd;
+	private String sysdateYMD;
 
-	private String sysdateyoubi;
+	private String sysdateYoubi;
+
+	// 戻るボタンを作成する時に必要な、画面遷移一つ前の画面ID情報を格納
+	private String backId;
 
 
 	public String getTitle() {
@@ -45,20 +48,31 @@ public class AuthUser implements UserDetails {
 		this.title = title;
 	}
 
+	// 現在日
 	public String getSysdateYMD() {
-		return sysdateymd;
+		return sysdateYMD;
 	}
 
-	public void setSysdateYMD(String sysdateymd) {
-		this.sysdateymd = sysdateymd;
+	public void setSysdateYMD(String sysdateYMD) {
+		this.sysdateYMD = sysdateYMD;
 	}
 
+	// 現在日の曜日
 	public String getSysdateYoubi() {
-		return sysdateyoubi;
+		return sysdateYoubi;
 	}
 
-	public void setSysdateYoubi(String sysdateyoubi) {
-		this.sysdateyoubi = sysdateyoubi;
+	public void setSysdateYoubi(String sysdateYoubi) {
+		this.sysdateYoubi = sysdateYoubi;
+	}
+
+	// 前画面ID
+	public String getBackId() {
+		return backId;
+	}
+
+	public void setBackId(String backId) {
+		this.backId = backId;
 	}
 
 

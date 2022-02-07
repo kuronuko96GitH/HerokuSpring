@@ -261,7 +261,7 @@ public class DateEdit {
 	    String strDateYM = String.format("%04d", Integer.parseInt(strDateY)) + "/" + String.format("%02d", Integer.parseInt(strDateM));
 	    String strLastDay = DateEdit.getLastDay(strDateYM + "/01");
 	    
-	    String strDate =  strDateYM + "/" + strLastDay	+ " 00:00:00";
+	    String strDate =  strDateYM + "/" + strLastDay	+ " 23:59:59";
 
 
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

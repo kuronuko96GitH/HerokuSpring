@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.demo.auth.AuthUser;
 import com.example.demo.dto.WorkRequest;
+import com.example.demo.dto.WorkRequestReward;
 import com.example.demo.dto.WorkRequestSearch;
 import com.example.demo.dto.WorkUpdateRequest;
 import com.example.demo.entity.Work;
@@ -63,6 +65,27 @@ public class WorkController {
 		model.addAttribute("authUser", authUser);
 	}
 
+	/**
+	 * ログイン情報の設定(前画面ID情報も取得)
+	 * @param Model model
+	 * @return
+	 */
+	private void setAuthUser(Model model, String backid) {
+		// RootControllerクラスで設定した、セッション情報を取得。
+		authUser = (AuthUser)session.getAttribute("SessionAuthUser");
+		// ログイン情報のパラメータを渡す。
+//		model.addAttribute("authUser", authUser);
+
+		// 前画面IDのパラメータを設定する。
+		authUser.setBackId(backid);
+
+		// 例えば、詳細ボタンのある①勤退一覧画面、②打刻登録画面、③報酬計算画面の
+		// どれか３つから詳細ボタンを押した時に、
+		// 画面遷移して来た、一つ前の画面が分からなくなるので、
+		// このタイミングで前画面IDの設定をする。
+		model.addAttribute("authUser", authUser);
+	}
+
 
   /**
    * 勤退情報一覧画面を表示
@@ -72,8 +95,9 @@ public class WorkController {
   @GetMapping(value = "/work/list")
   public String displayListWork(Model model) {
 
-	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	// ログイン情報の取得と設定。(このタイミングで、前画面IDも設定しておく)
+	setAuthUser(model, "list");
+//	setAuthUser(model);
 
 	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
@@ -434,7 +458,15 @@ public class WorkController {
     // 勤退情報の新規登録
     workService.create(workRequest, authUser.getId()); // ログイン時のユーザーIDを設定。
 
-    return "redirect:/work/list";
+	if (authUser.getBackId().equals("list")) {
+		// 前画面IDが"list"(勤退一覧画面)。
+	    return "redirect:/work/list";
+	} else {
+		
+		// 前画面IDが"stamping"(打刻登録画面)。
+	    return "redirect:/work/stamping";		
+	}
+//    return "redirect:/work/list";
   }
 
 
@@ -447,8 +479,9 @@ public class WorkController {
   @GetMapping(value = "/work/stamping")
   public String displayStamping(Model model) {
 
-	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	// ログイン情報の取得と設定。(このタイミングで、前画面IDも設定しておく)
+	setAuthUser(model, "stamping");
+///	setAuthUser(model);
 
 	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
@@ -708,8 +741,206 @@ public class WorkController {
 
     // 勤退情報の削除
     workService.delete(id);
-    return "redirect:/work/list";
+
+
+	if (authUser.getBackId().equals("stamping")) {
+		// 前画面IDが"stamping"(打刻登録画面)。
+	    return "redirect:/work/stamping";		
+
+	} else if (authUser.getBackId().equals("reward")) {
+		// 前画面IDが"reward"(報酬計算画面)。
+		return "redirect:/work/reward";
+
+	} else {
+		// 前画面IDが"list"(勤退一覧画面)。
+		return "redirect:/work/list";
+	}
+
   }
+
+
+
+  /**
+   * 報酬計算画面を表示
+   * @param model Model
+   * @return 勤退情報一覧画面
+   */
+  @GetMapping(value = "/work/reward")
+  public String displayReward(Model model) {
+
+	// ログイン情報の取得と設定。(このタイミングで、前画面IDも設定しておく)
+	setAuthUser(model, "reward");
+//	setAuthUser(model);
+
+
+	// 検索条件(勤退年月)のデータを作っておく。
+	WorkRequestReward workRequestReward = new WorkRequestReward();
+    
+	workRequestReward.setSearchDateY(DateEdit.getSysDate("yyyy"));
+	workRequestReward.setSearchDateM(DateEdit.getSysDate("M"));
+ 
+	// 時間単価
+	workRequestReward.setTanka("0");
+	// 紹介手数料(％)
+	workRequestReward.setMargin("0");
+	// 労働時間数(合計)
+	workRequestReward.setWorkSumHours("0.0");
+	// 報酬金額(合計)
+	workRequestReward.setSumReward("0");
+
+
+//    model.addAttribute("workRequest", workRequestReward);
+    model.addAttribute("workRequestReward", workRequestReward);
+	// ↑ここはパラメータ名と、リクエストのクラス名を合わせる。
+	// そうしないと、次のエラーメッセージの取得処理で、
+    // 対象のリクエストのクラス名を自動検索する際に、エラーが発生する。
+
+
+
+    Date dateStart;
+    Date dateEnd;
+    
+	List<Work> worklist = new ArrayList<>();
+
+	// 今月分の勤退情報を取得する。
+	// 今月の初日
+	dateStart = DateEdit.getDate(DateEdit.getSysDate("yyyy"), DateEdit.getSysDate("MM"), "1");
+	// 今月の末日
+	dateEnd  = DateEdit.getDateLastDay(DateEdit.getSysDate("yyyy"), DateEdit.getSysDate("MM"));
+	// 当月の１日～末日で勤退情報を検索。
+	worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);
+
+
+	if (worklist.size() == 0) {
+		// 該当データ無し。
+		model.addAttribute("searchMsg", "該当データがありません。");
+	}
+	model.addAttribute("worklist", worklist);
+
+
+	return "work/reward";
+  }
+
+
+  /**
+   * 報酬計算画面　指定された(勤退年月)で報酬計算
+   * @param WorkRequest workRequest（検索条件：勤退開始日）
+   * @param model Model
+   * @return 報酬計算画面
+   * @throws ParseException 
+   */
+  @RequestMapping(value = "/work/rewardym", method = RequestMethod.POST)
+  public String displayRewardYM(@Validated @ModelAttribute WorkRequestReward workRequestReward, BindingResult result, Model model) {
+
+	// ログイン情報の取得と設定。
+	setAuthUser(model);
+
+	if (workRequestReward.getWorkSumHours() == null) {
+		// 労働時間数(合計)
+		workRequestReward.setWorkSumHours("0.0");
+	}
+	if (workRequestReward.getSumReward() == null) {
+		// 報酬金額(合計)
+		workRequestReward.setSumReward("0");
+	}
+
+	if (result.hasErrors()) {
+	      // 入力チェックエラーの場合
+	      List<String> errorList = new ArrayList<String>();
+	      for (ObjectError error : result.getAllErrors()) {
+	        errorList.add(error.getDefaultMessage());
+	      }
+	      model.addAttribute("validationError", errorList);
+	      return "work/reward";
+	}
+
+	Date dateStart = null; // 勤退開始年月日
+	Date dateEnd = null; // 勤退終了年月日
+
+	boolean isDateYMD = false; // 日付チェック用(false：正しい日付形式ではない)
+
+
+	// 検索条件の入力チェック(検索年月)
+	isDateYMD = DateEdit.isDate(workRequestReward.getSearchDateY(), workRequestReward.getSearchDateM(), "01");
+	if (!isDateYMD) {
+        model.addAttribute("validationError", "勤退年月に正しい日付を入力して下さい。");
+        return "work/reward";
+	}
+
+
+	List<Work> worklist;
+
+	// 範囲検索の開始日（該当月の初日）
+	dateStart = DateEdit.getDate(workRequestReward.getSearchDateY(), workRequestReward.getSearchDateM(), "1");
+	// 範囲検索の終了日(該当月の末日)
+	dateEnd = DateEdit.getDateLastDay(workRequestReward.getSearchDateY(), workRequestReward.getSearchDateM());
+
+	// 年月日の検索コードで検索条件を変更する。
+	worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);
+
+
+	if (worklist.size() == 0) {
+		// 該当データ無し。
+		model.addAttribute("searchMsg", "該当データがありません。");
+	}
+
+
+	// 対象年月の報酬計算処理
+	CalcRewardYM(worklist, workRequestReward);
+
+
+	model.addAttribute("worklist", worklist);
+    model.addAttribute("workRequest", workRequestReward);
+
+	return "work/reward";
+  }
+
+
+  /**
+   * 報酬金の計算処理
+   * @param worklist 対象年月のWorkデータ
+   * @return 
+   */
+  private void CalcRewardYM(List<Work> worklist, WorkRequestReward workRequest) {
+
+	double dblHours = 0; // (小数点を含む、時間数を取得する。)
+	double dblReward = 0; // 紹介手数料(％)
+	double dblMargin = 0; // 報酬金額
+
+	for (int i = 0; i < worklist.size(); i++){
+
+		// 取得した労働時間を加算する。
+		dblHours += worklist.get(i).getWorktime();
+		// デバッグ用
+		//System.out.println("i=" + i + "：" + worklist.get(i));
+		// 実際の出力結果例
+		//i=0：Work(id=1, userId=11, content=ゲスト用Ａ会社の打刻, startDate=2022-02-01 09:00:00.0, endDate=2022-02-01 18:30:00.0, worktime=8.5, updateDate=2022-02-05 18:26:52.493, createDate=2022-02-05 09:33:35.038797)
+		//i=1：Work(id=2, userId=11, content=ゲスト用Ａ会社の打刻, startDate=2022-02-02 08:30:00.0, endDate=2022-02-02 19:00:00.0, worktime=9.5, updateDate=2022-02-05 18:26:56.489, createDate=2022-02-05 09:33:35.038797)
+	}
+
+
+	// 労働時間数(合計)
+	workRequest.setWorkSumHours(String.valueOf(dblHours));
+
+	// 報酬金額= 労働時間 × 時間単価
+	dblReward = dblHours * Double.parseDouble(workRequest.getTanka());
+
+	// 紹介手数料(円) = 報酬金額× 紹介手数料（％）
+	// 例：画面で２０％を入力してる場合、0.2と計算される。
+	dblMargin = dblReward * (Double.parseDouble(workRequest.getMargin()) / 100);
+
+	// 紹介手数料を減算した、報酬金額(合計)を取得する。
+	dblReward -= dblMargin;
+
+
+    //NumberFormatインスタンスを生成
+    NumberFormat nfNum = NumberFormat.getNumberInstance();
+    // 報酬金額(合計)は、カンマ区切り形式(例：123,456)に変更する。
+	workRequest.setSumReward(nfNum.format(dblReward));
+	
+//	return true; // 今回は戻り値なし。
+  }
+
 
 
   /**
@@ -719,7 +950,7 @@ public class WorkController {
    * @param model Model
    * @return 
    */
-	private boolean isValueCheck(String StrChk, String StrMsg, Model model) {
+  private boolean isValueCheck(String StrChk, String StrMsg, Model model) {
 /*
 //		※メソッドの使用例
 		String StrChk = workRequest.getEndDateY();
@@ -727,7 +958,6 @@ public class WorkController {
 	          return "work/list";
 		}
 */
-
 		// 入力チェック…開始日時(年・月・日)
 		if (StrChk == null || StrChk.isEmpty()) {
 	          model.addAttribute("validationError", StrMsg + "を入力して下さい。");
@@ -740,5 +970,5 @@ public class WorkController {
 		}
 
 		return true;
-	}
+  }
 }

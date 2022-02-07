@@ -5,8 +5,8 @@
 
 	<div th:replace="common/footerNavbar :: footer_fragment"></div>
 	<div class="mt-3">
-	    <h1>◆現在、システムの改修中です。<span class="text-danger">予告なく</span>①画面レイアウトの変更。</h1>
-	    <h1>②更新に伴うデータの削除が発生します。ご注意ください。</h1>
+	    <h5>◆現在、システムの改修中です。<span class="text-danger">予告なく</span>①画面レイアウトの変更。</h5>
+	    <h5>②更新に伴うデータの削除が発生します。ご注意ください。</h5>
 	</div>
 				
     <h2><span th:text="${message}"></span></h2>
@@ -45,10 +45,10 @@
                          <div class="card-body">
                              <br>
 
-                             <h4>◆勤退情報管理（開発中）</h4>
+                             <h4>◆勤退情報管理</h4>
                              <h5><a th:href="@{/work/stamping}" rel="noopener">打刻登録</a></h5>
                              <h5><a th:href="@{/work/list}" rel="noopener">勤退データ一覧</a></h5>
-                             <h5><a href="#" rel="noopener">月次実績計算（予定）</a></h5>
+                             <h5><a th:href="@{/work/reward}" rel="noopener">報酬計算(フリーランス版)</a></h5>
                          </div>
                      </div>
                  </div>

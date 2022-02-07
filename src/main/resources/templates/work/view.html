@@ -56,8 +56,9 @@
 	  <br />
 	  <div class="text-center">
 	    <a th:href="@{/work/{id}/edit(id=*{id})}" class="btn btn-primary">　編集　</a>
-	    <a href="/work/list" class="btn btn-secondary">一覧に戻る</a>
-	    <a href="/work/stamping" class="btn btn-secondary">打刻登録へ</a>
+	    <a th:if="${authUser.backId == 'list'}" href="/work/list" class="btn btn-secondary">一覧に戻る</a>
+	    <a th:if="${authUser.backId == 'stamping'}" href="/work/stamping" class="btn btn-secondary">打刻登録に戻る</a>
+	    <a th:if="${authUser.backId == 'reward'}" href="/work/reward" class="btn btn-secondary">報酬計算に戻る</a>
 	  </div>
 	</div>
 

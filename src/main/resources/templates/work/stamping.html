@@ -47,7 +47,7 @@
 
 
 	  <hr>
-	  
+
 	  <div class="mb-3">
 		<h5>◆今月の出退勤記録
 		</h5>
@@ -61,7 +61,7 @@
 	        <th>出勤日</th>
 	        <th>退勤日</th>
 	        <th>労働時間</th>
-	        <th></th>
+	        <th><a th:href="@{/work/add}" class="btn btn-primary">新規登録はこちら</a></th>
 	      </tr>
 	    </thead>
 	    <tbody>
@@ -73,6 +73,7 @@
 	        <td th:text="${work.worktime}"></td>
 	        <td class="center">
 	        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
+	        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary">コピー(新規登録)</a>
 	        </td>
 	      </tr>
 	    </tbody>

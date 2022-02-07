@@ -149,6 +149,12 @@ public class DateTimeRange {
 
 	    	// 労働時間数 ＝ 時間数 － 昼休憩の１時間 ＋ 分(0.5時間計算)
 	    	dblHours = lngHours - 1 + dblMin;
+
+	    	if (dblHours < 0) {
+	    		// 計算後の時間数がマイナスの場合
+	    		dblHours = 0; // ０時間を再設定。
+	    	}
+
 	    } else {
 	    	// 午後出勤
 
