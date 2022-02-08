@@ -30,7 +30,7 @@
 	        <td th:text="*{email}"></td>
 	        <td th:text="*{address}"></td>
 	        <td th:text="*{phone}"></td>
-	        <td th:text="${#dates.format(user.updateDate, 'yyyy/MM/dd H:MM')}"></td>
+	        <td th:text="${#dates.format(user.updateDate, 'yyyy/MM/dd H:mm')}"></td>
 	        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
 	      </tr>
 	    </tbody>
