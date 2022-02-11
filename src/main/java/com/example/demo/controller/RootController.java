@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 
 import com.example.demo.auth.AuthUser;
+import com.example.demo.entity.SystemInfo;
 import com.example.demo.mdl.DateEdit;
 
 /**
@@ -30,6 +31,44 @@ public class RootController {
 	*/
 	private AuthUser authUser;
 
+	/**
+	* システム情報
+	*/
+	private SystemInfo systemInfo;
+
+  /**
+   * システム情報の設定
+   * @param model Model
+   * @return
+   * 補足説明（ログイン画面を表示するタイミングで、システム情報を取得します。）
+   */
+	private void setSystemInfo(Model model) {
+
+		this.systemInfo = new SystemInfo();
+
+
+		// タイトルの設定
+		this.systemInfo.setTitle("Java(Spring Boot)ポートフォリオ");
+
+		// システム日付を取得
+		String strDateYMD = DateEdit.getSysDate("yyyy年M月d日");
+		this.systemInfo.setSysdateYMD(strDateYMD);
+
+		// システム日付の曜日を取得
+		strDateYMD = DateEdit.getSysDate("yyyy/MM/dd");
+		String strYoubi = DateEdit.getYoubi(strDateYMD);
+
+		this.systemInfo.setSysdateYoubi(strYoubi);
+
+
+		// システム情報のパラメータを渡す。
+		model.addAttribute("sysInfo", systemInfo);
+
+	    // セッション情報に保存
+		// (※このセッション情報は、他のコントローラクラスでも使用が可能です。)
+	    session.setAttribute("SessionSysInfo", systemInfo);
+	}
+
   /**
    * ログイン情報の設定
    * @param AuthUser authUser
@@ -40,7 +79,16 @@ public class RootController {
    */
 	private void setAuthUser(AuthUser authUser, Model model) {
 
-		this.authUser = authUser;
+		// システム情報が空データの場合。
+		if (systemInfo == null) {
+			// システム情報の再取得
+			setSystemInfo(model);
+		}
+
+		// システム情報のパラメータを渡す。
+		model.addAttribute("sysInfo", systemInfo);
+
+
 
 		// よく使うパラメータをメモ
 		// authUser.getId();
@@ -50,21 +98,13 @@ public class RootController {
 
 		// System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
 
-		this.authUser.setTitle("Java(Spring Boot)ポートフォリオ");
+		this.authUser = authUser;
 
-		// システム日付を取得
-		String strDateYMD = DateEdit.getSysDate("yyyy年M月d日");
-		this.authUser.setSysdateYMD(strDateYMD);
-
-		// システム日付の曜日を取得
-		strDateYMD = DateEdit.getSysDate("yyyy/MM/dd");
-		String strYoubi = DateEdit.getYoubi(strDateYMD);
-
-		this.authUser.setSysdateYoubi(strYoubi);
-
-	    // セッション情報に保存
+		// セッション情報に保存
 		// (※このセッション情報は、他のコントローラクラスでも使用が可能です。)
 	    session.setAttribute("SessionAuthUser", authUser);
+		// ログイン情報のパラメータを渡す。
+		model.addAttribute("authUser", authUser);
 	}
 
 
@@ -82,9 +122,6 @@ public class RootController {
 	// トップページにアクセスしたタイミングで、ログイン情報を取得。
 	setAuthUser(userDetails, model);
 
-	// ログイン情報のパラメータを渡す。
-	model.addAttribute("authUser", authUser);
-
 	return "index";
   }
 
@@ -94,7 +131,10 @@ public class RootController {
    * @return ログイン画面
    */
   @GetMapping(value = "/login")
-  public String login() {
+  public String login(Model model) {
+
+	// タイトル情報などのシステム情報を取得する。
+	setSystemInfo(model);
 
     return "login";
   }

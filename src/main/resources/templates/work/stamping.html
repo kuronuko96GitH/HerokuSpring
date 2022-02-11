@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common/Header :: header(title = ${authUser.title}, scripts = ~{::script}, links = ~{::link})"></head>
+<head th:replace="common/Header :: header(title = ${sysInfo.title}, scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
 	<div class="cover"></div>
@@ -15,7 +15,7 @@
 		  <div th:replace="common/Msg :: msg"></div>
 	
 		  <div class="mb-3">
-			<h5>◆今日は『<span th:text="${authUser.SysdateYMD + '(' + authUser.SysdateYoubi + '曜日)'}">sysdate</span>』
+			<h5>◆今日は『<span th:text="${sysInfo.SysdateYMD + '(' + sysInfo.SysdateYoubi + '曜日)'}">sysdate</span>』
 			<br>　出退勤の打刻登録ができます。
 			</h5>
 		  </div>

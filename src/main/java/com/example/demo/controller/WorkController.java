@@ -25,6 +25,7 @@ import com.example.demo.dto.WorkRequest;
 import com.example.demo.dto.WorkRequestReward;
 import com.example.demo.dto.WorkRequestSearch;
 import com.example.demo.dto.WorkUpdateRequest;
+import com.example.demo.entity.SystemInfo;
 import com.example.demo.entity.Work;
 import com.example.demo.mdl.DateEdit;
 import com.example.demo.mdl.DateRange;
@@ -54,11 +55,23 @@ public class WorkController {
 	private AuthUser authUser;
 
 	/**
+	* システム情報
+	*/
+	private SystemInfo systemInfo;
+
+	/**
 	 * ログイン情報の設定
 	 * @param Model model
 	 * @return
 	 */
 	private void setAuthUser(Model model) {
+
+		// RootControllerクラスで設定した、セッション情報を取得。
+		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
+		// システム情報のパラメータを渡す。
+		model.addAttribute("sysInfo", systemInfo);
+
+
 		// RootControllerクラスで設定した、セッション情報を取得。
 		authUser = (AuthUser)session.getAttribute("SessionAuthUser");
 		// ログイン情報のパラメータを渡す。
@@ -71,6 +84,13 @@ public class WorkController {
 	 * @return
 	 */
 	private void setAuthUser(Model model, String backid) {
+
+		// RootControllerクラスで設定した、セッション情報を取得。
+		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
+		// システム情報のパラメータを渡す。
+		model.addAttribute("sysInfo", systemInfo);
+
+
 		// RootControllerクラスで設定した、セッション情報を取得。
 		authUser = (AuthUser)session.getAttribute("SessionAuthUser");
 		// ログイン情報のパラメータを渡す。

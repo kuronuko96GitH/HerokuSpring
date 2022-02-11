@@ -21,6 +21,7 @@ import com.example.demo.auth.AuthUser;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
+import com.example.demo.entity.SystemInfo;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 
@@ -47,17 +48,28 @@ public class UserController {
 	private AuthUser authUser;
 
 	/**
+	* システム情報
+	*/
+	private SystemInfo systemInfo;
+
+	/**
 	 * ログイン情報の設定
 	 * @param Model model
 	 * @return
 	 */
 	private void setAuthUser(Model model) {
+		
+		// RootControllerクラスで設定した、セッション情報を取得。
+		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
+		// システム情報のパラメータを渡す。
+		model.addAttribute("sysInfo", systemInfo);
+
+
 		// RootControllerクラスで設定した、セッション情報を取得。
 		authUser = (AuthUser)session.getAttribute("SessionAuthUser");
 		// ログイン情報のパラメータを渡す。
 		model.addAttribute("authUser", authUser);
 	}
-
 
   /**
    * ユーザー情報一覧画面を表示
