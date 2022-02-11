@@ -30,7 +30,6 @@ public class RootController {
 	*/
 	private AuthUser authUser;
 
-
   /**
    * ログイン情報の設定
    * @param AuthUser authUser
@@ -42,6 +41,15 @@ public class RootController {
 	private void setAuthUser(AuthUser authUser, Model model) {
 
 		this.authUser = authUser;
+
+		// よく使うパラメータをメモ
+		// authUser.getId();
+		// authUser.getEmail();
+		// authUser.getUsername();
+		// authUser.getRoles().get(0);	// (出力例)『ROLE_USER』
+
+		// System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
+
 		this.authUser.setTitle("Java(Spring Boot)ポートフォリオ");
 
 		// システム日付を取得
@@ -53,14 +61,6 @@ public class RootController {
 		String strYoubi = DateEdit.getYoubi(strDateYMD);
 
 		this.authUser.setSysdateYoubi(strYoubi);
-
-		// よく使うパラメータをメモ
-		// authUser.getId();
-		// authUser.getEmail();
-		// authUser.getUsername();
-		// authUser.getRoles().get(0);	// (出力例)『ROLE_USER』
-
-		// System.out.println(authUser.getRoles()); // List<String>…(出力例)『[ROLE_USER]』
 
 	    // セッション情報に保存
 		// (※このセッション情報は、他のコントローラクラスでも使用が可能です。)
@@ -95,6 +95,7 @@ public class RootController {
    */
   @GetMapping(value = "/login")
   public String login() {
+
     return "login";
   }
 //  補足説明：GetMapping…Getメソッドで送信されてきたリクエストを処理するアノテーション

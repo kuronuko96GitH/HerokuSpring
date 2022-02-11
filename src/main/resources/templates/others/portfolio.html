@@ -1,174 +1,181 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common/head :: head_fragment(title = ${authUser.title}, scripts = ~{::script}, links = ~{::link})"></head>
+<head th:replace="common/Header :: header(title = ${authUser.title}, scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
-	<div th:replace="common/footerNavbar :: footer_fragment"></div>
+	<div class="cover"></div>
+	<div th:replace="common/Sidenav :: sidenav"></div>
 
-	<div class="container">
-	  <div class="head_title">他ポートフォリオの紹介</div>
-
-       <!-- PORTFOLIO 03 -->
-       <header class="masthead">
-            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">                    
-                    <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                            <div class="card-body">
-                                <p class="card-text">『PHP』のフレームワーク『Laravel』で製作した、</p>
-                                <p class="card-text">Webアプリのノートが使えます。</p>
-                            </div>
-                            <img class="card-img-bottom" src="../static/img/portfolio03.png" th:src="@{/img/portfolio03.png}" alt="portfolio03">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <!-- URL GitHub -->
-        <section class="bg-black">
-          <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">
-                    
-                    <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                            <div class="card-body">
-                                <div>『Laravel』で製作したWebアプリを使ってみたい方は、</div>
-                                <div>こちらから⇒ <a href="https://kuronuko9646laravelnote.herokuapp.com" target="_blank" rel="noopener">https://kuronuko9646laravelnote.herokuapp.com</a></div>
-                                <!-- icon add cdn fontawesome free-->
-                                <div><i class="fab fa-github fa-2x"></i>  GitHub（公開ソースコード）: <a href="https://github.com/kuronuko96GitH/LaravelNote" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/LaravelNote</a></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <br>
-            <br>
-            <br>
-        </section>
-
-       <!-- PORTFOLIO 04 -->
-       <header class="masthead">
-            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">                    
-                    <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                            <div class="card-body">
-                                <p class="card-text">『VB.NET』で製作した、</p>
-                                <p class="card-text">勤怠登録システムです。</p>
-                            </div>
-                            <img class="card-img-bottom" src="../static/img/portfolio04.png" th:src="@{/img/portfolio04.png}" alt="portfolio04">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <!-- URL GitHub -->
-        <section class="bg-black">
-          <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">
-                    
-                    <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                            <div class="card-body">
-                                <!-- icon add cdn fontawesome free-->
-                                <div><i class="fab fa-github fa-2x"></i>  GitHub（公開ソースコード）: <a href="https://github.com/kuronuko96GitH/WinAppTStamp" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/WinAppTStamp</a></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <br>
-            <br>
-            <br>
-        </section>
-
-        <!-- PORTFOLIO 02 -->
-        <section class="signup-section" id="signup">
-            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">                    
-                    <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                            <div class="card-body">
-                                <p class="card-text">『Vue.js』で製作した、オセロゲームが遊べます。</p>
-                                <p class="card-text">WebページはPHPで製作してます。</p>
-                            </div>
-                            <img class="card-img-bottom" src="../static/img/portfolio02.jpg" th:src="@{/img/portfolio02.jpg}" alt="portfolio02">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- URL GitHub -->
-        <section class="bg-black">
-          <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">
-                    
-                    <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                            <div class="card-body">
-                                <div>『Vue.js』で製作した、オセロゲームを遊んでみたい方は、</div>
-                                <div>こちらから⇒<a href="https://kuronuko9646phptest.herokuapp.com" target="_blank" rel="noopener">https://kuronuko9646phptest.herokuapp.com</a></div>
-                                <!-- icon add cdn fontawesome free-->
-                                <div><i class="fab fa-github fa-2x"></i>  GitHub（公開ソースコード）: <a href="https://github.com/kuronuko96GitH/testphp" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/testphp</a></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <br>
-            <br>
-            <br>
-        </section>
-
-        <!-- PORTFOLIO 01 -->
-        <section class="signup-section" id="signup">
-            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">                    
-                    <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                            <div class="card-body">
-                                <p class="card-text">『Ruby』と『JavaScript』で製作した、</p>
-                                <p class="card-text">タイピングゲームなどが遊べます。</p>
-                            </div>
-                            <img class="card-img-bottom" src="../static/img/portfolio01.jpg" th:src="@{/img/portfolio01.jpg}" alt="portfolio01">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- URL GitHub -->
-        <section class="bg-black">
-          <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">
-                    
-                    <div class="text-center">
-                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
-                            <div class="card-body">
-                                <div>『JavaScript』のゲームを遊んでみたい方は、</div>
-                                <div>こちらから⇒<a href="https://kuronuko9646rubygames.herokuapp.com" target="_blank" rel="noopener">https://kuronuko9646rubygames.herokuapp.com</a></div>
-                                <!-- icon add cdn fontawesome free-->
-                                <div><i class="fab fa-github fa-2x"></i>  GitHub（公開ソースコード）: <a href="https://github.com/kuronuko96GitH/RubyGames" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/RubyGames</a></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <br>
-            <br>
-            <br>
-        </section>
+	<div class="main">
+		<div th:replace="common/Navbar :: navbar"></div>
+	
+		<div class="container">
+		  <div class="head_title">他ポートフォリオの紹介</div>
+	
+	       <!-- PORTFOLIO 03 -->
+	       <header class="masthead">
+	            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	                <div class="d-flex justify-content-center">                    
+	                    <div class="text-center">
+	                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                            <div class="card-body">
+	                                <p class="card-text">『PHP』のフレームワーク『Laravel』で製作した、</p>
+	                                <p class="card-text">Webアプリのノートが使えます。</p>
+	                            </div>
+	                            <img class="card-img-bottom" src="../static/img/portfolio03.png" th:src="@{/img/portfolio03.png}" alt="portfolio03">
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </header>
+	        <!-- URL GitHub -->
+	        <section class="bg-black">
+	          <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	                <div class="d-flex justify-content-center">
+	                    
+	                    <div class="text-center">
+	                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                            <div class="card-body">
+	                                <div>『Laravel』で製作したWebアプリを使ってみたい方は、</div>
+	                                <div>こちらから⇒ <a href="https://kuronuko9646laravelnote.herokuapp.com" target="_blank" rel="noopener">https://kuronuko9646laravelnote.herokuapp.com</a></div>
+	                                <!-- icon add cdn fontawesome free-->
+	                                <div><i class="fab fa-github fa-2x"></i>  GitHub（公開ソースコード）: <a href="https://github.com/kuronuko96GitH/LaravelNote" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/LaravelNote</a></div>
+	                            </div>
+	                        </div>
+	                    </div>
+	
+	                </div>
+	            </div>
+	
+	            <br>
+	            <br>
+	            <br>
+	        </section>
+	
+	       <!-- PORTFOLIO 04 -->
+	       <header class="masthead">
+	            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	                <div class="d-flex justify-content-center">                    
+	                    <div class="text-center">
+	                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                            <div class="card-body">
+	                                <p class="card-text">『VB.NET』で製作した、</p>
+	                                <p class="card-text">勤怠登録システムです。</p>
+	                            </div>
+	                            <img class="card-img-bottom" src="../static/img/portfolio04.png" th:src="@{/img/portfolio04.png}" alt="portfolio04">
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </header>
+	        <!-- URL GitHub -->
+	        <section class="bg-black">
+	          <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	                <div class="d-flex justify-content-center">
+	                    
+	                    <div class="text-center">
+	                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                            <div class="card-body">
+	                                <!-- icon add cdn fontawesome free-->
+	                                <div><i class="fab fa-github fa-2x"></i>  GitHub（公開ソースコード）: <a href="https://github.com/kuronuko96GitH/WinAppTStamp" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/WinAppTStamp</a></div>
+	                            </div>
+	                        </div>
+	                    </div>
+	
+	                </div>
+	            </div>
+	
+	            <br>
+	            <br>
+	            <br>
+	        </section>
+	
+	        <!-- PORTFOLIO 02 -->
+	        <section class="signup-section" id="signup">
+	            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	                <div class="d-flex justify-content-center">                    
+	                    <div class="text-center">
+	                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                            <div class="card-body">
+	                                <p class="card-text">『Vue.js』で製作した、オセロゲームが遊べます。</p>
+	                                <p class="card-text">WebページはPHPで製作してます。</p>
+	                            </div>
+	                            <img class="card-img-bottom" src="../static/img/portfolio02.jpg" th:src="@{/img/portfolio02.jpg}" alt="portfolio02">
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </section>
+	        <!-- URL GitHub -->
+	        <section class="bg-black">
+	          <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	                <div class="d-flex justify-content-center">
+	                    
+	                    <div class="text-center">
+	                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                            <div class="card-body">
+	                                <div>『Vue.js』で製作した、オセロゲームを遊んでみたい方は、</div>
+	                                <div>こちらから⇒<a href="https://kuronuko9646phptest.herokuapp.com" target="_blank" rel="noopener">https://kuronuko9646phptest.herokuapp.com</a></div>
+	                                <!-- icon add cdn fontawesome free-->
+	                                <div><i class="fab fa-github fa-2x"></i>  GitHub（公開ソースコード）: <a href="https://github.com/kuronuko96GitH/testphp" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/testphp</a></div>
+	                            </div>
+	                        </div>
+	                    </div>
+	
+	                </div>
+	            </div>
+	
+	            <br>
+	            <br>
+	            <br>
+	        </section>
+	
+	        <!-- PORTFOLIO 01 -->
+	        <section class="signup-section" id="signup">
+	            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	                <div class="d-flex justify-content-center">                    
+	                    <div class="text-center">
+	                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                            <div class="card-body">
+	                                <p class="card-text">『Ruby』と『JavaScript』で製作した、</p>
+	                                <p class="card-text">タイピングゲームなどが遊べます。</p>
+	                            </div>
+	                            <img class="card-img-bottom" src="../static/img/portfolio01.jpg" th:src="@{/img/portfolio01.jpg}" alt="portfolio01">
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </section>
+	        <!-- URL GitHub -->
+	        <section class="bg-black">
+	          <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	                <div class="d-flex justify-content-center">
+	                    
+	                    <div class="text-center">
+	                        <div class="card text-white bg-dark mb-3" style="max-width: 50rem;">
+	                            <div class="card-body">
+	                                <div>『JavaScript』のゲームを遊んでみたい方は、</div>
+	                                <div>こちらから⇒<a href="https://kuronuko9646rubygames.herokuapp.com" target="_blank" rel="noopener">https://kuronuko9646rubygames.herokuapp.com</a></div>
+	                                <!-- icon add cdn fontawesome free-->
+	                                <div><i class="fab fa-github fa-2x"></i>  GitHub（公開ソースコード）: <a href="https://github.com/kuronuko96GitH/RubyGames" target="_blank" rel="noopener">https://github.com/kuronuko96GitH/RubyGames</a></div>
+	                            </div>
+	                        </div>
+	                    </div>
+	
+	                </div>
+	            </div>
+	
+	            <br>
+	            <br>
+	            <br>
+	        </section>
+	
+		</div>
 
 	</div>
 
-	<div th:replace="common/footerScript :: footer_fragment"></div>
+	<!-- Scripts -->
+	<div th:replace="common/Script :: script"></div>
 
   </body>
 </html>

@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common/head :: head_fragment(title = ${authUser.title}, scripts = ~{::script}, links = ~{::link})"></head>
+<head th:replace="common/Header :: header(title = ${authUser.title}, scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
-	<div th:replace="common/footerNavbar :: footer_fragment"></div>
+	<div class="cover"></div>
+	<div th:replace="common/Sidenav :: sidenav"></div>
 
-	<div class="container">
-	  <div class="head_title">ユーザー情報（パスワード）編集</div>
+	<div class="main">
+		<div th:replace="common/Navbar :: navbar"></div>
+	
+		<div class="container">
+		  <div class="head_title">ユーザー情報（パスワード）編集</div>
+	
+		  <div th:replace="common/Msg :: msg"></div>
+	
+		  <form th:action="@{/user/updatepass}" th:object="${userUpdateRequestPass}" th:method="post">
+		    <input type="hidden" th:field="*{id}" />
+	
+		      <div class="row mx-md-n5">
+		        <div class="col-2 pt-3 border bg-light">パスワード<span class="text-danger">※</span></div>
+		        <div class="col py-2 border">
+		          <input type="password" class="form-control" th:field="*{password}">
+		        </div>
+		      </div>
+	
+		      <div class="row mx-md-n5">
+		        <div class="col-2 pt-3 border bg-light">パスワード（確認用）<span class="text-danger">※</span></div>
+		        <div class="col py-2 border">
+		          <input type="password" class="form-control" th:field="*{passwordConfirm}">
+		        </div>
+		      </div>
+	
+		    <br />
+		    <div class="text-center">
+		      <input type="submit" class="btn btn-primary" value="　保存　">
+		      <a th:href="@{/user/{id}(id=*{id})}" class="btn btn-secondary">キャンセル</a>
+		    </div>
+		  </form>
+		</div>
 
-	  <div th:replace="common/footerMsg :: footer_fragment"></div>
-
-	  <form th:action="@{/user/updatepass}" th:object="${userUpdateRequestPass}" th:method="post">
-	    <input type="hidden" th:field="*{id}" />
-
-	      <div class="row mx-md-n5">
-	        <div class="col-2 pt-3 border bg-light">パスワード<span class="text-danger">※</span></div>
-	        <div class="col py-2 border">
-	          <input type="password" class="form-control" th:field="*{password}">
-	        </div>
-	      </div>
-
-	      <div class="row mx-md-n5">
-	        <div class="col-2 pt-3 border bg-light">パスワード（確認用）<span class="text-danger">※</span></div>
-	        <div class="col py-2 border">
-	          <input type="password" class="form-control" th:field="*{passwordConfirm}">
-	        </div>
-	      </div>
-
-	    <br />
-	    <div class="text-center">
-	      <input type="submit" class="btn btn-primary" value="　保存　">
-	      <a th:href="@{/user/{id}(id=*{id})}" class="btn btn-secondary">キャンセル</a>
-	    </div>
-	  </form>
 	</div>
 
-	<div th:replace="common/footerScript :: footer_fragment"></div>
+	<!-- Scripts -->
+	<div th:replace="common/Script :: script"></div>
 
   </body>
 </html>

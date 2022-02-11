@@ -249,7 +249,7 @@ public class WorkController {
 
 	if (worklist.size() == 0) {
 		// 該当データ無し。
-		model.addAttribute("searchMsg", "該当データがありません。");
+		model.addAttribute("msgInfo", "該当データがありません。");
 	}
 	model.addAttribute("worklist", worklist);
 
@@ -330,7 +330,7 @@ public class WorkController {
 
 	if (worklist.size() == 0) {
 		// 該当データ無し。
-		model.addAttribute("searchMsg", "該当データがありません。");
+		model.addAttribute("msgInfo", "該当データがありません。");
 	}
 	model.addAttribute("worklist", worklist);
 
@@ -534,7 +534,7 @@ public class WorkController {
 
 	if (worklist.size() == 0) {
 		// 該当データ無し。
-		model.addAttribute("searchMsg", "該当データがありません。");
+		model.addAttribute("msgInfo", "該当データがありません。");
 	}
 	model.addAttribute("worklist", worklist);
 
@@ -813,7 +813,7 @@ public class WorkController {
 
 	if (worklist.size() == 0) {
 		// 該当データ無し。
-		model.addAttribute("searchMsg", "該当データがありません。");
+		model.addAttribute("msgInfo", "該当データがありません。");
 	}
 	model.addAttribute("worklist", worklist);
 
@@ -881,7 +881,7 @@ public class WorkController {
 
 	if (worklist.size() == 0) {
 		// 該当データ無し。
-		model.addAttribute("searchMsg", "該当データがありません。");
+		model.addAttribute("msgInfo", "該当データがありません。");
 	}
 
 
