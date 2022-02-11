@@ -26,7 +26,6 @@
 
 	<div class="container">
 
-	  <div class="head_title" th:text="${authUser.title}">title</div>
 	  <div class="head_title">サンプル画面（ユーザー認証情報を取得したい）</div>
 
 <strong sec:authorize="isAuthenticated()">認証済み</strong>
@@ -34,9 +33,7 @@
 <strong sec:authorize="!isAuthenticated()">未認証</strong>
 
 	<hr />
-●RootControllerクラスでmodel.addAttribute("authUser", authUser)を事前にする必要あり。
-<br>
-${authUser.title}：<span th:text="${authUser.title}">title</span>
+◆RootControllerクラスでmodel.addAttribute("authUser", authUser)を事前にする必要あり。
 <br>
 ${authUser.id}：<span th:text="${authUser.id}">id</span>
 <br>
@@ -52,7 +49,7 @@ ${authUser.roles}(List型)：<span th:text="${authUser.roles}">roles</span>
 
 
 	<hr />
-●RootControllerクラスでmodel.addAttribute("authId", authUser.getId())を事前にする必要あり。
+◆RootControllerクラスでmodel.addAttribute("authId", authUser.getId())を事前にする必要あり。
 <br>
 ${authId}：<span th:text="${authId}">userid</span>
 <br>
@@ -79,19 +76,13 @@ ${authName}：<span th:text="${authName}">username</span>
   -->
 	<hr />
 
-<div th:object="${authenticatedUser}">
-<!--
-	<span th:text="*{username}">Username</span>
--->
-</div>
-
-
 <!--  残念ながら取得でいるのはユーザー名です -->
 name：<span th:text="${#authentication.name}">name</span>
 <!--<span th:text="${#authentication.email}">email</span> -->
 
 	<hr />
 
+<br>◆${#authentication.principal.XXXXX}
 <br>
 userid：<span th:text="${#authentication.principal.id}">userid</span>
 <br>
@@ -102,6 +93,11 @@ email：<span th:text="${#authentication.principal.email}">email</span>
 roles(List型)：<span th:text="${#authentication.principal.roles}">roles</span>
 <br>
 roles(String型)：<span th:text="${#authentication.principal.roles.get(0)}">roles</span>
+
+<br>
+<br>
+<br>
+<br>
 
 	</div>
 

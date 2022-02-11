@@ -175,13 +175,13 @@ public class RootController {
    * @return サンプル画面
    */
   @GetMapping(value = "/sample2")
-  public String sample2(Model model) {
+  public String sample2(@AuthenticationPrincipal AuthUser userDetails, Model model) {
 
 	// サンプル画面に、ログイン情報のパラメータを渡す。
+	setAuthUser(userDetails, model);
+
 	model.addAttribute("authId", authUser.getId());
 	model.addAttribute("authName", authUser.getUsername());
-
-	model.addAttribute("authUser", authUser);
 
 	return "sample2";
   }
