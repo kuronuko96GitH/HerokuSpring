@@ -46,6 +46,35 @@
 		        <p th:text="*{phone}"></p>
 		      </div>
 		    </div>
+		    <div class="row mx-md-n5">
+		      <div class="col-2 pt-3 border bg-light">性別</div>
+		      <div class="col pt-3 border bg-white">
+		        <p th:text="*{gender}"></p>
+		      </div>
+		    </div>
+		    <div class="row mx-md-n5">
+		      <div class="col-2 pt-3 border bg-light">生年月日</div>
+		      <div class="col pt-3 border bg-white">
+		      	<div th:if="${userData.birthdayY == ''}">
+					<p></p>
+		        </div>
+		      	<div th:if="${userData.birthdayY != ''}">
+					<p th:text="${userData.birthdayY + '年' + userData.birthdayM + '月' + userData.birthdayD} + '日'"></p>
+		        </div>
+		      </div>
+		    </div>
+		    <div class="row mx-md-n5">
+		      <div class="col-2 pt-3 border bg-light">年齢</div>
+		      <div class="col pt-3 border bg-white">
+		      	<div th:if="${userData.age == ''}">
+					<p></p>
+		        </div>
+		      	<div th:if="${userData.age != ''}">
+			        <p th:text="${userData.age + '歳'}"></p>
+		        </div>
+		      </div>
+		    </div>
+		    
 		  </div>
 		  <br />
 		  <div class="text-center">

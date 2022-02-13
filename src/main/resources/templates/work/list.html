@@ -53,9 +53,9 @@
 		      <tr th:each="work, workRec : ${worklist}" th:object="${work}" class="align-middle">
 		        <td th:text="${workRec.count}" class="text-center"></td>
 		        <td th:text="*{content}"></td>
-		        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}"></td>
-		        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}"></td>
-		        <td th:text="${work.worktime}"></td>
+		        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
+		        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
+		        <td th:text="${work.worktime}" class="text-center"></td>
 		        <td class="center">
 		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
 		        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary">コピー(新規登録)</a>

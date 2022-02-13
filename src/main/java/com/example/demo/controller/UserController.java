@@ -23,6 +23,7 @@ import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
 import com.example.demo.entity.SystemInfo;
 import com.example.demo.entity.User;
+import com.example.demo.mdl.DateEdit;
 import com.example.demo.service.UserService;
 
 /**
@@ -58,7 +59,7 @@ public class UserController {
 	 * @return
 	 */
 	private void setAuthUser(Model model) {
-		
+
 		// RootControllerクラスで設定した、セッション情報を取得。
 		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
 		// システム情報のパラメータを渡す。
@@ -96,6 +97,63 @@ public class UserController {
   }
 
   /**
+   * （ログイン⇒）ユーザー新規登録画面を表示
+   * @param model Model
+   * @return ログイン画面
+   */
+  @GetMapping(value = "/user/addlogin")
+  public String displayAddLogin(Model model) {
+
+	// ログイン情報の取得と設定。
+	setAuthUser(model);
+
+    model.addAttribute("userRequest", new UserRequest());
+    return "user/addlogin";
+  }
+
+  /**
+   * （ログイン⇒）ユーザー新規登録
+   * @param userRequest リクエストデータ
+   * @param model Model
+   * @return ログイン画面
+   */
+  @RequestMapping(value = "/user/createlogin", method = RequestMethod.POST)
+  public String createLogin(@Validated @ModelAttribute UserRequest userRequest, BindingResult result, Model model) {
+
+	// ログイン情報の取得と設定。
+	setAuthUser(model);
+
+	if (result.hasErrors()) {
+      // 入力チェックエラーの場合
+      List<String> errorList = new ArrayList<String>();
+      for (ObjectError error : result.getAllErrors()) {
+        errorList.add(error.getDefaultMessage());
+      }
+      model.addAttribute("validationError", errorList);
+      return "user/addlogin";
+    }
+
+    // 新規登録しようしたメールアドレスが、データベースに存在してないかを検索
+    Integer intCnt = userService.findByEmailCnt(userRequest.getEmail());
+
+	if ( intCnt > 0) {
+		// データベースに同じメールアドレスが存在していた場合。
+	    List<String> errorList = new ArrayList<String>();
+        errorList.add("既に登録済のメールアドレスです。");
+        model.addAttribute("validationError", errorList);
+	    
+	    return "user/addlogin";
+	}
+
+
+    // ユーザー情報の登録
+    userService.createLogin(userRequest);
+
+    // (ログイン画面側から新規登録の場合は、強制的にログイン画面へ一度戻されてから、再ログインの流れになります。)
+    return "login"; // ログイン画面に戻る
+  }
+
+  /**
    * ユーザー新規登録画面を表示
    * @param model Model
    * @return ユーザー情報一覧画面
@@ -109,7 +167,7 @@ public class UserController {
     model.addAttribute("userRequest", new UserRequest());
     return "user/add";
   }
-  
+
   /**
    * ユーザー新規登録
    * @param userRequest リクエストデータ
@@ -141,14 +199,13 @@ public class UserController {
     Integer intCnt = userService.findByEmailCnt(userRequest.getEmail());
     
 	if ( intCnt > 0) {
-		  // データベースに同じメールアドレスが存在していた場合。
+		// データベースに同じメールアドレスが存在していた場合。
 //		    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
-
 	    List<String> errorList = new ArrayList<String>();
         errorList.add("既に登録済のメールアドレスです。");
         model.addAttribute("validationError", errorList);
-	    
-	    return "user/add";  
+
+	    return "user/add";
 	}
 
 
@@ -156,11 +213,56 @@ public class UserController {
     userService.create(userRequest);
 
     // ユーザー情報一覧画面に戻る
-    // (ログイン画面側から新規登録の場合は、強制的にログイン画面へ一度戻されてから、再ログインの流れになります。)
     return "redirect:/user/list";
-//	    return "login"; // ログイン画面に戻る
   }
-  
+
+
+
+  /**
+   * ユーザー情報詳細の画面表示用データの作成
+   * @param User user
+   * @return ユーザー情報詳細の画面表示用データ
+   */
+  private UserUpdateRequest getUserUpdateRequest(User user) {
+
+	    UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+	    userUpdateRequest.setId(user.getId());
+	    userUpdateRequest.setName(user.getName());
+	    userUpdateRequest.setEmail(user.getEmail());
+//	    userUpdateRequest.setPassword(user.getPassword());
+	    // 性別（取得したコードを、文字列情報に変換する）
+	    userUpdateRequest.setGender(User.getChgGender(user.getGender()));
+	    userUpdateRequest.setAddress(user.getAddress());
+	    userUpdateRequest.setPhone(user.getPhone());
+
+	    if (user.getBirthday() == null) {
+		    // 生年月日(年)
+	    	userUpdateRequest.setBirthdayY("");
+		    // 生年月日(月)
+	    	userUpdateRequest.setBirthdayM("");
+		    // 生年月日(日)
+	    	userUpdateRequest.setBirthdayD("");	    	
+
+	    } else {
+		    // 生年月日(年)
+		    userUpdateRequest.setBirthdayY(DateEdit.getDate(user.getBirthday(), "yyyy"));
+		    // 生年月日(月)
+		    userUpdateRequest.setBirthdayM(DateEdit.getDate(user.getBirthday(), "M"));
+		    // 生年月日(日)
+		    userUpdateRequest.setBirthdayD(DateEdit.getDate(user.getBirthday(), "d"));
+	//	    userUpdateRequest.setBirthday(user.getBirthday());
+	    }
+
+	    if (user.getAge() == null) {
+	    	userUpdateRequest.setAge("");
+	    } else {
+	    	userUpdateRequest.setAge(user.getAge());	    	
+	    }
+
+	    return userUpdateRequest;
+  }
+
+
   /**
    * ユーザー情報詳細画面を表示
    * @param id 表示するユーザーID
@@ -174,7 +276,12 @@ public class UserController {
 	setAuthUser(model);
 
     User user = userService.findById(id);
-    model.addAttribute("userData", user);
+//  model.addAttribute("userData", user);
+
+    // ユーザー情報詳細の画面表示用データの作成
+    UserUpdateRequest userUpdateRequest = getUserUpdateRequest(user);
+    model.addAttribute("userData", userUpdateRequest);
+
     return "user/view";
   }
 
@@ -191,14 +298,35 @@ public class UserController {
 	setAuthUser(model);
 
     User user = userService.findById(id);
+    // ユーザー情報詳細の画面表示用データの作成
+    UserUpdateRequest userUpdateRequest = getUserUpdateRequest(user);
+/*
     UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
     userUpdateRequest.setId(user.getId());
     userUpdateRequest.setName(user.getName());
     userUpdateRequest.setEmail(user.getEmail());
 //	    userUpdateRequest.setPassword(user.getPassword());
-    userUpdateRequest.setPhone(user.getPhone());
+    // 性別（取得したコードを、文字列情報に変換する）
+    userUpdateRequest.setGender(User.getChgGender(user.getGender()));
     userUpdateRequest.setAddress(user.getAddress());
+    userUpdateRequest.setPhone(user.getPhone());
+*/
     model.addAttribute("userUpdateRequest", userUpdateRequest);
+
+    //性別のセレクトボックス（画面情報用）データの作成。
+    List<String> GenderList = User.newGenderList();
+    model.addAttribute("allGender", GenderList);
+
+
+    if (!isAuthRoleCheck(id)) {
+    // 権限チェックがエラーの場合、更新処理はさせない。
+      model.addAttribute("validationError", "管理者権限が無いため、編集はできません。");
+      model.addAttribute("userData", userUpdateRequest);
+      // ユーザー詳細画面を表示。
+      return "user/view";
+    }
+
+
     return "user/edit";
   }
 
@@ -213,6 +341,12 @@ public class UserController {
 
 	// ログイン情報の取得と設定。
 	setAuthUser(model);
+
+	// 入力チェックでエラーになった時用に、
+    //性別のセレクトボックス（画面情報用）データをここで作成しておく。
+    List<String> GenderList = User.newGenderList();
+    model.addAttribute("allGender", GenderList);
+//    model.addAttribute("userUpdateRequest", userUpdateRequest);
 
 //	    long lngCnt = 0; // デバッグ用
 //	    String strX = ""; // デバッグ用
@@ -229,14 +363,23 @@ public class UserController {
       return "user/edit";
     }
 
+	boolean isDateYMD = false; // 日付チェック用(false：正しい日付形式ではない)
 
-    if (!isAuthRoleCheck(userUpdateRequest.getId())) {
-    // 権限チェックがエラーの場合、更新処理はさせない。
-      model.addAttribute("validationError", "管理者権限が無いため、編集はできません。");
-      return "user/edit";
-    }
+	// 生年月日の入力チェック
 
+	if (userUpdateRequest.getBirthdayY().isEmpty()
+			&& userUpdateRequest.getBirthdayM().isEmpty()
+			&& userUpdateRequest.getBirthdayD().isEmpty() ) {
+		// 千年月日が空白の場合
 
+	} else {
+		isDateYMD = DateEdit.isDate(userUpdateRequest.getBirthdayY(), userUpdateRequest.getBirthdayM(), userUpdateRequest.getBirthdayD());
+		if (!isDateYMD) {
+	        model.addAttribute("validationError", "生年月日に正しい日付を入力して下さい。");
+	        return "user/edit";
+		}
+
+	}
 
     // 更新しようしたメールアドレスが、データベースに存在してないかを検索
     Integer intCnt = userService.findByEmailCnt(userUpdateRequest.getId(), userUpdateRequest.getEmail());
@@ -246,7 +389,7 @@ public class UserController {
 	    List<String> errorList = new ArrayList<String>();
         errorList.add("既に登録済のメールアドレスです。");
         model.addAttribute("validationError", errorList);
-	    
+
 	    return "user/edit";  
 	}
 
@@ -270,11 +413,28 @@ public class UserController {
 	setAuthUser(model);
 
     User user = userService.findById(id);
-    UserUpdateRequestPass userUpdateRequest = new UserUpdateRequestPass();
+
+
+    if (!isAuthRoleCheck(id)) {
+    // 権限チェックがエラーの場合、更新処理はさせない。
+      model.addAttribute("validationError", "管理者権限が無いため、パスワードの編集はできません。");
+
+      // ユーザー情報詳細の画面表示用データの作成
+      UserUpdateRequest userUpdateRequest = getUserUpdateRequest(user);
+
+      model.addAttribute("userData", userUpdateRequest);
+      // ユーザー詳細画面を表示。
+      return "user/view";
+    }
+
+
+    UserUpdateRequestPass userUpdateRequestPass = new UserUpdateRequestPass();
+
+    userUpdateRequestPass.setId(user.getId());
     // パスワードの情報は、セキュリィ対策として保持しない
-    userUpdateRequest.setId(user.getId());
 //	    userUpdateRequest.setPassword(user.getPassword());
-    model.addAttribute("userUpdateRequestPass", userUpdateRequest);
+
+    model.addAttribute("userUpdateRequestPass", userUpdateRequestPass);
     return "user/editpass";
   }
 
@@ -296,13 +456,6 @@ public class UserController {
         errorList.add(error.getDefaultMessage());
       }
       model.addAttribute("validationError", errorList);
-      return "user/editpass";
-    }
-    
-
-    if (!isAuthRoleCheck(userUpdateRequestPass.getId())) {
-    // 権限チェックがエラーの場合、更新処理はさせない。
-      model.addAttribute("validationError", "管理者権限が無いため、編集はできません。");
       return "user/editpass";
     }
 
@@ -327,7 +480,7 @@ public class UserController {
 
 	boolean blnErrCnk = true;
 	Long lngAuthId = authUser.getId(); // ログイン情報のユーザーIDを取得
-	
+
     if (!isAuthRoleCheck(id)) {
     // 権限チェックがエラーの場合、削除処理はさせない。
       model.addAttribute("validationError", "管理者権限が無いため、削除はできません。");
@@ -339,12 +492,14 @@ public class UserController {
       model.addAttribute("validationError", "ログイン中のユーザーは、削除できません。");
       blnErrCnk = false;
     }
-    
+
     if (!blnErrCnk) {
     	// エラーチェックに、エラーがあった場合
-
         User user = userService.findById(id);
-        model.addAttribute("userData", user);
+        // ユーザー情報詳細の画面表示用データの作成
+        UserUpdateRequest userUpdateRequest = getUserUpdateRequest(user);
+        model.addAttribute("userData", userUpdateRequest);
+//        model.addAttribute("userData", user);
         // ユーザー詳細画面を表示。
         return "user/view";
     }
@@ -357,22 +512,22 @@ public class UserController {
 
 
 	private boolean isAuthRoleCheck(@PathVariable Long id) {
-		
+
 		// メニュー画面にアクセスした時に取得した、ログイン情報を使用して権限チェックをする。
 		boolean blnChk = false;
 		String strRoles = authUser.getRoles().get(0);	// (出力例)『ROLE_USER』
 		Long lngAuthId = authUser.getId();
-		
+
 		// 編集対象のIDが、ログイン情報のIDと同じ場合は、権限チェックをせずに許可を出す。
 		if (lngAuthId.equals(id)) {
 			return true;
 		}
-	
+
 		if (strRoles.equals("ROLE_ADMIN")) {
 			// 管理者権限ありのため、編集・削除の許可を出す。
 			blnChk = true;
 		}
-		
+
 		return blnChk;
 	}
 }

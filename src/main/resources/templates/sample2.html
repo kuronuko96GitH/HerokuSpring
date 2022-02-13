@@ -33,6 +33,19 @@
 <strong sec:authorize="!isAuthenticated()">未認証</strong>
 
 	<hr />
+	<br>
+
+  <th:block sec:authorize="isAuthenticated()">
+		      <a href="#" class="btn btn-secondary">　ログイン認証 OK!　</a>
+  </th:block>
+  <div sec:authorize="isAuthenticated()">
+		      <p>ログイン認証のテスト用パターン２ OK!</p>
+  </div>
+  <th:block sec:authorize="!isAuthenticated()">
+		      <a href="#" class="btn btn-secondary">ログイン認証されてません</a>
+  </th:block>
+
+	<hr />
 ◆RootControllerクラスでmodel.addAttribute("authUser", authUser)を事前にする必要あり。
 <br>
 ${authUser.id}：<span th:text="${authUser.id}">id</span>

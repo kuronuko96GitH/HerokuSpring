@@ -235,8 +235,7 @@ public class WorkController {
 		        model.addAttribute("validationError", "勤退終了日が、勤退開始日より過去になっています。");
 		        return "work/list";
 			}
-			
-			
+
 		} else {
 			// 例）検索条件の入力状態…開始日：空白　～　終了日：2022/XX/XX
 			StrSearchCd = "NR"; // "NR"：(右側)勤退終了日のみ。(左側)勤退開始日は空白(Null)。
@@ -482,7 +481,7 @@ public class WorkController {
 		// 前画面IDが"list"(勤退一覧画面)。
 	    return "redirect:/work/list";
 	} else {
-		
+
 		// 前画面IDが"stamping"(打刻登録画面)。
 	    return "redirect:/work/stamping";		
 	}

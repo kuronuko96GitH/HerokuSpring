@@ -47,8 +47,8 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 
 		http.authorizeRequests()
 			.antMatchers("/css/**", "/js/**", "/img/**").permitAll()
-			.antMatchers("/user/add").permitAll()
-			.antMatchers("/user/create").permitAll()
+			.antMatchers("/user/addlogin").permitAll()
+			.antMatchers("/user/createlogin").permitAll()
 			.anyRequest().authenticated()
 		// ログイン
 		.and()

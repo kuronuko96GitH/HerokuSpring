@@ -8,7 +8,7 @@
 
 	<div class="main">
 		<div th:replace="common/Navbar :: navbar"></div>
-	
+
 		<div class="container">
 		  <div class="head_title">ユーザー情報一覧</div>
 	
@@ -21,8 +21,8 @@
 		        <th>NO</th>
 		        <th>名前</th>
 		        <th>メールアドレス</th>
-		        <th>住所</th>
-		        <th>電話番号</th>
+		        <th>性別</th>
+		        <th>年齢</th>
 		        <th>更新日時</th>
 		        <th class="bg-white"></th>
 		      </tr>
@@ -32,9 +32,17 @@
 		        <td th:text="${userRec.count}" class="text-center"></td>
 		        <td th:text="*{name}"></td>
 		        <td th:text="*{email}"></td>
-		        <td th:text="*{address}"></td>
-		        <td th:text="*{phone}"></td>
-		        <td th:text="${#dates.format(user.updateDate, 'yyyy/MM/dd H:mm')}"></td>
+		        <td th:if="${user.gender == 0}" class="text-center">非公開</td>
+		        <td th:if="${user.gender == 1}" class="text-center">男性</td>
+		        <td th:if="${user.gender == 2}" class="text-center">女性</td>
+				<th:block th:if="${user.age == '' || user.age == null}">
+			        <td class="text-center">未登録</td>
+				</th:block>
+				<th:block th:if="${!(user.age == '' || user.age == null)}">
+			        <td th:text="${user.age + '歳'}" class="text-center"></td>
+				</th:block>
+
+		        <td th:text="${#dates.format(user.updateDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
 		      </tr>
 		    </tbody>

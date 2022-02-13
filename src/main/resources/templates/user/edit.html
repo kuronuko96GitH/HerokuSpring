@@ -41,6 +41,34 @@
 		          <input type="number" class="form-control" th:field="*{phone}">
 		        </div>
 		      </div>
+
+		      <div class="row mx-md-n5">
+		        <div class="col-2 pt-3 border bg-light">性別</div>
+		        <div class="col py-2 border">
+				<select th:field="*{gender}">
+					<option th:each="selGender : ${allGender}" 
+					th:value="${selGender}" 
+					th:text="${selGender}"></option>
+				</select>
+		        </div>
+		      </div>
+
+		      <div class="row mx-md-n5">
+		        <div class="col-2 pt-3 border bg-light">生年月日</div>
+		        <div class="col py-2 border">
+			      <input type="number" th:field="*{birthdayY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+			      <input type="number" th:field="*{birthdayM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+			      <input type="number" th:field="*{birthdayD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
+		        </div>
+		      </div>
+
+		      <div class="row mx-md-n5">
+		        <div class="col-2 pt-3 border bg-light">年齢</div>
+		        <div class="col py-2 border">
+		          <input type="number" class="form-control" th:field="*{age}" maxlength="3" style="width:80px;">
+		        </div>
+		      </div>
+
 		    </div>
 	
 		    <br />

@@ -13,6 +13,7 @@ import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
 import com.example.demo.entity.User;
+import com.example.demo.mdl.DateEdit;
 import com.example.demo.repository.UserRepository;
 
 /**
@@ -67,8 +68,25 @@ public class UserService {
     user.setEmail(userRequest.getEmail());
     user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 //    user.setPassword(userRequest.getPassword());
-    user.setAddress(userRequest.getAddress());
-    user.setPhone(userRequest.getPhone());
+    user.setGender(0); // 性別（０：非公開）
+//    user.setAddress(userRequest.getAddress());
+//    user.setPhone(userRequest.getPhone());
+    user.setCreateDate(now);
+    user.setUpdateDate(now);
+    userRepository.save(user);
+  }
+
+  /**
+   * （ログイン⇒）ユーザー情報 新規登録
+   * @param user ユーザー情報
+   */
+  public void createLogin(UserRequest userRequest) {
+    Date now = new Date();
+    User user = new User();
+    user.setName(userRequest.getName());
+    user.setEmail(userRequest.getEmail());
+    user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+    user.setGender(0); // 性別（０：非公開）
     user.setCreateDate(now);
     user.setUpdateDate(now);
     userRepository.save(user);
@@ -106,10 +124,29 @@ public class UserService {
    */
   public void update(UserUpdateRequest userUpdateRequest) {
     User user = findById(userUpdateRequest.getId());
-    user.setAddress(userUpdateRequest.getAddress());
     user.setName(userUpdateRequest.getName());
     user.setEmail(userUpdateRequest.getEmail());
+
+    // 性別
+    user.setGender(User.getChgGender(userUpdateRequest.getGender()));
+//    user.setGender(Integer.valueOf(userUpdateRequest.getGender()));
+
+    user.setAddress(userUpdateRequest.getAddress());
     user.setPhone(userUpdateRequest.getPhone());
+
+    // 生年月日
+	if (userUpdateRequest.getBirthdayY().isEmpty()
+			&& userUpdateRequest.getBirthdayM().isEmpty()
+			&& userUpdateRequest.getBirthdayD().isEmpty() ) {
+		// 生年月日が空白の場合
+	    user.setBirthday(null);
+	} else {
+	    Date dateBirthday = DateEdit.getDate(userUpdateRequest.getBirthdayY(), userUpdateRequest.getBirthdayM(), userUpdateRequest.getBirthdayD());
+	    user.setBirthday(dateBirthday);
+	}
+    // 年齢age
+    user.setAge(userUpdateRequest.getAge());
+
     user.setUpdateDate(new Date());
     userRepository.save(user);
   }

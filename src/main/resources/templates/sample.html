@@ -70,13 +70,51 @@
 
 		    <br>
 		    <br>
+	<hr />
+		    <br>◆セレクトボックス。
 		    <br>
+		    <br>・Thymeleaf変換後のサンプルデータ
+		    <br>
+				<select id="gender" name="gender">
+					<option value="非公開">非公開</option>
+					<option value="男性" selected="selected">男性</option>
+					<option value="女性">女性</option>
+				</select>
+	<br>
+	<br>・サンプルデータ２
+	<br>
+				<select id="gender" name="gender">
+					<option value="０">非公開</option>
+					<option value="１" selected="selected">男性</option>
+					<option value="２">女性</option>
+				</select>
+
+	<br>
+	<br>
+
+<p>星座：
+<br>
+<select name="horoscope" size="12">
+<option value="Aries">おひつじ座</option>
+<option value="Taurus">おうし座</option>
+<option value="Gemini">ふたご座</option>
+<option value="Cancer">かに座</option>
+<option value="Leo">しし座</option>
+<option value="Virgo">おとめ座</option>
+<option value="Libra">てんびん座</option>
+<option value="Scorpio">さそり座</option>
+<option value="Saggitarius">いて座</option>
+<option value="Capricorn">やぎ座</option>
+<option value="Aquarius">みずがめ座</option>
+<option value="Pisces">うお座</option>
+</select>
+</p>
 
 	<hr />
 	    <div class="col-md-8 offset-md-4">
 		    <br>
-		    ◆JavaScriptの起動テスト。
-		    <br>JSファイル内の『function demoTest()』アラートメッセージを表示させたい場合。
+		    <h2>◆JavaScriptの起動テスト。</h2>
+		    JSファイル内の『function demoTest()』アラートメッセージを表示させたい場合。
 		    <br>
 		        <input type="button" class="btn btn-secondary" value="ゲストアカウント" onclick="demoTest();">
 	<!-- こちらだと、id="guest_button"のJavaScriptイベントが同時発生します。
@@ -84,11 +122,10 @@
 	  -->
 	    </div>
 
+		    <br>
+		    <br>
 
 	<hr />
-		    <br>
-		    <br>
-		    <br>
 
 <br><h2>参考ソース：Bootstrapのよく使うクラスまとめ</h2>
 	<h2>◆padding</h2>

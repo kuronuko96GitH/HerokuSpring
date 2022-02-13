@@ -3,15 +3,11 @@
 <head th:replace="common/Header :: header(title = ${sysInfo.title}, scripts = ~{::script}, links = ~{::link})"></head>
   <body>
 
-  <th:block sec:authorize="isAuthenticated()">
-
 	<div class="cover"></div>
 	<div th:replace="common/Sidenav :: sidenav"></div>
+
 	<div class="main">
-
 		<div th:replace="common/Navbar :: navbar"></div>
-
-  </th:block>
 
 		<div class="container">
 		  <div class="head_title">ユーザー新規登録</div>
@@ -34,7 +30,7 @@
 		      <label>パスワード：<span class="text-danger">※</span></label>
 		      <input type="password" th:field="*{password}" class="form-control">
 		    </div>
-	
+<!--
 		    <div class="form-group mb-2">
 		      <label>住所：</label>
 		      <input type="text" th:field="*{address}" class="form-control">
@@ -44,22 +40,16 @@
 		      <label>電話番号：</label>
 		      <input type="number" th:field="*{phone}" class="form-control">
 		    </div>
+-->
 		    <br />
 		    <div class="text-center">
 		      <input type="submit" value="　登録　" class="btn btn-primary">
-  <th:block sec:authorize="!isAuthenticated()">
-		      <a th:href="@{/}" class="btn btn-secondary">キャンセル</a>
-  </th:block>
-  <th:block sec:authorize="isAuthenticated()">
 		      <a href="/user/list" class="btn btn-secondary">キャンセル</a>
-  </th:block>
 		    </div>
 		  </form>
 		</div>
 
-  <th:block sec:authorize="isAuthenticated()">
 	</div>
-  </th:block>
 
 	<!-- Scripts -->
 	<div th:replace="common/Script :: script"></div>

@@ -79,7 +79,6 @@ public class DateTimeRange {
 	 */
 	public static double getRangeHours(String strStartDateTime, String strEndDateTime, Integer intStatus) {
 
-//		boolean isResult = true; // true：正常終了
 		double dblHours = 0; // (小数点を含む、時間数を取得する。)
 
 	    // 空白("")に置き替え用。
@@ -109,6 +108,7 @@ public class DateTimeRange {
 //	    LocalDateTime dateStart = LocalDateTime.of(intY, intM, intD, intHH, intMI, intSS);
 	    LocalDateTime dateBegin = LocalDateTime.of(intY, intM, intD, intHH, intMI);// 開始日時
 
+	    // 昼休憩の終了時間
 	    LocalDateTime dateBreakTime = LocalDateTime.of(intY, intM, intD, 12, 59);
 
 	    if (dateBegin.isAfter(dateBreakTime)) {
@@ -131,6 +131,17 @@ public class DateTimeRange {
 
 //	    LocalDateTime dateEnd = LocalDateTime.of(intY, intM, intD, intHH, intMI, intSS);
 	    LocalDateTime dateEnd = LocalDateTime.of(intY, intM, intD, intHH, intMI);// 終了日時
+
+	    // 昼休憩の開始時間
+	    dateBreakTime = LocalDateTime.of(intY, intM, intD, 12, 01);
+
+	    if (dateEnd.isBefore(dateBreakTime)) {
+	    	// 終了時間が、お昼休憩の開始時間（１２時０１分）より前で、
+	    	// 午前出勤のみ労働だった場合
+	    	isBreakTime = false; // お昼休憩無し
+	    }
+
+
 
 	    // 期間分の時間を取得する
 	    Duration summerVacationDuration = Duration.between(dateBegin, dateEnd);
