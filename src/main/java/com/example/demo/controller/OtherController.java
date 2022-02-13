@@ -98,4 +98,18 @@ public class OtherController {
 		
 	return "others/devdoc";
   }
+
+  /**
+   * 開発履歴画面を表示
+   * @param model Model
+   * @return 開発履歴画面
+   */
+  @GetMapping(value = "/others/devhistory")
+  public String devhistory(Model model) {
+
+	// ログイン情報の取得と設定。
+	setAuthUser(model);
+		
+	return "others/devhistory";
+  }
 }

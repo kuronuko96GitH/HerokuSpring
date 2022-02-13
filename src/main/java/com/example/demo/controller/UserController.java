@@ -83,7 +83,12 @@ public class UserController {
 	// ログイン情報の取得と設定。
 	setAuthUser(model);
 
-	if (authUser.getRoles().get(0).equals("ROLE_USER")) {
+	if (authUser == null) {
+		// セッション情報が取得できない場合、
+	    // 強制的にログイン画面へ戻す。
+	    return "login";
+
+	} else if (authUser.getRoles().get(0).equals("ROLE_USER")) {
 		// 『ROLE_USER』の場合は、ユーザー情報一覧を閲覧したとしても、自分のユーザーした検索できない。
 		List<User> userlist = userService.findByUserId(authUser.getId());
 		model.addAttribute("userlist", userlist);
