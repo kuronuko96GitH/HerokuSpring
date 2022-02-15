@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.UserRequest;
+import com.example.demo.dto.UserRequestSearch;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
 import com.example.demo.entity.User;
 import com.example.demo.mdl.DateEdit;
+import com.example.demo.repository.RepositoryXml;
 import com.example.demo.repository.UserRepository;
 
 /**
@@ -22,20 +24,26 @@ import com.example.demo.repository.UserRepository;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UserService {
- 
+
   /**
-   * ユーザー情報 Repository
+   * ユーザー情報 UserRepository
    */
   @Autowired
   private UserRepository userRepository;
+
+  /**
+   * ユーザー情報 Repository(XML版・動的SQLに対応)
+   */
+  @Autowired
+  private RepositoryXml repositoryXml;
 
   /**
    * パスワードエンコーダ（暗号化） Repository
    */
   @Autowired
   private PasswordEncoder passwordEncoder;
-  
-  
+
+
   /**
    * ユーザー情報 全検索
    * @return 検索結果
@@ -119,6 +127,61 @@ public class UserService {
   }
 
   /**
+   * ユーザー情報 該当する『年齢』で検索
+   * @return 検索結果
+   */
+  public List<User> searchUser(UserRequestSearch userRequestSearch) {
+
+	Integer intMale = 0; // 初期値（０：非公開）
+	Integer intFemale = 0; // 初期値（０：非公開）
+	//checkFemale
+
+	if (userRequestSearch.getCheckMale() == null) {
+		intMale = 0;
+
+	} else if (userRequestSearch.getCheckMale()) {
+		// (チェックボックス)男性にチェックあり
+		intMale = 1;
+	}
+
+	if (userRequestSearch.getCheckFemale() == null) {
+		intFemale = 0;
+
+	} else if (userRequestSearch.getCheckFemale()) {
+		// (チェックボックス)女性にチェックあり
+		intFemale = 2;
+	}
+	
+	// 入力項目で検索条件を変更する。
+	return repositoryXml.searchUser(userRequestSearch.getAge(), userRequestSearch.getEndAge(), intMale, intFemale);
+
+//	  return workRepository.findByDate(userId, startDate, endDate);
+  }
+
+
+  /**
+   * ユーザー情報 該当する『年齢』で検索
+   * @return 検索結果
+   */
+  public List<User> findByAge(String startAge, String endAge) {
+
+		// 年齢の入力項目で検索条件を変更する。
+		if (startAge != null && endAge == null) {
+			// 年齢(開始)のみ。年齢(終了)は空白(Null)。
+			return userRepository.findByStartAge(startAge);
+		} else if (startAge == null && endAge != null) {
+			// 年齢(開始)は空白。年齢(終了)のみ。
+			return userRepository.findByEndAge(endAge);
+		} else {
+			// 年齢(開始)と年齢(開終了)の両方入力あり。
+			return userRepository.findByAge(startAge, endAge);
+		}
+
+//	  return workRepository.findByDate(userId, startDate, endDate);
+  }
+
+
+  /**
    * ユーザー情報 更新
    * @param user ユーザー情報
    */
@@ -135,9 +198,12 @@ public class UserService {
     user.setPhone(userUpdateRequest.getPhone());
 
     // 生年月日
-	if (userUpdateRequest.getBirthdayY().isEmpty()
-			&& userUpdateRequest.getBirthdayM().isEmpty()
-			&& userUpdateRequest.getBirthdayD().isEmpty() ) {
+//	if (userUpdateRequest.getBirthdayY().isEmpty()
+//			&& userUpdateRequest.getBirthdayM().isEmpty()
+//			&& userUpdateRequest.getBirthdayD().isEmpty() ) {
+	if (userUpdateRequest.getBirthdayY() == null
+			&& userUpdateRequest.getBirthdayM() == null
+			&& userUpdateRequest.getBirthdayD() == null ) {
 		// 生年月日が空白の場合
 	    user.setBirthday(null);
 	} else {

@@ -8,13 +8,13 @@
 
 	<div class="main">
 		<div th:replace="common/Navbar :: navbar"></div>
-	
+
 		<div class="container">
 		  <div class="head_title">勤退情報一覧</div>
-	
+
 		  <div th:replace="common/Msg :: msg"></div>
-	
-		  <form th:action="@{/work/searchym}" th:object="${workRequest}" th:method="post">
+
+		  <form th:action="@{/work/searchym}" th:object="${workRequestSearch}" th:method="post">
 			<div class="mb-3">
 				勤退年月：
 				<input type="number" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
@@ -23,7 +23,7 @@
 			</div>
 		  </form>
 	
-		  <form th:action="@{/work/search}" th:object="${workRequest}" th:method="post">
+		  <form th:action="@{/work/search}" th:object="${workRequestSearch}" th:method="post">
 			<div class="mb-3">
 				勤退開始日：
 				<input type="number" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年

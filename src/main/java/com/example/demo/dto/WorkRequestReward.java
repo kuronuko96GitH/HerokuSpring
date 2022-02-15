@@ -18,14 +18,18 @@ public class WorkRequestReward implements Serializable {
    * 検索年月（年）
    * (任意入力。空白も可とする。)
    */
-  @Pattern(regexp = "\\d{0,4}?$", message = "勤退年月(年)に正しい日付を入力して下さい。")
+//  @Pattern(regexp = "\\d{0,4}?$", message = "勤退年月(年)に正しい日付を入力して下さい。")
+  @NotEmpty(message = "勤退年月(年)を入力して下さい。")
+  @Pattern(regexp = "\\d{1,4}", message = "勤退年月(年)に正しい日付を入力して下さい。")
   private String searchDateY;
 
   /**
    * 検索年月（月）
    * (任意入力。空白も可とする。)
    */
-  @Pattern(regexp = "\\d{0,2}?$", message = "勤退年月(月)に正しい日付を入力して下さい。")
+//  @Pattern(regexp = "\\d{0,2}?$", message = "勤退年月(月)に正しい日付を入力して下さい。")
+  @NotEmpty(message = "勤退年月(月)を入力して下さい。")
+  @Pattern(regexp = "\\d{1,2}", message = "勤退年月(月)に正しい日付を入力して下さい。")
   private String searchDateM;
 
   /**

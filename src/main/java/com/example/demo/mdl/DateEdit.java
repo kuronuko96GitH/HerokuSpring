@@ -9,6 +9,8 @@ import java.time.format.ResolverStyle;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.example.demo.entity.SystemInfo;
+
 public class DateEdit {
 
 	/**
@@ -56,9 +58,10 @@ public class DateEdit {
 		if (!isNumeric) {
 			return false;
 		}
-		// 年数チェック(年)
-		if (Integer.parseInt(strDateY) < 2000) {
-			// ※今回のプロジェクトにおいては、2000年以上を有効な日付とします。
+		// 年数の有効範囲チェック
+		if (Integer.parseInt(strDateY) < SystemInfo.getVALID_YEAR()) {
+			// ※今回のプロジェクトにおいては、1900年以上を有効な日付とします。
+			//　（生年月日などの日付チェックで、１００歳を超える会員登録はありえないと判断。）
 			return false;
 		}
 		// 入力チェック(月)

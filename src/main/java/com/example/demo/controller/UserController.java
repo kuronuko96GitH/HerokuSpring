@@ -1,17 +1,21 @@
 package com.example.demo.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.demo.auth.AuthUser;
 import com.example.demo.dto.UserRequest;
+import com.example.demo.dto.UserRequestSearch;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
 import com.example.demo.entity.SystemInfo;
@@ -54,6 +59,22 @@ public class UserController {
 	private SystemInfo systemInfo;
 
 	/**
+	 * 未入力項目はバリデーション（入力チェック）の対象外とするメソッド
+	 * @param binder
+	 */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		// SpringBootの仕様により、未入力値は空白("")を埋める仕様らしいが、
+		//未入力の項目は『null』が設定されるように、本メソッドでカイスタマイズをする。
+		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+
+		// 補足説明
+		// StringTrimmerEditor(true)　内の説明によると、
+		//『emptyAsNull true if an empty String is to betransformed into null』
+		//【和訳】『emptyAsNull 空の文字列をnullに変換する場合はtrue』とのことです。
+	}
+
+	/**
 	 * ログイン情報の設定
 	 * @param Model model
 	 * @return
@@ -83,6 +104,12 @@ public class UserController {
 	// ログイン情報の取得と設定。
 	setAuthUser(model);
 
+
+	// ユーザー情報一覧画面の検索処理のために、検索条件の入力項目の空データを作っておく。
+	// ここで作成しておかないと、HTML側でnullエラーになる。
+    model.addAttribute("userRequestSearch", new UserRequestSearch());
+
+
 	if (authUser == null) {
 		// セッション情報が取得できない場合、
 	    // 強制的にログイン画面へ戻す。
@@ -97,6 +124,44 @@ public class UserController {
 		List<User> userlist = userService.searchAll();
 		model.addAttribute("userlist", userlist);
 	}
+
+	return "user/list";
+  }
+
+  /**
+   * ユーザー情報一覧　検索
+   * @param UserRequestSearch userRequestSearch（検索条件の入力項目）
+   * @param model Model
+   * @return ユーザー情報一覧画面
+   * @throws ParseException 
+   */
+  @RequestMapping(value = "/user/search", method = RequestMethod.POST)
+  public String displayListUserSearch(@Validated @ModelAttribute UserRequestSearch userRequestSearch, BindingResult result, Model model) {
+
+	// ログイン情報の取得と設定。
+	setAuthUser(model);
+
+	if (result.hasErrors()) {
+	      // 入力チェックエラーの場合
+	      List<String> errorList = new ArrayList<String>();
+	      for (ObjectError error : result.getAllErrors()) {
+	        errorList.add(error.getDefaultMessage());
+	      }
+	      model.addAttribute("validationError", errorList);
+	      return "user/list";
+	}
+
+
+	List<User> userlist;
+
+	// データ検索処理
+	userlist = userService.searchUser(userRequestSearch);
+
+	if (userlist.size() == 0) {
+		// 該当データ無し。
+		model.addAttribute("msgInfo", "該当データがありません。");
+	}
+	model.addAttribute("userlist", userlist);
 
 	return "user/list";
   }
@@ -372,10 +437,13 @@ public class UserController {
 
 	// 生年月日の入力チェック
 
-	if (userUpdateRequest.getBirthdayY().isEmpty()
-			&& userUpdateRequest.getBirthdayM().isEmpty()
-			&& userUpdateRequest.getBirthdayD().isEmpty() ) {
-		// 千年月日が空白の場合
+//	if (userUpdateRequest.getBirthdayY().isEmpty()
+//			&& userUpdateRequest.getBirthdayM().isEmpty()
+//			&& userUpdateRequest.getBirthdayD().isEmpty() ) {
+	if (userUpdateRequest.getBirthdayY() == null
+			&& userUpdateRequest.getBirthdayM() == null
+			&& userUpdateRequest.getBirthdayD() == null ) {
+		// 生年月日が空白の場合
 
 	} else {
 		isDateYMD = DateEdit.isDate(userUpdateRequest.getBirthdayY(), userUpdateRequest.getBirthdayM(), userUpdateRequest.getBirthdayD());

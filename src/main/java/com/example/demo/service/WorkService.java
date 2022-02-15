@@ -22,9 +22,9 @@ import com.example.demo.repository.WorkRepository;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class WorkService {
- 
+
   /**
-   * 勤怠情報 Repository
+   * 勤怠情報 WorkRepository
    */
   @Autowired
   private WorkRepository workRepository;

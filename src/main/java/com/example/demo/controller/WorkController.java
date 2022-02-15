@@ -9,12 +9,15 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +61,23 @@ public class WorkController {
 	* システム情報
 	*/
 	private SystemInfo systemInfo;
+
+	/**
+	 * 未入力項目はバリデーション（入力チェック）の対象外とするメソッド
+	 * @param binder
+	 */
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		// SpringBootの仕様により、未入力値は空白("")を埋める仕様らしいが、
+		//未入力の項目は『null』が設定されるように、本メソッドでカイスタマイズをする。
+		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+
+		// 補足説明
+		// StringTrimmerEditor(true)　内の説明によると、
+		//『emptyAsNull true if an empty String is to betransformed into null』
+		//【和訳】『emptyAsNull 空の文字列をnullに変換する場合はtrue』とのことです。
+	}
 
 	/**
 	 * ログイン情報の設定
@@ -121,7 +141,7 @@ public class WorkController {
 
 	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
-    model.addAttribute("workRequest", new WorkRequestSearch());
+    model.addAttribute("workRequestSearch", new WorkRequestSearch());
 
 
 	// 勤退情報の検索
@@ -140,14 +160,14 @@ public class WorkController {
    * @throws ParseException 
    */
   @RequestMapping(value = "/work/search", method = RequestMethod.POST)
-  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) {
+  public String displayListWorkSearch(@Validated @ModelAttribute WorkRequestSearch workRequestSearch, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
 	setAuthUser(model);
 
 	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日のパラメータを渡しておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
-    model.addAttribute("workRequest", workRequest);
+//    model.addAttribute("workRequestSearch", workRequestSearch);
 
 	if (result.hasErrors()) {
 	      // 入力チェックエラーの場合
@@ -171,14 +191,17 @@ public class WorkController {
 
 
 	// 検索条件の入力チェック(開始年月日)
-	if (workRequest.getStartDateY().isEmpty()
-		&& workRequest.getStartDateM().isEmpty()
-		&& workRequest.getStartDateD().isEmpty() ) {
+//	if (workRequestSearch.getStartDateY().isEmpty()
+//			&& workRequestSearch.getStartDateM().isEmpty()
+//			&& workRequestSearch.getStartDateD().isEmpty() ) {
+	if (workRequestSearch.getStartDateY() == null
+		&& workRequestSearch.getStartDateM() == null
+		&& workRequestSearch.getStartDateD() == null ) {
 		// 年・月・日が空白の場合は、エラーチェックの対象外。
 			StrSearchCd = "ALL"; // "ALL"：検索条件指定なし（勤退開始日と勤退終了日のどちらも空白。）
 
 	} else {
-		isDateYMD = DateEdit.isDate(workRequest.getStartDateY(), workRequest.getStartDateM(), workRequest.getStartDateD());
+		isDateYMD = DateEdit.isDate(workRequestSearch.getStartDateY(), workRequestSearch.getStartDateM(), workRequestSearch.getStartDateD());
 		if (!isDateYMD) {
 	        model.addAttribute("validationError", "勤退開始日に正しい日付を入力して下さい。");
 	        return "work/list";
@@ -189,15 +212,18 @@ public class WorkController {
 
 	if ( StrSearchCd.equals("LN") ) {
 		// "LN"：(左側)勤退開始日のみ。(右側)勤退終了日は空白。
-		dateStart = DateEdit.getDate(workRequest.getStartDateY(), workRequest.getStartDateM(), workRequest.getStartDateD());
+		dateStart = DateEdit.getDate(workRequestSearch.getStartDateY(), workRequestSearch.getStartDateM(), workRequestSearch.getStartDateD());
 	}
 
 
 
 	// 検索条件の入力チェック(終了年月日)
-	if (workRequest.getEndDateY().isEmpty()
-		&& workRequest.getEndDateM().isEmpty()
-		&& workRequest.getEndDateD().isEmpty() ) {
+//	if (workRequestSearch.getEndDateY().isEmpty()
+//			&& workRequestSearch.getEndDateM().isEmpty()
+//			&& workRequestSearch.getEndDateD().isEmpty() ) {
+	if (workRequestSearch.getEndDateY() == null
+		&& workRequestSearch.getEndDateM() == null
+		&& workRequestSearch.getEndDateD() == null ) {
 		// 年・月・日が空白の場合は、エラーチェックの対象外。
 
 		if ( StrSearchCd.equals("LN") ) {
@@ -213,7 +239,7 @@ public class WorkController {
 		}
 
 	} else {
-		isDateYMD = DateEdit.isDate(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD());
+		isDateYMD = DateEdit.isDate(workRequestSearch.getEndDateY(), workRequestSearch.getEndDateM(), workRequestSearch.getEndDateD());
 		if (!isDateYMD) {
 	        model.addAttribute("validationError", "勤退終了日に正しい日付を入力して下さい。");
 	        return "work/list";
@@ -227,8 +253,8 @@ public class WorkController {
 			StrSearchCd = "LR"; // "LR"：(左右)勤退開始日と勤退終了日の両方入力あり。
 
 			// 開始日と終了日の範囲チェック。
-			String strStartDate = DateEdit.getFormatDate(workRequest.getStartDateY(), workRequest.getStartDateM(), workRequest.getStartDateD(), "yyyyMMdd");
-			String strEndDate = DateEdit.getFormatDate(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD(), "yyyyMMdd");
+			String strStartDate = DateEdit.getFormatDate(workRequestSearch.getStartDateY(), workRequestSearch.getStartDateM(), workRequestSearch.getStartDateD(), "yyyyMMdd");
+			String strEndDate = DateEdit.getFormatDate(workRequestSearch.getEndDateY(), workRequestSearch.getEndDateM(), workRequestSearch.getEndDateD(), "yyyyMMdd");
 			isDateYMD = DateRange.isRangeChk(strStartDate, strEndDate);
 
 			if (!isDateYMD) {
@@ -245,7 +271,7 @@ public class WorkController {
 	if ( StrSearchCd.equalsIgnoreCase("LR") || StrSearchCd.equals("NR") ) {
 		// "LR"：(左右)勤退開始日と勤退終了日の両方入力あり。
 		// または　"NR"：(右側)勤退終了日のみ。(左側)勤退開始日は空白(Null)。
-		dateEnd = DateEdit.getDateTime(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD(), "23", "59", "59");
+		dateEnd = DateEdit.getDateTime(workRequestSearch.getEndDateY(), workRequestSearch.getEndDateM(), workRequestSearch.getEndDateD(), "23", "59", "59");
 	}
 
 	List<Work> worklist;
@@ -283,14 +309,14 @@ public class WorkController {
    * @throws ParseException 
    */
   @RequestMapping(value = "/work/searchym", method = RequestMethod.POST)
-  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequestSearch workRequest, BindingResult result, Model model) {
+  public String displayListWorkSearchYM(@Validated @ModelAttribute WorkRequestSearch workRequestSearch, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
 	setAuthUser(model);
 
 	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日のパラメータを渡しておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
-    model.addAttribute("workRequest", workRequest);
+//    model.addAttribute("workRequest", workRequest);
 
 	if (result.hasErrors()) {
 	      // 入力チェックエラーの場合
@@ -311,13 +337,15 @@ public class WorkController {
 
 
 	// 検索条件の入力チェック(検索年月)
-	if (workRequest.getSearchDateY().isEmpty()
-		&& workRequest.getSearchDateM().isEmpty() ) {
+//	if (workRequestSearch.getSearchDateY().isEmpty()
+//			&& workRequestSearch.getSearchDateM().isEmpty() ) {
+	if (workRequestSearch.getSearchDateY() == null
+		&& workRequestSearch.getSearchDateM() == null ) {
 		// 勤退開始(年)と勤退開始(月)が空白の場合は、エラーチェックの対象外。
 		// StrSearchCd = "ALL"; // "ALL"：検索条件指定なし
 
 	} else {
-		isDateYMD = DateEdit.isDate(workRequest.getSearchDateY(), workRequest.getSearchDateM(), "01");
+		isDateYMD = DateEdit.isDate(workRequestSearch.getSearchDateY(), workRequestSearch.getSearchDateM(), "01");
 		if (!isDateYMD) {
 	        model.addAttribute("validationError", "勤退年月に正しい日付を入力して下さい。");
 	        return "work/list";
@@ -338,9 +366,9 @@ public class WorkController {
 		// 勤退年月の入力があった場合
 
 		// 範囲検索の開始日（該当月の初日）
-		dateStart = DateEdit.getDate(workRequest.getSearchDateY(), workRequest.getSearchDateM(), "1");
+		dateStart = DateEdit.getDate(workRequestSearch.getSearchDateY(), workRequestSearch.getSearchDateM(), "1");
 		// 範囲検索の終了日(該当月の末日)
-		dateEnd = DateEdit.getDateLastDay(workRequest.getSearchDateY(), workRequest.getSearchDateM());
+		dateEnd = DateEdit.getDateLastDay(workRequestSearch.getSearchDateY(), workRequestSearch.getSearchDateM());
 
 		// 年月日の検索コードで検索条件を変更する。
 		worklist = workService.findByDate(authUser.getId(), dateStart, dateEnd);

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http:mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.repository.RepositoryXml">
+
+	<select id="searchUser" parameterType="java.lang.String" resultMap="userSearch">
+	<![CDATA[
+		SELECT	USERS.ID,
+				USERS.EMAIL,
+				USERS.NAME,
+				USERS.GENDER,
+				USERS.ADDRESS,
+				USERS.PHONE,
+				USERS.BIRTHDAY,
+				USERS.AGE,
+				USERS.UPDATED_AT
+		FROM USERS
+		WHERE USERS.ID >= 1
+	]]>
+	<choose>
+	  <when test="intMale != 0 and intFemale != 0">
+		<![CDATA[
+			AND USERS.GENDER IN (#{intMale}, #{intFemale})
+		]]>
+	  </when>
+	  <when test="intMale != 0">
+		<![CDATA[
+			AND USERS.GENDER = #{intMale}
+		]]>
+	  </when>
+	  <when test="intFemale != 0">
+		<![CDATA[
+			AND USERS.GENDER = #{intFemale}
+		]]>
+	  </when>
+	</choose>
+	<if test="startAge != null">
+	<![CDATA[
+		AND USERS.AGE >= #{startAge}
+	]]>
+	</if>
+	<if test="endAge != null">
+	<![CDATA[
+		AND USERS.AGE <= #{endAge}
+	]]>
+	</if>
+	<![CDATA[
+		ORDER BY USERS.ID
+	]]>
+	</select>
+
+	<resultMap type="com.example.demo.entity.User" id="userSearch">
+		<result property="id" column="ID" />
+		<result property="email" column="EMAIL" />
+		<result property="name" column="NAME" />
+		<result property="gender" column="GENDER" />
+		<result property="address" column="ADDRESS" />
+		<result property="phone" column="PHONE" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="age" column="AGE" />
+		<result property="updateDate" column="UPDATED_AT" />
+	</resultMap>
+</mapper>
