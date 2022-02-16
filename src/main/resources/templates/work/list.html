@@ -14,30 +14,46 @@
 
 		  <div th:replace="common/Msg :: msg"></div>
 
-		  <form th:action="@{/work/searchym}" th:object="${workRequestSearch}" th:method="post">
-			<div class="mb-3">
-				勤退年月：
-				<input type="number" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
-				<input type="number" th:field="*{searchDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
-				<input type="submit" value="　年月検索　" class="btn btn-success">
+			<div class="search_form sticky-top p-2">
+				<form th:action="@{/work/search}" class="my-2" th:object="${workRequestSearch}" th:method="post">
+					<div class="d-flex align-items-between">
+						<h5 class="me-2">検索条件</h5>
+						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
+							<span>[検索条件を隠す]</span>
+						</a>
+					</div>
+					<div id="searchCondition" class="collapse show">
+						<div class="border p-3 rounded">
+							<input type="button" class="btn btn-secondary mb-3" value="検索条件クリア" id="clear_work_button">
+							<div class="mb-3">
+								勤退年月：
+								<input type="number" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+								<input type="number" th:field="*{searchDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+								<strong>（※勤退開始日～勤退終了日が、検索条件として優先されます。）</strong>
+							</div>
+							<div class="mb-3">
+								勤退開始日：
+								<input type="number" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+								<input type="number" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+								<input type="number" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日　～　勤退終了日：
+								<input type="number" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+								<input type="number" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+								<input type="number" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
+							</div>
+						</div>
+					</div>
+					<div class="py-2">
+						<button class="btn btn-success shadow-sm px-3">
+							<span>検索実行</span>
+						</button>
+					</div>
+
+					<div th:replace="common/SearchMsg :: searchMsg"></div>
+
+				</form>
+			<hr>
 			</div>
-		  </form>
-	
-		  <form th:action="@{/work/search}" th:object="${workRequestSearch}" th:method="post">
-			<div class="mb-3">
-				勤退開始日：
-				<input type="number" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
-				<input type="number" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
-				<input type="number" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日　～　勤退終了日：
-				<input type="number" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
-				<input type="number" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
-				<input type="number" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
-				<input type="submit" value="　検索　" class="btn btn-success">
-			</div>
-		  </form>
-	
-		  <hr>
-	
+
 		  <table class="table table-striped">
 		    <thead>
 		      <tr>
@@ -69,6 +85,7 @@
 
 	<!-- Scripts -->
 	<div th:replace="common/Script :: script"></div>
+	<div th:replace="common/js/JsSearchWork :: scriptSearchWork"></div>
 
   </body>
 </html>

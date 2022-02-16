@@ -18,19 +18,19 @@
 							<label for="password">Password</label>
 							<input type="password" class="form-control" id="password" name="password" tabindex="2" required />
 						</div>
-	
-	
+
+
 						<!-- エラーメッセージ -->
 						<div class="my-1 text-danger" th:if="${authenticationException}">
 							<span th:text="${authenticationException.message}"></span>
 						</div>
-	
+
 						<hr />
 						<div class="py-3 d-grid gap-2">
 							<button type="submit" class="btn btn-primary btn-block">ログイン</button>
 							<a th:href="@{/user/addlogin}" class="btn btn-success btn-block text-light">ユーザ登録</a>
 						</div>
-	
+
 						<div class="row mb-3">
 				<!-- 		    <div class="col-md-8 offset-md-4">  -->
 						    <div class="col-md-0 offset-md-0">
@@ -44,15 +44,15 @@
 							    <br>⇒ ②『ログイン』ボタンを押す。
 						    </div>					
 						</div>
-						
+
 					</form>
-	
+
 				</div>
 			</div>
-	
+
 		</div>
 	</div>
-	
+
 	<section class="bg-dark">
 	    <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
 	        <div class="d-flex justify-content-center">
@@ -66,13 +66,14 @@
 	                    </div>
 	                </div>
 	            </div>
-	
+
 	        </div>
 	    </div>
 	</section>
 
 	<!-- Scripts -->
 	<div th:replace="common/Script :: script"></div>
+	<div th:replace="common/js/JsLogin :: scriptLogin"></div>
 
   </body>
 </html>

@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,7 +132,6 @@ public class UserController {
    * @param UserRequestSearch userRequestSearch（検索条件の入力項目）
    * @param model Model
    * @return ユーザー情報一覧画面
-   * @throws ParseException 
    */
   @RequestMapping(value = "/user/search", method = RequestMethod.POST)
   public String displayListUserSearch(@Validated @ModelAttribute UserRequestSearch userRequestSearch, BindingResult result, Model model) {
@@ -159,7 +157,12 @@ public class UserController {
 
 	if (userlist.size() == 0) {
 		// 該当データ無し。
-		model.addAttribute("msgInfo", "該当データがありません。");
+		model.addAttribute("msgSearchErr", "該当データがありません。");
+//		model.addAttribute("msgInfo", "該当データがありません。");
+	} else {
+		// 該当件数の取得。
+		Integer intCnt = Integer.valueOf(userlist.size());
+		model.addAttribute("msgSearchInfo", "【検索結果】条件に該当するデータは" + intCnt.toString() + "件です。");
 	}
 	model.addAttribute("userlist", userlist);
 

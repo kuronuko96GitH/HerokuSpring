@@ -84,6 +84,8 @@ h1{
   background: #000; /* 背景色は、黒 */
   padding: 0.5px 0; /* 内側の空白指定：上下 | 左右 */
   margin: 15px 0; /* 外側の空白指定：上下 | 左右 */
+
+
 /*　参考 
   font-size: 1.5em;
   padding: 0.5em 1em; 内側の空白指定

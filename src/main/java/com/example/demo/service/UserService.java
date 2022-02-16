@@ -32,7 +32,7 @@ public class UserService {
   private UserRepository userRepository;
 
   /**
-   * ユーザー情報 Repository(XML版・動的SQLに対応)
+   * Repository(XML版・動的SQLに対応)
    */
   @Autowired
   private RepositoryXml repositoryXml;
@@ -127,14 +127,13 @@ public class UserService {
   }
 
   /**
-   * ユーザー情報 該当する『年齢』で検索
+   * ユーザー情報の検索（入力された条件で検索）
    * @return 検索結果
    */
   public List<User> searchUser(UserRequestSearch userRequestSearch) {
 
 	Integer intMale = 0; // 初期値（０：非公開）
 	Integer intFemale = 0; // 初期値（０：非公開）
-	//checkFemale
 
 	if (userRequestSearch.getCheckMale() == null) {
 		intMale = 0;
@@ -155,7 +154,6 @@ public class UserService {
 	// 入力項目で検索条件を変更する。
 	return repositoryXml.searchUser(userRequestSearch.getAge(), userRequestSearch.getEndAge(), intMale, intFemale);
 
-//	  return workRepository.findByDate(userId, startDate, endDate);
   }
 
 

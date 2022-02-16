@@ -30,7 +30,9 @@ public class WorkRequestSearch implements Serializable {
   @Pattern(regexp = "\\d{1,2}", message = "勤退年月(月)に正しい日付を入力して下さい。")
   private String searchDateM;
 
- 
+
+  // 開始日時
+  private String startDate;
   /**
    * 開始日時(年)
    * (任意入力。空白も可とする。)
@@ -78,6 +80,8 @@ public class WorkRequestSearch implements Serializable {
 
 
 
+  // 終了日時
+  private String endDate;
   /**
    * 終了日時(年)
    * (任意入力。空白も可とする。)

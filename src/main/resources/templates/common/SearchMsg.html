@@ -1,0 +1,9 @@
+<div th:fragment="searchMsg">
+	<div th:if="${msgSearchInfo}" th:each="msgRec : ${msgSearchInfo}">
+		<h5><label th:text="${msgRec}"></label></h5>
+	</div>
+
+	<div th:if="${msgSearchErr}" th:each="errRec : ${msgSearchErr}">
+		<label class="text-danger" th:text="${errRec}"></label>
+	</div>
+</div>

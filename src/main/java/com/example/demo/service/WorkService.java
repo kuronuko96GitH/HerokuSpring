@@ -10,10 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.demo.dto.WorkRequest;
+import com.example.demo.dto.WorkRequestSearch;
 import com.example.demo.dto.WorkUpdateRequest;
 import com.example.demo.entity.Work;
 import com.example.demo.mdl.DateEdit;
 import com.example.demo.mdl.DateTimeRange;
+import com.example.demo.repository.RepositoryXml;
 import com.example.demo.repository.WorkRepository;
 
 /**
@@ -28,6 +30,12 @@ public class WorkService {
    */
   @Autowired
   private WorkRepository workRepository;
+
+  /**
+   * Repository(XML版・動的SQLに対応)
+   */
+  @Autowired
+  private RepositoryXml repositoryXml;
 
   /**
    * 勤怠情報 全検索
@@ -168,22 +176,36 @@ public class WorkService {
   }
 
   /**
-   * 勤怠情報 該当する『ユーザーID』と『勤怠開始日』で検索
+   * 勤退情報の検索（入力された条件で検索）
+   * @return 検索結果
+   */
+  public List<Work> searchWork(Long userId, WorkRequestSearch workRequestSearch) {
+
+	// 入力項目で検索条件を変更する。
+	return repositoryXml.searchWork(userId, workRequestSearch.getStartDate(), workRequestSearch.getEndDate());
+  }
+
+  /**
+   * 勤怠情報 該当する『ユーザーID』と『勤怠開始日』～『勤怠終了日』で検索
    * @return 検索結果
    */
   public List<Work> findByDate(@PathVariable("userId") Long userId, Date startDate, Date endDate) {
 
+/*
 		// 年月日の検索コードで検索条件を変更する。
 		if (startDate != null && endDate == null) {
-			// "LN"：(左側)勤怠開始日のみ。(右側)勤怠終了日は空白(Null)。
+			// 勤怠開始日のみ。勤怠終了日は空白(Null)。
 			return workRepository.findByStartDate(userId, startDate);
 		} else if (startDate == null && endDate != null) {
-			// "NR"：(右側)勤怠終了日のみ。(左側)勤怠開始日は空白(Null)。
+			// 勤怠開始日は空白(Null)。勤怠終了日のみ。
 			return workRepository.findByEndDate(userId, endDate);
 		} else {
-			// "LR"：(左右)勤怠開始日と勤怠終了日の両方入力あり。
+			// 勤怠開始日と勤怠終了日の両方入力あり。
 			return workRepository.findByDate(userId, startDate, endDate);
 		}
+*/
+		// 勤怠開始日～勤怠終了日で検索。
+		return workRepository.findByDate(userId, startDate, endDate);
   }
 
   /**
