@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.demo.auth.AuthUser;
-import com.example.demo.entity.SystemErr;
+import com.example.demo.entity.SystemMsg;
 import com.example.demo.entity.SystemInfo;
 
 /**
@@ -54,18 +54,18 @@ public class OtherController {
 		model.addAttribute("authUser", authUser);
 
 		if (systemInfo == null) {
-			// システム情報などのセッション情報が取得できなかった場合、
+			// システム情報のセッション情報が取得できなかった場合、
 			//システムエラー画面を表示させる。
 			strRtnForm = "syserror";
-		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_001));
+		    model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_001));
 			return strRtnForm;
 		}
 
 		if (authUser == null) {
-			// システム情報などのセッション情報が取得できなかった場合、
+			// ログイン情報のセッション情報が取得できなかった場合、
 			//システムエラー画面を表示させる。
 			strRtnForm = "syserror";
-		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_002));
+		    model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_002));
 			return strRtnForm;
 		}
 

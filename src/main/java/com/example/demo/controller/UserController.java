@@ -25,8 +25,8 @@ import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserRequestSearch;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
-import com.example.demo.entity.SystemErr;
 import com.example.demo.entity.SystemInfo;
+import com.example.demo.entity.SystemMsg;
 import com.example.demo.entity.User;
 import com.example.demo.mdl.DateEdit;
 import com.example.demo.service.UserService;
@@ -89,10 +89,10 @@ public class UserController {
 		model.addAttribute("sysInfo", systemInfo);
 
 		if (systemInfo == null) {
-			// システム情報などのセッション情報が取得できなかった場合、
+			// システム情報のセッション情報が取得できなかった場合、
 			//システムエラー画面を表示させる。
 			strRtnForm = "syserror";
-		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_001));
+		    model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_001));
 			return strRtnForm;
 		}
 
@@ -120,18 +120,18 @@ public class UserController {
 		model.addAttribute("authUser", authUser);
 
 		if (systemInfo == null) {
-			// システム情報などのセッション情報が取得できなかった場合、
+			// システム情報のセッション情報が取得できなかった場合、
 			//システムエラー画面を表示させる。
 			strRtnForm = "syserror";
-		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_001));
+		    model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_001));
 			return strRtnForm;
 		}
 
 		if (authUser == null) {
-			// システム情報などのセッション情報が取得できなかった場合、
+			// ログイン情報のセッション情報が取得できなかった場合、
 			//システムエラー画面を表示させる。
 			strRtnForm = "syserror";
-		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_002));
+		    model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_002));
 			return strRtnForm;
 		}
 
@@ -207,11 +207,12 @@ public class UserController {
 
 	if (userlist.size() == 0) {
 		// 該当データ無し。
+//		model.addAttribute("msgSearchErr", SystemMsg.getInfoMsg(SystemMsg.INFO_CODE_001));
 		model.addAttribute("msgSearchErr", "該当データがありません。");
-//		model.addAttribute("msgInfo", "該当データがありません。");
 	} else {
 		// 該当件数の取得。
 		Integer intCnt = Integer.valueOf(userlist.size());
+//		model.addAttribute("msgSearchInfo", SystemMsg.getCustomInfoMsg(SystemMsg.C_INFO_CODE_001, intCnt.toString()));
 		model.addAttribute("msgSearchInfo", "【検索結果】条件に該当するデータは" + intCnt.toString() + "件です。");
 	}
 	model.addAttribute("userlist", userlist);
@@ -274,6 +275,7 @@ public class UserController {
 		// データベースに同じメールアドレスが存在していた場合。
 	    List<String> errorList = new ArrayList<String>();
         errorList.add("既に登録済のメールアドレスです。");
+//        errorList.add(SystemMsg.getErrMsg(SystemMsg.ERR_CODE_104));
         model.addAttribute("validationError", errorList);
 	    
 	    return "user/addlogin";
@@ -346,6 +348,7 @@ public class UserController {
 		// データベースに同じメールアドレスが存在していた場合。
 //		    model.addAttribute("validationError", "既に登録済のメールアドレスです。");
 	    List<String> errorList = new ArrayList<String>();
+//        errorList.add(SystemMsg.getErrMsg(SystemMsg.ERR_CODE_104));
         errorList.add("既に登録済のメールアドレスです。");
         model.addAttribute("validationError", errorList);
 
@@ -454,17 +457,6 @@ public class UserController {
     User user = userService.findById(id);
     // ユーザー情報詳細の画面表示用データの作成
     UserUpdateRequest userUpdateRequest = getUserUpdateRequest(user);
-/*
-    UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
-    userUpdateRequest.setId(user.getId());
-    userUpdateRequest.setName(user.getName());
-    userUpdateRequest.setEmail(user.getEmail());
-//	    userUpdateRequest.setPassword(user.getPassword());
-    // 性別（取得したコードを、文字列情報に変換する）
-    userUpdateRequest.setGender(User.getChgGender(user.getGender()));
-    userUpdateRequest.setAddress(user.getAddress());
-    userUpdateRequest.setPhone(user.getPhone());
-*/
     model.addAttribute("userUpdateRequest", userUpdateRequest);
 
     //性別のセレクトボックス（画面情報用）データの作成。
@@ -475,6 +467,7 @@ public class UserController {
     if (!isAuthRoleCheck(id)) {
     // 権限チェックがエラーの場合、更新処理はさせない。
       model.addAttribute("validationError", "管理者権限が無いため、編集はできません。");
+//      model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_101));
       model.addAttribute("userData", userUpdateRequest);
       // ユーザー詳細画面を表示。
       return "user/view";
@@ -538,6 +531,7 @@ public class UserController {
 		isDateYMD = DateEdit.isDate(userUpdateRequest.getBirthdayY(), userUpdateRequest.getBirthdayM(), userUpdateRequest.getBirthdayD());
 		if (!isDateYMD) {
 	        model.addAttribute("validationError", "生年月日に正しい日付を入力して下さい。");
+//	        model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_105));
 	        return "user/edit";
 		}
 
@@ -550,6 +544,7 @@ public class UserController {
 		  // データベースに同じメールアドレスが存在していた場合。
 	    List<String> errorList = new ArrayList<String>();
         errorList.add("既に登録済のメールアドレスです。");
+//        errorList.add(SystemMsg.getErrMsg(SystemMsg.ERR_CODE_104));
         model.addAttribute("validationError", errorList);
 
 	    return "user/edit";  
@@ -585,6 +580,7 @@ public class UserController {
     if (!isAuthRoleCheck(id)) {
     // 権限チェックがエラーの場合、更新処理はさせない。
       model.addAttribute("validationError", "管理者権限が無いため、パスワードの編集はできません。");
+//      model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_102));
 
       // ユーザー情報詳細の画面表示用データの作成
       UserUpdateRequest userUpdateRequest = getUserUpdateRequest(user);
@@ -661,12 +657,14 @@ public class UserController {
     if (!isAuthRoleCheck(id)) {
     // 権限チェックがエラーの場合、削除処理はさせない。
       model.addAttribute("validationError", "管理者権限が無いため、削除はできません。");
+//      model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_103));
       blnErrCnk = false;
     }
 
     if (lngAuthId.equals(id)) {
     // ログイン中のユーザーと、削除対象のユーザーが同じだった場合。
       model.addAttribute("validationError", "ログイン中のユーザーは、削除できません。");
+//      model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_106));
       blnErrCnk = false;
     }
 

@@ -8,22 +8,22 @@
 
 	<div class="main">
 		<div th:replace="common/Navbar :: navbar"></div>
-	
+
 		<div class="container">
 		  <div class="head_title">勤退情報詳細</div>
-	
+
 		  <div th:replace="common/Msg :: msg"></div>
-	
+
 		  <div class="float-end">
 			<!-- 右端にボタン  -->
 		    <a th:href="@{/work/{id}/delete(id=*{id})}" class="btn btn-danger">　削除　</a>
 		  </div>
 		  <br />
 		  <br />
-	
+
 		  <div th:object="${workData}">
 		    <div class="row mx-md-n5">
-		      <div class="col-2 pt-3 border bg-light">勤退内容（勤務地など）</div>
+		      <div class="col-2 pt-3 border bg-light">勤退内容(勤務地など)</div>
 		      <div class="col pt-3 border bg-white">
 		        <p th:text="*{content}"></p>
 		      </div>
@@ -40,7 +40,7 @@
 		        <p th:text="${#dates.format(workData.endDate, 'yyyy/MM/dd H:mm')}"></p>
 		      </div>
 		    </div>
-	
+
 		    <div class="row mx-md-n5">
 		      <div class="col-2 pt-3 border bg-light">労働時間</div>
 		      <div class="col pt-3 border bg-white">
@@ -54,9 +54,9 @@
 		        <p>また、お昼休憩の一時間は、労働時間にカウントしてません。</p>
 		      </div>
 		    </div>
-	
+
 		  </div>
-	
+
 		  <br />
 		  <div class="text-center">
 		    <a th:href="@{/work/{id}/edit(id=*{id})}" class="btn btn-primary">　編集　</a>

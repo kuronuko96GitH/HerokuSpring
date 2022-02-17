@@ -28,7 +28,7 @@ import com.example.demo.dto.WorkRequest;
 import com.example.demo.dto.WorkRequestReward;
 import com.example.demo.dto.WorkRequestSearch;
 import com.example.demo.dto.WorkUpdateRequest;
-import com.example.demo.entity.SystemErr;
+import com.example.demo.entity.SystemMsg;
 import com.example.demo.entity.SystemInfo;
 import com.example.demo.entity.Work;
 import com.example.demo.mdl.DateEdit;
@@ -67,7 +67,6 @@ public class WorkController {
 	 * 未入力項目はバリデーション（入力チェック）の対象外とするメソッド
 	 * @param binder
 	 */
-
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		// SpringBootの仕様により、未入力値は空白("")を埋める仕様らしいが、
@@ -113,53 +112,24 @@ public class WorkController {
 		model.addAttribute("authUser", authUser);
 
 		if (systemInfo == null) {
-			// システム情報などのセッション情報が取得できなかった場合、
+			// システム情報のセッション情報が取得できなかった場合、
 			//システムエラー画面を表示させる。
 			strRtnForm = "syserror";
-		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_001));
+		    model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_001));
 			return strRtnForm;
 		}
 
 		if (authUser == null) {
-			// システム情報などのセッション情報が取得できなかった場合、
+			// ログイン情報のセッション情報が取得できなかった場合、
 			//システムエラー画面を表示させる。
 			strRtnForm = "syserror";
-		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_002));
+		    model.addAttribute("validationError", SystemMsg.getErrMsg(SystemMsg.ERR_CODE_002));
 			return strRtnForm;
 		}
 
 		return strRtnForm;
 	}
 
-	/**
-	 * ログイン情報の設定(前画面ID情報も取得)
-	 * @param Model model
-	 * @return
-	 */
-/*
-	private void setAuthUser(Model model, String backid) {
-
-		// RootControllerクラスで設定した、セッション情報を取得。
-		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
-		// システム情報のパラメータを渡す。
-		model.addAttribute("sysInfo", systemInfo);
-
-
-		// RootControllerクラスで設定した、セッション情報を取得。
-		authUser = (AuthUser)session.getAttribute("SessionAuthUser");
-		// ログイン情報のパラメータを渡す。
-//		model.addAttribute("authUser", authUser);
-
-		// 前画面IDのパラメータを設定する。
-		authUser.setBackId(backid);
-
-		// 例えば、詳細ボタンのある①勤退一覧画面、②打刻登録画面、③報酬計算画面の
-		// どれか３つから詳細ボタンを押した時に、
-		// 画面遷移して来た、一つ前の画面が分からなくなるので、
-		// このタイミングで前画面IDの設定をする。
-		model.addAttribute("authUser", authUser);
-	}
-*/
 
   /**
    * 勤退情報一覧画面を表示
