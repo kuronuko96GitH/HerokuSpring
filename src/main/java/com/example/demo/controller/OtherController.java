@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.demo.auth.AuthUser;
+import com.example.demo.entity.SystemErr;
 import com.example.demo.entity.SystemInfo;
 
 /**
@@ -33,11 +34,13 @@ public class OtherController {
 	private SystemInfo systemInfo;
 
 	/**
-	 * ログイン情報の設定
+	 * システム情報とログイン情報の設定
 	 * @param Model model
 	 * @return
 	 */
-	private void setAuthUser(Model model) {
+	private String setAuthUser(Model model) {
+
+		String strRtnForm = null;
 
 		// RootControllerクラスで設定した、セッション情報を取得。
 		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
@@ -50,9 +53,23 @@ public class OtherController {
 		// ログイン情報のパラメータを渡す。
 		model.addAttribute("authUser", authUser);
 
-		// デバッグ用
-//			session.setAttribute("data", "保存したいデータ");
-//			String data = (String) session.getAttribute("data");  // 取得
+		if (systemInfo == null) {
+			// システム情報などのセッション情報が取得できなかった場合、
+			//システムエラー画面を表示させる。
+			strRtnForm = "syserror";
+		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_001));
+			return strRtnForm;
+		}
+
+		if (authUser == null) {
+			// システム情報などのセッション情報が取得できなかった場合、
+			//システムエラー画面を表示させる。
+			strRtnForm = "syserror";
+		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_002));
+			return strRtnForm;
+		}
+
+		return strRtnForm;
 	}
 
   /**
@@ -66,7 +83,12 @@ public class OtherController {
   public String aboutme(Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	return "others/aboutme";
   }
@@ -80,8 +102,13 @@ public class OtherController {
   public String portfolio(Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
-	
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
+
 	return "others/portfolio";
   }
 
@@ -94,8 +121,13 @@ public class OtherController {
   public String devdoc(Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
-		
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
+
 	return "others/devdoc";
   }
 
@@ -108,8 +140,13 @@ public class OtherController {
   public String devhistory(Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
-		
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
+
 	return "others/devhistory";
   }
 }

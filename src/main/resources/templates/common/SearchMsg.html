@@ -4,6 +4,6 @@
 	</div>
 
 	<div th:if="${msgSearchErr}" th:each="errRec : ${msgSearchErr}">
-		<label class="text-danger" th:text="${errRec}"></label>
+		<h5><label class="text-danger" th:text="${errRec}"></label></h5>
 	</div>
 </div>

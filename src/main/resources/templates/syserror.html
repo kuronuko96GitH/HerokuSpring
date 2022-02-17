@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/Header :: header(title = 'SYSTEM ERROR', scripts = ~{::script}, links = ~{::link})"></head>
+  <body>
+
+	<div class="container px-4 px-lg-5 d-flex align-items-center justify-content-center">
+	    <div class="d-flex justify-content-center">
+			<div class="card" style="height: 45rem;  width: 40rem;">
+				<div class="card-body center">
+					<h5 class="card-title">システムエラー</h5>
+					<hr />
+
+					<!-- エラーメッセージ -->
+					<div th:replace="common/Msg :: msg"></div>
+
+					<form th:action="@{/logout}" method="post">
+						<button type="submit" class="btn btn-success shadow-sm">　ログオフ　</button>
+						<div class="row mb-3">
+						    <div class="col-md-0 offset-md-0">
+							    <br>システムのエラーが発生しました。
+							    <br>『ログオフ』ボタンを押して頂き、
+							    <br>再度ログインをお願いします。
+						    </div>
+						</div>
+					</form>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- Scripts -->
+	<div th:replace="common/Script :: script"></div>
+
+  </body>
+</html>

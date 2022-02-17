@@ -27,7 +27,7 @@ public class UserRequest implements Serializable {
   /**
    * パスワード
    */
-  @NotEmpty(message = "パスワードを入力してください")
+  @NotEmpty(message = "パスワードを入力して下さい。")
   @Size(min = 8, max = 20, message = "パスワードは８桁以上、２０桁以内で入力して下さい。")
   private String password;
 /*

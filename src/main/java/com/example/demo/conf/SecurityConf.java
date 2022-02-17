@@ -49,6 +49,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 			.antMatchers("/css/**", "/js/**", "/img/**").permitAll()
 			.antMatchers("/user/addlogin").permitAll()
 			.antMatchers("/user/createlogin").permitAll()
+			.antMatchers("/sysError").permitAll()
 			.anyRequest().authenticated()
 		// ログイン
 		.and()

@@ -67,6 +67,10 @@ public class RootController {
 	    // セッション情報に保存
 		// (※このセッション情報は、他のコントローラクラスでも使用が可能です。)
 	    session.setAttribute("SessionSysInfo", systemInfo);
+
+		// デバッグ用
+//			session.setAttribute("data", "保存したいデータ");
+//			String data = (String) session.getAttribute("data");  // 取得
 	}
 
   /**
@@ -125,6 +129,22 @@ public class RootController {
 	return "index";
   }
 
+
+  /**
+   * システムエラー画面を表示
+   * @return システムエラー画面
+   * 補足：システムエラーが発生した際に表示される、共通のエラーメッセージ画面です
+   *		開発者にしか理解できないエラーメッセージが表示される場合、
+   *		こちらのエラーメッセージ画面への遷移（誘導）をお願いします。
+   */
+  @GetMapping(value = "/syserror")
+  public String systemError(Model model) {
+
+	// タイトル情報などのシステム情報を取得する。
+//	setSystemInfo(model);
+
+    return "syserror";
+  }
 
   /**
    * ログイン画面を表示

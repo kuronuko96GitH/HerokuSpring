@@ -1,13 +1,20 @@
 <div th:fragment="msg">
 	<div th:if="${validationError}">
+		<strong class="text-danger">【エラーメッセージ】</strong>
 		<div th:each="error : ${validationError}">
-			<label class="text-danger" th:text="${error}"></label>
+			<strong>
+				<label class="text-danger" th:text="${error}"></label>
+			</strong>
 		</div>
+
 		<hr>
 	</div>
 
 	<div th:if="${msgInfo}" th:each="msginfo : ${msgInfo}">
-		<label class="text-danger" th:text="${msginfo}"></label>
+		<strong>
+			<label th:text="${msginfo}"></label>
+		</strong>
+
 		<hr>
 	</div>
 </div>

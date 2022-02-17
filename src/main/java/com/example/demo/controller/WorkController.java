@@ -28,6 +28,7 @@ import com.example.demo.dto.WorkRequest;
 import com.example.demo.dto.WorkRequestReward;
 import com.example.demo.dto.WorkRequestSearch;
 import com.example.demo.dto.WorkUpdateRequest;
+import com.example.demo.entity.SystemErr;
 import com.example.demo.entity.SystemInfo;
 import com.example.demo.entity.Work;
 import com.example.demo.mdl.DateEdit;
@@ -80,11 +81,13 @@ public class WorkController {
 	}
 
 	/**
-	 * ログイン情報の設定
+	 * システム情報とログイン情報の設定(前画面ID情報も取得)
 	 * @param Model model
 	 * @return
 	 */
-	private void setAuthUser(Model model) {
+	private String setAuthUser(Model model, String backid) {
+
+		String strRtnForm = null;
 
 		// RootControllerクラスで設定した、セッション情報を取得。
 		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
@@ -92,10 +95,40 @@ public class WorkController {
 		model.addAttribute("sysInfo", systemInfo);
 
 
+
 		// RootControllerクラスで設定した、セッション情報を取得。
 		authUser = (AuthUser)session.getAttribute("SessionAuthUser");
+
+		if (backid != null) {
+			// 前画面IDのパラメータを設定する。
+			authUser.setBackId(backid);
+
+			// 例えば、詳細ボタンのある①勤退一覧画面、②打刻登録画面、③報酬計算画面の
+			// どれか３つから詳細ボタンを押した時に、
+			// 画面遷移して来た、一つ前の画面が分からなくなるので、
+			// このタイミングで前画面IDの設定をする。
+		}
+
 		// ログイン情報のパラメータを渡す。
 		model.addAttribute("authUser", authUser);
+
+		if (systemInfo == null) {
+			// システム情報などのセッション情報が取得できなかった場合、
+			//システムエラー画面を表示させる。
+			strRtnForm = "syserror";
+		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_001));
+			return strRtnForm;
+		}
+
+		if (authUser == null) {
+			// システム情報などのセッション情報が取得できなかった場合、
+			//システムエラー画面を表示させる。
+			strRtnForm = "syserror";
+		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_002));
+			return strRtnForm;
+		}
+
+		return strRtnForm;
 	}
 
 	/**
@@ -103,6 +136,7 @@ public class WorkController {
 	 * @param Model model
 	 * @return
 	 */
+/*
 	private void setAuthUser(Model model, String backid) {
 
 		// RootControllerクラスで設定した、セッション情報を取得。
@@ -125,7 +159,7 @@ public class WorkController {
 		// このタイミングで前画面IDの設定をする。
 		model.addAttribute("authUser", authUser);
 	}
-
+*/
 
   /**
    * 勤退情報一覧画面を表示
@@ -136,8 +170,13 @@ public class WorkController {
   public String displayListWork(Model model) {
 
 	// ログイン情報の取得と設定。(このタイミングで、前画面IDも設定しておく)
-	setAuthUser(model, "list");
-//	setAuthUser(model);
+//	setAuthUser(model, "list");
+	String strRtnForm = setAuthUser(model, "list");
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
@@ -162,7 +201,12 @@ public class WorkController {
   public String displayListWorkSearch(@Validated @ModelAttribute WorkRequestSearch workRequestSearch, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	if (result.hasErrors()) {
 	      // 入力チェックエラーの場合
@@ -294,7 +338,12 @@ public class WorkController {
   public String displayAddWork(Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     model.addAttribute("workRequest", new WorkRequest());
 	    
@@ -313,8 +362,13 @@ public class WorkController {
   public String displayAddCopyWork(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
-	
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
+
 	Work work = workService.findById(id);
     WorkRequest workRequest = new WorkRequest();
     
@@ -362,7 +416,12 @@ public class WorkController {
   public String createWork(@Validated @ModelAttribute WorkRequest workRequest, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	if (result.hasErrors()) {
       // 入力チェックエラーの場合
@@ -428,8 +487,13 @@ public class WorkController {
   public String displayStamping(Model model) {
 
 	// ログイン情報の取得と設定。(このタイミングで、前画面IDも設定しておく)
-	setAuthUser(model, "stamping");
-///	setAuthUser(model);
+//	setAuthUser(model, "stamping");
+	String strRtnForm = setAuthUser(model, "stamping");
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
@@ -499,7 +563,12 @@ public class WorkController {
   public String stampInAdd(Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     // 打刻情報の新規登録
     workService.createStampIn(authUser.getId()); // ログイン時のユーザーIDを設定。
@@ -516,7 +585,12 @@ public class WorkController {
   public String stampInUpd(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     // 打刻情報の(出勤)更新処理
     workService.updateStampIn(id);
@@ -533,7 +607,12 @@ public class WorkController {
   public String stampOutUpd(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     // 打刻情報の(退勤)更新処理
     workService.updateStampOut(id);
@@ -551,7 +630,12 @@ public class WorkController {
   public String displayViewWork(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     Work work = workService.findById(id);
     model.addAttribute("workData", work);
@@ -568,7 +652,12 @@ public class WorkController {
   public String displayEditWork(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     Work work = workService.findById(id);
     WorkUpdateRequest workUpdateRequest = new WorkUpdateRequest();
@@ -630,7 +719,12 @@ public class WorkController {
   public String updateWork(@Validated @ModelAttribute WorkUpdateRequest workUpdateRequest, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     if (result.hasErrors()) {
       // 入力チェックエラーの場合
@@ -717,9 +811,13 @@ public class WorkController {
   public String displayReward(Model model) {
 
 	// ログイン情報の取得と設定。(このタイミングで、前画面IDも設定しておく)
-	setAuthUser(model, "reward");
-//	setAuthUser(model);
-
+//	setAuthUser(model, "reward");
+	String strRtnForm = setAuthUser(model, "reward");
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	// 検索条件(勤退年月)のデータを作っておく。
 	WorkRequestReward workRequestReward = new WorkRequestReward();
@@ -781,7 +879,12 @@ public class WorkController {
   public String displayRewardYM(@Validated @ModelAttribute WorkRequestReward workRequestReward, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	if (workRequestReward.getWorkSumHours() == null) {
 		// 労働時間数(合計)

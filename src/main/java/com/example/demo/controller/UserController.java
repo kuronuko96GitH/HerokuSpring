@@ -25,6 +25,7 @@ import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserRequestSearch;
 import com.example.demo.dto.UserUpdateRequest;
 import com.example.demo.dto.UserUpdateRequestPass;
+import com.example.demo.entity.SystemErr;
 import com.example.demo.entity.SystemInfo;
 import com.example.demo.entity.User;
 import com.example.demo.mdl.DateEdit;
@@ -74,11 +75,38 @@ public class UserController {
 	}
 
 	/**
-	 * ログイン情報の設定
+	 * システム情報の設定
 	 * @param Model model
 	 * @return
 	 */
-	private void setAuthUser(Model model) {
+	private String setSysInfo(Model model) {
+
+		String strRtnForm = null;
+
+		// RootControllerクラスで設定した、セッション情報を取得。
+		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
+		// システム情報のパラメータを渡す。
+		model.addAttribute("sysInfo", systemInfo);
+
+		if (systemInfo == null) {
+			// システム情報などのセッション情報が取得できなかった場合、
+			//システムエラー画面を表示させる。
+			strRtnForm = "syserror";
+		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_001));
+			return strRtnForm;
+		}
+
+		return strRtnForm;
+	}
+
+	/**
+	 * システム情報とログイン情報の設定
+	 * @param Model model
+	 * @return
+	 */
+	private String setAuthUser(Model model) {
+
+		String strRtnForm = null;
 
 		// RootControllerクラスで設定した、セッション情報を取得。
 		systemInfo = (SystemInfo)session.getAttribute("SessionSysInfo");
@@ -90,6 +118,24 @@ public class UserController {
 		authUser = (AuthUser)session.getAttribute("SessionAuthUser");
 		// ログイン情報のパラメータを渡す。
 		model.addAttribute("authUser", authUser);
+
+		if (systemInfo == null) {
+			// システム情報などのセッション情報が取得できなかった場合、
+			//システムエラー画面を表示させる。
+			strRtnForm = "syserror";
+		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_001));
+			return strRtnForm;
+		}
+
+		if (authUser == null) {
+			// システム情報などのセッション情報が取得できなかった場合、
+			//システムエラー画面を表示させる。
+			strRtnForm = "syserror";
+		    model.addAttribute("validationError", SystemErr.getErrMsg(SystemErr.ERR_CODE_002));
+			return strRtnForm;
+		}
+
+		return strRtnForm;
 	}
 
   /**
@@ -101,20 +147,19 @@ public class UserController {
   public String displayList(Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 
 	// ユーザー情報一覧画面の検索処理のために、検索条件の入力項目の空データを作っておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
     model.addAttribute("userRequestSearch", new UserRequestSearch());
 
-
-	if (authUser == null) {
-		// セッション情報が取得できない場合、
-	    // 強制的にログイン画面へ戻す。
-	    return "login";
-
-	} else if (authUser.getRoles().get(0).equals("ROLE_USER")) {
+	if (authUser.getRoles().get(0).equals("ROLE_USER")) {
 		// 『ROLE_USER』の場合は、ユーザー情報一覧を閲覧したとしても、自分のユーザーした検索できない。
 		List<User> userlist = userService.findByUserId(authUser.getId());
 		model.addAttribute("userlist", userlist);
@@ -137,7 +182,12 @@ public class UserController {
   public String displayListUserSearch(@Validated @ModelAttribute UserRequestSearch userRequestSearch, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	if (result.hasErrors()) {
 	      // 入力チェックエラーの場合
@@ -169,6 +219,7 @@ public class UserController {
 	return "user/list";
   }
 
+
   /**
    * （ログイン⇒）ユーザー新規登録画面を表示
    * @param model Model
@@ -177,8 +228,13 @@ public class UserController {
   @GetMapping(value = "/user/addlogin")
   public String displayAddLogin(Model model) {
 
-	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	// システム情報の取得と設定。
+	String strRtnForm = setSysInfo(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     model.addAttribute("userRequest", new UserRequest());
     return "user/addlogin";
@@ -193,8 +249,13 @@ public class UserController {
   @RequestMapping(value = "/user/createlogin", method = RequestMethod.POST)
   public String createLogin(@Validated @ModelAttribute UserRequest userRequest, BindingResult result, Model model) {
 
-	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	// システム情報の取得と設定。
+	String strRtnForm = setSysInfo(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	if (result.hasErrors()) {
       // 入力チェックエラーの場合
@@ -235,7 +296,12 @@ public class UserController {
   public String displayAdd(Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     model.addAttribute("userRequest", new UserRequest());
     return "user/add";
@@ -251,7 +317,12 @@ public class UserController {
   public String create(@Validated @ModelAttribute UserRequest userRequest, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 //	    int intCnt = 0; // デバッグ用
 //	    String strX = ""; // デバッグ用
@@ -346,7 +417,12 @@ public class UserController {
   public String displayView(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     User user = userService.findById(id);
 //  model.addAttribute("userData", user);
@@ -368,7 +444,12 @@ public class UserController {
   public String displayEdit(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     User user = userService.findById(id);
     // ユーザー情報詳細の画面表示用データの作成
@@ -413,7 +494,12 @@ public class UserController {
   public String update(@Validated @ModelAttribute UserUpdateRequest userUpdateRequest, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 	// 入力チェックでエラーになった時用に、
     //性別のセレクトボックス（画面情報用）データをここで作成しておく。
@@ -486,7 +572,12 @@ public class UserController {
   public String displayEditPass(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     User user = userService.findById(id);
 
@@ -524,7 +615,12 @@ public class UserController {
   public String updatePass(@Validated @ModelAttribute UserUpdateRequestPass userUpdateRequestPass, BindingResult result, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
     if (result.hasErrors()) {
       List<String> errorList = new ArrayList<String>();
@@ -551,7 +647,12 @@ public class UserController {
   public String delete(@PathVariable Long id, Model model) {
 
 	// ログイン情報の取得と設定。
-	setAuthUser(model);
+	String strRtnForm = setAuthUser(model);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
 
 
 	boolean blnErrCnk = true;
