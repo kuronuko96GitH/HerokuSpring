@@ -10,97 +10,66 @@
 		<div th:replace="common/Navbar :: navbar"></div>
 
 		<div class="container">
-		  <div class="head_title">質問掲示板（詳細）</div>
+		  <div class="head_title">Ｑ＆Ａ</div>
 
 		  <div th:replace="common/Msg :: msg"></div>
-<!--
-			<div class="search_form sticky-top p-2">
-				<form th:action="@{/work/search}" class="my-2" th:object="${workRequestSearch}" th:method="post">
-					<div class="d-flex align-items-between">
-						<h5 class="me-2">検索条件</h5>
-						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
-							<span>[検索条件を隠す]</span>
-						</a>
-					</div>
-					<div id="searchCondition" class="collapse show">
-						<div class="border p-3 rounded">
-							<input type="button" class="btn btn-secondary mb-3" value="検索条件クリア" id="clear_work_button">
-							<div class="mb-3">
-								<strong>勤退年月：</strong>
-								<input type="number" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
-								<input type="number" th:field="*{searchDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
-								<strong>（※勤退開始日～勤退終了日が、検索条件として優先されます。）</strong>
-							</div>
-							<div class="mb-3">
-								<strong>勤退開始日：</strong>
-								<input type="number" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
-								<input type="number" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
-								<input type="number" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日　<strong>～　勤退終了日：</strong>
-								<input type="number" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
-								<input type="number" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
-								<input type="number" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
-							</div>
-						</div>
-					</div>
-					<div class="py-2">
-						<button class="btn btn-success shadow-sm px-3">
-							<span>検索実行</span>
-						</button>
-					</div>
 
-					<div th:replace="common/SearchMsg :: searchMsg"></div>
 
-				</form>
-			<hr>
-			</div>
--->
-		  <table class="table table-striped">
-		    <thead>
-		      <tr>
-		        <th>NO</th>
-		        <th>投稿主</th>
-		        <th>投稿内容</th>
-		        <th>更新日時</th>
-		        <th></th>
-<!--
-		        <th><a th:href="@{/work/add}" class="btn btn-primary">新規登録はこちら</a></th>
--->
-		      </tr>
-		    </thead>
-		    <tbody>
-		      <tr th:each="qborad, qboradRec : ${qboardlist}" th:object="${qborad}" class="align-middle">
-		        <td th:text="${qboradRec.count}" class="text-center"></td>
-		        <td th:text="*{name}"></td>
-		        <td th:text="*{content}"></td>
-		        <td th:text="${#dates.format(qborad.updateDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
-		        <td class="center">
-<!--
-				    <a th:href="@{/qboard/{id}/delete(id=*{id})}" class="btn btn-danger">　削除　</a>
-
-		        ${authUser.id}：<span th:text="${authUser.id}">id</span>
-	        <td class="center"><a th:if="${authId == user.id}" th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
-
--->
-				<th:block th:if="${authUser.id == qborad.userId}">
-				    <a th:href="@{/qboard/{id}/delete(id=*{id})}" class="btn btn-danger btn-sm">　削除　</a>
-				</th:block>
-<!--
-		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
-				    <a th:href="@{/work/{id}/delete(id=*{id})}" class="btn btn-danger">　削除　</a>
-		        	<a th:href="@{/qboard/{id}(id=*{id})/delete}" class="btn btn-success">削除</a>
--->
-		        </td>
-		      </tr>
-		    </tbody>
-		  </table>
-
-		    <div class="text-center">
-		      <a th:href="@{/qboard/add}" class="btn btn-success">投稿入力画面へ</a>
-		      <a href="/qboard/headlist" class="btn btn-secondary">質問掲示板</a>
+		    <div class="text-center mb-3">
+		      <a href="/qboard/headlist" class="btn btn-secondary">質問掲示板に戻る</a>
 		    </div>
 
-		</div>
+			<div class="container px-4 px-lg-5 d-flex align-items-center justify-content-center">
+				<div class="d-flex justify-content-center">
 
+
+					<div th:each="qborad, qboradRec : ${qboardlist}" th:object="${qborad}">
+
+					<th:block th:if="${qboradRec.count % 2 == 1}">
+						<div class="card" style="width: 40rem;">
+					</th:block>
+					<th:block th:if="${qboradRec.count % 2 == 0}">
+						<div class="card bg-light" style="width: 40rem;">
+					</th:block>
+							<div class="card-body center">
+								<h5 class="card-title"><strong>投稿者：<span th:text="*{name}" class="text-center"></span></strong></h5>
+<!--
+								<div th:text="${'NO：' + qboradRec.count}" class="mb-2"></div>
+-->
+								<div class="mb-3">
+<!--
+									<th:block th:if="${#strings.length(qborad.content) > 35}">
+										<strong th:text="${#strings.substring(qborad.content,0,35)}"></strong>
+									</th:block>
+									<th:block th:if="${#strings.length(qborad.content) <= 35}">
+								        <strong th:text="*{content}"></strong>
+									</th:block>
+
+
+								  <textarea name="content" th:text="*{content}" class="form-control" style="resize: none;" placeholder="最大２５５文字まで入力可能です。"></textarea>
+-->
+								  <textarea readonly name="content" th:text="*{content}" class="form-control"placeholder="最大２５５文字まで入力可能です。"></textarea>
+								</div>
+
+								<div th:text="${'投稿日：' + #dates.format(qborad.createDate, 'yyyy/MM/dd H:mm')}" class="mb-2"></div>
+								<th:block th:if="${authUser.id == qborad.userId}">
+								    <a th:href="@{/qboard/{id}/delete(id=*{id})}" class="btn btn-danger btn-sm">　削除　</a>
+								</th:block>
+							</div>
+						</div>
+
+				    <div class="text-center mt-3 mb-3">
+				      <a th:href="@{/qboard/add}" class="btn btn-success">このＱ＆Ａに投稿する</a>
+				    </div>
+
+					</div>
+
+				</div>
+			</div>
+
+
+
+		</div>
 	</div>
 
 	<!-- Scripts -->

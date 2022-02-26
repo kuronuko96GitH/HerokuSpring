@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/Header :: header(title = ${sysInfo.title}, scripts = ~{::script}, links = ~{::link})"></head>
+  <body>
+
+	<div class="cover"></div>
+	<div th:replace="common/Sidenav :: sidenav"></div>
+
+	<div class="main">
+		<div th:replace="common/Navbar :: navbar"></div>
+	
+		<div class="container">
+		  <div class="head_title">質問掲示板投稿</div>
+
+		  <div th:replace="common/Msg :: msg"></div>
+	
+		  <form th:action="@{/qboard/create}" th:object="${qboardRequest}" th:method="post">
+	
+		    <div class="form-group mb-2">
+		      <label>投稿者：<span class="text-danger">※</span></label>
+		      <input type="text" th:field="*{name}" class="form-control">
+		    </div>
+
+		    <div class="form-group mb-2">
+		      <label>投稿内容：<span class="text-danger">※</span></label>
+			  <textarea name="content" cols="30" rows="3" th:text="*{content}" class="form-control"></textarea>
+<!--
+		      <input type="text" th:field="*{content}" class="form-control">
+-->
+		    </div>
+
+		    <div class="text-center">
+		      <input type="submit" value="　投稿　" class="btn btn-primary">
+		      <a href="/qboard/headlist" class="btn btn-secondary">質問掲示板</a>
+		    </div>
+		  </form>
+		</div>
+
+	</div>
+
+	<!-- Scripts -->
+	<div th:replace="common/Script :: script"></div>
+
+  </body>
+</html>
