@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * ユーザー権限情報 Entity
+ * 勤退情報 Entity
  */
 @Entity
 @Data

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/Header :: header(title = ${sysInfo.title}, scripts = ~{::script}, links = ~{::link})"></head>
+  <body>
+
+	<div class="cover"></div>
+	<div th:replace="common/Sidenav :: sidenav"></div>
+
+	<div class="main">
+		<div th:replace="common/Navbar :: navbar"></div>
+
+		<div class="container">
+		  <div class="head_title">質問掲示板（仮）</div>
+
+		  <div th:replace="common/Msg :: msg"></div>
+<!--
+			<div class="search_form sticky-top p-2">
+				<form th:action="@{/work/search}" class="my-2" th:object="${workRequestSearch}" th:method="post">
+					<div class="d-flex align-items-between">
+						<h5 class="me-2">検索条件</h5>
+						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
+							<span>[検索条件を隠す]</span>
+						</a>
+					</div>
+					<div id="searchCondition" class="collapse show">
+						<div class="border p-3 rounded">
+							<input type="button" class="btn btn-secondary mb-3" value="検索条件クリア" id="clear_work_button">
+							<div class="mb-3">
+								<strong>勤退年月：</strong>
+								<input type="number" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+								<input type="number" th:field="*{searchDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+								<strong>（※勤退開始日～勤退終了日が、検索条件として優先されます。）</strong>
+							</div>
+							<div class="mb-3">
+								<strong>勤退開始日：</strong>
+								<input type="number" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+								<input type="number" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+								<input type="number" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日　<strong>～　勤退終了日：</strong>
+								<input type="number" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
+								<input type="number" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
+								<input type="number" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
+							</div>
+						</div>
+					</div>
+					<div class="py-2">
+						<button class="btn btn-success shadow-sm px-3">
+							<span>検索実行</span>
+						</button>
+					</div>
+
+					<div th:replace="common/SearchMsg :: searchMsg"></div>
+
+				</form>
+			<hr>
+			</div>
+-->
+		  <table class="table table-striped">
+		    <thead>
+		      <tr>
+		        <th>NO</th>
+		        <th>投稿主</th>
+		        <th>質問内容</th>
+		        <th>更新日時</th>
+		        <th></th>
+<!--
+		        <th><a th:href="@{/work/add}" class="btn btn-primary">新規登録はこちら</a></th>
+-->
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr th:each="qborad, qboradRec : ${qboardheadlist}" th:object="${qborad}" class="align-middle">
+		        <td th:text="${qboradRec.count}" class="text-center"></td>
+		        <td th:text="*{name}"></td>
+		        <td th:text="*{content}"></td>
+		        <td th:text="${#dates.format(qborad.updateDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
+		        <td class="center">
+		        	<a th:href="@{/qboard/{headId}(headId=*{headId})}" class="btn btn-success">詳細</a>
+<!--
+		        	<a th:href="@{/qboard/list{headId}(headId=*{headId})}" class="btn btn-success">詳細</a>
+-->
+		        </td>
+<!--
+		        <td class="center">
+		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
+		        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary">コピー(新規登録)</a>
+		        </td>
+-->
+		      </tr>
+		    </tbody>
+		  </table>
+		</div>
+
+	</div>
+
+	<!-- Scripts -->
+	<div th:replace="common/Script :: script"></div>
+<!--
+	<div th:replace="common/js/JsSearchWork :: scriptSearchWork"></div>
+-->
+  </body>
+</html>

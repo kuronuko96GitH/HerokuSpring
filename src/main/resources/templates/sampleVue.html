@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/Header :: header(title = 'vueのテスト画面', scripts = ~{::script}, links = ~{::link})"></head>
+
+
+
+  <body th:if="${#authentication.principal.roles.get(0) != 'ROLE_ADMIN'}">
+	<div class="cover"></div>
+	<div th:replace="common/Sidenav :: sidenav"></div>
+
+	<div class="main">
+		<div th:replace="common/Navbar :: navbar"></div>
+	    <h3>閲覧ができません。</h3>
+	    <h3><span class="text-danger">※管理者権限がありません。</span></h3>
+	</div>
+
+	<!-- script -->
+	<div th:replace="common/Script :: script"></div>
+  </body>
+
+
+
+
+
+  <body th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
+  <!-- 管理者権限がある場合 -->
+	<div class="cover"></div>
+	<div th:replace="common/Sidenav :: sidenav"></div>
+
+	<div class="main">
+
+		<div th:replace="common/Navbar :: navbar"></div>
+	    <h3>vueのテスト中</h3>
+		<br>
+		<hr />
+		    <div class="col-md-8 offset-md-4">
+			    <h2>◆JavaScriptの起動テスト。</h2>
+			    JSファイル内の『function demoTest()』アラートメッセージを表示させたい場合。
+			    <br>
+			        <input type="button" class="btn btn-secondary" value="ゲストアカウント" id="demo_button" onclick="demoTest();">
+		    </div>
+		<hr />
+
+		<!-- Hello Vue! -->
+		<div id="app">
+			{{ message }}
+			<br>
+			私は<strong>{{ name }}</strong>です。
+		</div>
+
+		<br>
+		<br>
+		<hr />
+
+		<!-- ◆Htmlの変換失敗と成功 -->
+		<div id="app2">
+			<p>◆Htmlの変換失敗</p>
+			<p>{{ rawHtml01 }}</p>
+			<p>◆Htmlの変換成功</p>
+			<p><span v-html="rawHtml01"></span></p>
+		</div>
+
+		<br>
+		<br>
+		<hr />
+
+
+		<!-- 『1.』This is a todo -->
+		<div id="app-todo01">
+		  <ol>
+		    <todo-item01></todo-item01>
+		  </ol>
+		</div>
+
+		<br>
+		<br>
+		<hr />
+
+		 <div id="app-todo02">
+		   <ol>
+		     <todo-item02
+		       v-for="item in studyList"
+		       v-bind:todo="item"
+		       v-bind:key="item.id"
+		       ></todo-item02>
+		   </ol>
+		 </div>
+
+		<br>
+		<br>
+		<hr />
+
+		<div id="app3">
+		  <p>{{ msg }}</p>
+		  <p>↑上の文字列を反転させる↓
+		  <p>{{ reversedMessage }}</p>
+		</div>
+
+		<br>
+		<br>
+		<hr />
+
+		<div id="app4">
+		  <p>{{ firstName }}</p>
+		  <p>{{ lastName }}</p>
+		  <p>{{ fullName }}</p>
+		</div>
+
+		<br>
+		<br>
+		<hr />
+
+		<div id="app5">IF文のサンプルソース
+		   <div>◆if文パターン　その１</div>
+		   <div v-if="ok">見える！</div>
+		   <div v-else>見えない！</div>
+		   <br>
+
+		   <div>◆if文パターン　その２</div>
+		   <div v-if="type === 'A'">Type A</div>
+		   <div v-else-if="type === 'B'">Type B</div>
+		   <div v-else>Type other</div>
+		</div>
+
+		<br>
+		<br>
+		<hr />
+
+		<p>for文のサンプルソース</p>
+		 <ul id="app6">
+		   <li v-for="item1 in items2">
+		     {{ item1.message }}
+		   </li>
+		 </ul>
+
+	    <br>
+	    <br>
+
+	</div>
+
+
+
+	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
+	<div th:replace="common/Script :: script"></div>
+	<div th:replace="common/js/JsTestVue1 :: jsTestVue1"></div>
+
+  </body>
+</html>

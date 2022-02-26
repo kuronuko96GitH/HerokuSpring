@@ -205,4 +205,19 @@ public class RootController {
 
 	return "sample2";
   }
+
+  /**
+   * サンプル（vueのテスト用）画面を表示
+   * @param model Model
+   * @return サンプル画面
+   */
+  @GetMapping(value = "/sampleVue")
+  public String sampleVue(@AuthenticationPrincipal AuthUser userDetails, Model model) {
+
+	// サンプル画面に、ログイン情報のパラメータを渡す。
+	setAuthUser(userDetails, model);
+
+	return "sampleVue";
+  }
+
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.Work;
 
 /**
- * ユーザー情報 Repository
+ * 勤退情報 Repository
  */
 @Repository
 public interface WorkRepository extends JpaRepository<Work, Long> {
