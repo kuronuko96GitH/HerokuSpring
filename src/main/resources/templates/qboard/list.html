@@ -32,7 +32,7 @@
 					</th:block>
 						<th:block th:if="${qborad.statusCode == 8}">
 							<div class="card-body center">
-								<h5 class="card-title"><strong>管理者より</strong></h5>
+								<div class="card-title"><strong>管理者より</strong></div>
 								<div class="mb-2">※不適切な内容を含んだ投稿のため、削除されました。</div>
 								<th:block th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
 								    <a th:href="@{/qboard/{id}/releaseAdmin(id=*{id})}" class="btn btn-success btn-sm">ペナルティ削除の解除</a>
@@ -42,10 +42,10 @@
 						<th:block th:if="${qborad.statusCode != 8}">
 							<div class="card-body">
 								<th:block th:if="${qborad.bodyId == 1}">
-									<h5 class="card-title"><strong>【質問者】<span th:text="*{name}"></span></strong>さん</h5>
+									<div class="card-title">【質問者】<strong><span th:text="*{name}"></span></strong>さん</div>
 								</th:block>
 								<th:block th:if="${qborad.bodyId != 1}">
-									<h5 class="card-title"><strong><span th:text="*{name}"></span></strong>さん</h5>
+									<div class="card-title"><strong><span th:text="*{name}"></span></strong>さん</div>
 								</th:block>
 
 								<th:block th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
@@ -56,7 +56,11 @@
 								</th:block>
 
 								<div class="mb-3">
-								  <textarea readonly name="content" th:text="*{content}" class="form-control"></textarea>
+								  <textarea readonly rows="5" name="content" th:text="*{content}" class="form-control"></textarea>
+<!--
+								  <textarea name="content" th:text="*{content}" style="resize: none;"></textarea>
+								  <textarea readonly name="content" th:text="*{content}" class="form-control" style="resize: auto;"></textarea>
+-->
 								</div>
 
 								<div th:text="${'投稿日：' + #dates.format(qborad.createDate, 'yyyy/MM/dd H:mm')}" class="mb-2"></div>

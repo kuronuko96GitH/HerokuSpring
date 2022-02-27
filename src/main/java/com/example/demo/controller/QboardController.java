@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.demo.auth.AuthUser;
 import com.example.demo.dto.QboardRequest;
+import com.example.demo.dto.QboardRequestSearch;
 import com.example.demo.entity.Qboard;
 import com.example.demo.entity.SystemInfo;
 import com.example.demo.entity.SystemMsg;
@@ -139,15 +140,17 @@ public class QboardController {
 		//システムエラー画面を表示
 		return strRtnForm;
 	}
-/*
-	// 質問板ヘッダ情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
+
+	// 質問板ヘッダ情報一覧画面の検索ボタン処理のために、検索条件の入力項目の空データを作っておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
     model.addAttribute("qboardRequestSearch", new QboardRequestSearch());
-*/
 
-	// 質問板ヘッダ情報の検索
-	List<Qboard> qboardheadlist = qboardService.findList();
-//	List<QboardH> qboardheadlist = qboardHService.findByUserID(authUser.getId());
+
+	// 質問板一覧画面の初期表示は、検索処理をしない。
+	List<Qboard> qboardheadlist = null;
+//	// 質問板ヘッダ情報の検索
+//	List<Qboard> qboardheadlist = qboardService.findList();
+
 	model.addAttribute("qboardheadlist", qboardheadlist);
 
 
@@ -158,11 +161,10 @@ public class QboardController {
 
 
   /**
-   * 質問板情報一覧画面を表示
+   * 質問板（ボディ）情報一覧画面を表示
    * @param model Model
    * @return 質問板情報一覧画面
    */
-//  @GetMapping(value = "/qboard/list{headId}")
   @GetMapping(value = "/qboard/{headId}")
   public String displayListQboard(@PathVariable Integer headId, Model model) {
 
@@ -179,19 +181,63 @@ public class QboardController {
 	// 投稿処理用のヘッダIDを、サービスクラスで取得しておく。
 	qboardService.setHeadId(headId);
 
-/*
-	// 質問板情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
-	// ここで作成しておかないと、HTML側でnullエラーになる。
-    model.addAttribute("qboardRequestSearch", new QboardRequestSearch());
-*/
-
 	// 質問板情報の検索
 	List<Qboard> qboardlist = qboardService.findBodyList(headId);
-//	List<QboardH> qboardheadlist = qboardHService.findByUserID(authUser.getId());
 	model.addAttribute("qboardlist", qboardlist);
 
 
 	return "qboard/list";
+  }
+
+
+
+  /**
+   * 質問板情報一覧　検索
+   * @param QboardRequestSearch qboardRequestSearch（検索条件の入力項目）
+   * @param model Model
+   * @return 質問板情報一覧画面
+   */
+  @RequestMapping(value = "/qboard/search", method = RequestMethod.POST)
+  public String displayListWorkSearch(@Validated @ModelAttribute QboardRequestSearch qboardRequestSearch, BindingResult result, Model model) {
+
+	// ログイン情報の取得と設定。
+	String strRtnForm = setAuthUser(model, null);
+	if (strRtnForm != null) {
+		// セッション情報の取得に失敗した場合
+		//システムエラー画面を表示
+		return strRtnForm;
+	}
+
+	if (result.hasErrors()) {
+	      // 入力チェックエラーの場合
+	      List<String> errorList = new ArrayList<String>();
+	      for (ObjectError error : result.getAllErrors()) {
+	        errorList.add(error.getDefaultMessage());
+	      }
+	      model.addAttribute("validationError", errorList);
+	      return "qboard/headlist";
+	}
+
+
+	List<Qboard> qboardheadlist;
+
+	// データ検索処理
+	qboardheadlist = qboardService.searchQboard(authUser.getId(), qboardRequestSearch);
+
+
+	if (qboardheadlist.size() == 0) {
+		// 該当データ無し。
+		model.addAttribute("msgSearchErr", "該当データがありません。");
+//		model.addAttribute("msgInfo", "該当データがありません。");
+	} else {
+		// 該当件数の取得。
+		Integer intCnt = Integer.valueOf(qboardheadlist.size());
+		model.addAttribute("msgSearchInfo", "【検索結果】条件に該当するデータは" + intCnt.toString() + "件です。");
+//		model.addAttribute("msgSearchInfo", "【検索結果】" + intCnt.toString() + "件のデータがありました。");
+	}
+	model.addAttribute("qboardheadlist", qboardheadlist);
+
+	return "qboard/headlist";
   }
 
 
@@ -214,8 +260,6 @@ public class QboardController {
 
 	// 投稿処理用のヘッダIDは、新規質問投稿時にはサービスクラスに０を設定しておく。
 	qboardService.setHeadId(0);
-	// 投稿処理用のヘッダIDを、サービスクラスで取得しておく。
-//	qboardService.setHeadId(headId);
 
     model.addAttribute("qboardRequest", new QboardRequest());
 	    
@@ -283,7 +327,10 @@ public class QboardController {
 	}
 
 	// 投稿情報の作成
-    model.addAttribute("qboardRequest", new QboardRequest());
+//    model.addAttribute("qboardRequest", new QboardRequest());
+	QboardRequest qboardRequest = new QboardRequest();
+	qboardRequest.setHeadId(qboardService.getHeadId()); // キャンセルボタン用に、ヘッダIDをパラメータとして設定しておく。
+    model.addAttribute("qboardRequest", qboardRequest);
 
 	// 追加投稿対象のボディデータの検索
 	List<Qboard> qboardlist = qboardService.findBodyList(qboardService.getHeadId());
@@ -372,7 +419,7 @@ public class QboardController {
 		return "redirect:/work/reward";
 
 	} else {
-		// 前画面IDが"list"(勤退一覧画面)。
+		// 前画面IDが"list"(質問板一覧画面)。
 		return "redirect:/work/list";
 	}
 */

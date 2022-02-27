@@ -39,7 +39,7 @@
 
 							    <div class="text-center">
 							      <input type="submit" value="　投稿　" class="btn btn-primary">
-							      <a href="/qboard/headlist" class="btn btn-secondary">質問掲示板</a>
+							      <a th:href="@{/qboard/{headId}(headId=*{headId})}" class="btn btn-secondary">キャンセル</a>
 							    </div>
 							</form>
 
@@ -73,7 +73,7 @@
 								</th:block>
 
 								<div class="mb-3">
-								  <textarea readonly name="content" th:text="*{content}" class="form-control"></textarea>
+								  <textarea readonly rows="5" name="content" th:text="*{content}" class="form-control"></textarea>
 								</div>
 
 								<div th:text="${'投稿日：' + #dates.format(qborad.createDate, 'yyyy/MM/dd H:mm')}" class="mb-2"></div>

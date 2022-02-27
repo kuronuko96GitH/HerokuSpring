@@ -12,6 +12,12 @@ import lombok.Data;
  */
 @Data
 public class QboardRequest implements Serializable {
+
+  /**
+   * ヘッダID
+   */
+  private Integer headId; // 入力チェックの対象外
+
   /**
    * 投稿名
    */

@@ -64,6 +64,7 @@
 	</resultMap>
 
 
+
 	<select id="searchWork" parameterType="java.lang.String" resultMap="workSearch">
 	<![CDATA[
 		SELECT	WORKS.ID,
@@ -107,4 +108,46 @@
 		<result property="worktime" column="WORKTIME" />
 		<result property="updateDate" column="UPDATED_AT" />
 	</resultMap>
+
+
+
+	<select id="searchQboard" parameterType="java.lang.String" resultMap="qboardSearch">
+	<![CDATA[
+		SELECT	QBOARDS.ID,
+				QBOARDS.HEAD_ID,
+				QBOARDS.BODY_ID,
+				QBOARDS.USER_ID,
+				QBOARDS.STATUS_CODE,
+				QBOARDS.NAME,
+				QBOARDS.CONTENT,
+				QBOARDS.CREATED_AT,
+				QBOARDS.UPDATED_AT
+		FROM QBOARDS
+		WHERE QBOARDS.BODY_ID = 1
+			AND STATUS_CODE < 8
+	]]>
+	<choose>
+	  <when test="strContent1 != null">
+		<![CDATA[
+			AND QBOARDS.CONTENT LIKE '%${strContent1}%'
+		]]>
+	  </when>
+	</choose>
+	<![CDATA[
+		ORDER BY QBOARDS.HEAD_ID DESC
+	]]>
+	</select>
+
+	<resultMap type="com.example.demo.entity.Qboard" id="qboardSearch">
+		<result property="id" column="ID" />
+		<result property="headId" column="HEAD_ID" />
+		<result property="bodyId" column="BODY_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="statusCode" column="STATUS_CODE" />
+		<result property="name" column="NAME" />
+		<result property="content" column="CONTENT" />
+		<result property="createDate" column="CREATED_AT" />
+		<result property="updateDate" column="UPDATED_AT" />
+	</resultMap>
+
 </mapper>

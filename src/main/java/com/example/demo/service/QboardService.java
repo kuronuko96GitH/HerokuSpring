@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.QboardRequest;
+import com.example.demo.dto.QboardRequestSearch;
 import com.example.demo.entity.Qboard;
 import com.example.demo.repository.QboardRepository;
 import com.example.demo.repository.RepositoryXml;
@@ -108,6 +109,17 @@ public class QboardService {
   }
 */
 
+  /**
+   * 質問板情報の検索（入力された条件で検索）
+   * @return 検索結果
+   */
+  public List<Qboard> searchQboard(Long userId, QboardRequestSearch qboardRequestSearch) {
+
+	// 入力項目で検索条件を変更する。
+	return repositoryXml.searchQboard(userId, qboardRequestSearch.getContent1());
+//	return repositoryXml.searchQboard(userId, qboardRequestSearch.getContent1(), qboardRequestSearch.getContent2(), qboardRequestSearch.getContent3());
+  }
+
 
 
 
@@ -121,7 +133,6 @@ public class QboardService {
 	Date now = new Date();
 	Qboard qboard = new Qboard();
 
-//	qboard.setHeadId(3); // ヘッダID
 	Integer maxHeadId = 0; // ヘッダID（新規の質問投稿時に必要なID）
 	Integer maxBodyId = 0; // ボディID（返信投稿時に必要なID）
 
@@ -153,28 +164,11 @@ public class QboardService {
 
 	qboard.setUserId(userID); // ユーザーID
 
-	qboard.setStatusCode(1); // 1：新規
+	qboard.setStatusCode(1); // 1：新規(未削除)
 
 	qboard.setName(qboardRequest.getName());
 	qboard.setContent(qboardRequest.getContent());
 
-/*
-    // 開始日時
-    Date dateS = DateEdit.getDateTime(workRequest.getStartDateY(), workRequest.getStartDateM(), workRequest.getStartDateD(),
-    		workRequest.getStartDateHH(), workRequest.getStartDateMI(), "0");
-    work.setStartDate(dateS);
-
-    // 終了日時
-    Date dateE = DateEdit.getDateTime(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD(),
-    		workRequest.getEndDateHH(), workRequest.getEndDateMI(), "0");
-    work.setEndDate(dateE);
-
-	// 労働時間数を取得。
-    String strStartDate = DateEdit.getDate(dateS, "yyyy/MM/dd HH:mm:ss");
-    String strEndDate = DateEdit.getDate(dateE, "yyyy/MM/dd HH:mm:ss");
-	double dblHours = DateTimeRange.getRangeHours(strStartDate, strEndDate, DateTimeRange.INT_KIRISUTE);
-    work.setWorktime(dblHours);
-*/
     // 登録日
 	qboard.setCreateDate(now);
     // 更新日
@@ -203,33 +197,15 @@ public class QboardService {
 	//管理者権限を持つ担当者が削除した場合。
 		qboard.setStatusCode(intStatusCode); // ステータスコードを削除(８)に設定。
 	}
-	
-/*
-	qboard.setUserId(userID);
-	qboard.setContent(qboardUpdateRequest.getContent());
 
-    // 開始日時
-    Date dateS = DateEdit.getDateTime(workUpdateRequest.getStartDateY(), workUpdateRequest.getStartDateM(), workUpdateRequest.getStartDateD(),
-    		workUpdateRequest.getStartDateHH(), workUpdateRequest.getStartDateMI(), "0");
-    work.setStartDate(dateS);
-
-    // 終了日時
-    Date dateE = DateEdit.getDateTime(workUpdateRequest.getEndDateY(), workUpdateRequest.getEndDateM(), workUpdateRequest.getEndDateD(),
-    		workUpdateRequest.getEndDateHH(), workUpdateRequest.getEndDateMI(), "0");
-    work.setEndDate(dateE);
-
-	// 労働時間数を取得。
-    String strStartDate = DateEdit.getDate(dateS, "yyyy/MM/dd HH:mm:ss");
-    String strEndDate = DateEdit.getDate(dateE, "yyyy/MM/dd HH:mm:ss");
-	double dblHours = DateTimeRange.getRangeHours(strStartDate, strEndDate, DateTimeRange.INT_KIRISUTE);
-    work.setWorktime(dblHours);
- */
 	// 更新日
 	qboard.setUpdateDate(new Date());
 
 	qboardRepository.save(qboard);
   }
 
+ 
+ 
   /**
    * 質問板情報 物理削除
    * @param id ユーザーID

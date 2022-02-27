@@ -15,6 +15,49 @@
 			<div th:replace="common/Msg :: msg"></div>
 
 
+
+			<div class="search_form sticky-top p-2">
+				<form th:action="@{/qboard/search}" class="my-2" th:object="${qboardRequestSearch}" th:method="post">
+					<div class="d-flex align-items-between">
+						<h5 class="me-2">検索条件</h5>
+						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
+							<span>[検索条件を隠す]</span>
+						</a>
+					</div>
+					<div id="searchCondition" class="collapse show">
+						<div class="border p-3 rounded">
+<!--
+							<input type="button" class="btn btn-secondary mb-3" value="検索条件クリア" id="clear_qboard_button">
+-->
+							<div class="mb-3">
+								<strong>検索キーワード：</strong>
+								<input type="text" th:field="*{content1}" class="form-control-inline" style="width:200px;"> 
+							</div>
+<!--
+							<div class="mb-3">
+								<strong>検索キーワード２：</strong>
+								<input type="text" th:field="*{content2}" class="form-control-inline"> 
+							</div>
+							<div class="mb-3">
+								<strong>検索キーワード３：</strong>
+								<input type="text" th:field="*{content3}" class="form-control-inline"> 
+							</div>
+-->
+						</div>
+					</div>
+					<div class="py-2">
+						<button class="btn btn-success shadow-sm px-3">
+							<span>検索実行</span>
+						</button>
+					</div>
+
+					<div th:replace="common/SearchMsg :: searchMsg"></div>
+
+				</form>
+			<hr>
+			</div>
+
+
 			<div class="container px-4 px-lg-5 d-flex align-items-center justify-content-center">
 				<div class="d-flex justify-content-center">
 
@@ -32,7 +75,7 @@
 							<div class="card-body center">
 -->
 							</th:block>
-								<h5 class="card-title"><strong>【質問者】<span th:text="*{name}" class="text-center"></span></strong>さん</h5>
+								<div class="card-title">【質問者】<strong><span th:text="*{name}" class="text-center"></span></strong>さん</div>
 								<div class="mb-3">
 									<th:block th:if="${#strings.length(qborad.content) > 35}">
 										<strong th:text="${#strings.substring(qborad.content,0,35)}"></strong>
