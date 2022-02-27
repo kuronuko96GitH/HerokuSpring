@@ -14,16 +14,18 @@
 
 			<div class="container px-4 px-lg-5 d-flex align-items-center justify-content-center">
 				<div class="d-flex justify-content-center">
-					<div class="card" style="width: 40rem;">
+
+					<!-- 左側　投稿内容の登録フォーム -->
+					<div class="card" style="width: 35rem;">
 
 						<div class="card-body center">
 							<h5 class="card-title">※荒らし行為は禁止です。</h5>
 							<hr />
-			
+
 							<!-- エラーメッセージ -->
 							<div th:replace="common/Msg :: msg"></div>
 
-							  <form th:action="@{/qboard/create}" th:object="${qboardRequest}" th:method="post">
+							<form th:action="@{/qboard/create}" th:object="${qboardRequest}" th:method="post">
 						
 							    <div class="form-group mb-2">
 							      <label>投稿者：<span class="text-danger">※</span></label>
@@ -39,11 +41,52 @@
 							      <input type="submit" value="　投稿　" class="btn btn-primary">
 							      <a href="/qboard/headlist" class="btn btn-secondary">質問掲示板</a>
 							    </div>
-							  </form>
+							</form>
 
 						</div>
 					</div>
-		
+
+
+
+					<!-- 右側　Ｑ＆Ａ一覧 -->
+					<div th:each="qborad, qboradRec : ${qboardlist}" th:object="${qborad}">
+
+					<th:block th:if="${qboradRec.count % 2 == 1}">
+						<div class="card" style="width: 35rem;">
+					</th:block>
+					<th:block th:if="${qboradRec.count % 2 == 0}">
+						<div class="card bg-light" style="width: 35rem;">
+					</th:block>
+						<th:block th:if="${qborad.statusCode == 8}">
+							<div class="card-body center">
+								<h5 class="card-title"><strong>管理者より</strong></h5>
+								<div class="mb-2">※不適切な内容を含んだ投稿のため、削除されました。</div>
+							</div>
+						</th:block>
+						<th:block th:if="${qborad.statusCode != 8}">
+							<div class="card-body">
+								<th:block th:if="${qborad.bodyId == 1}">
+									<h5 class="card-title"><strong>【質問者】<span th:text="*{name}"></span></strong>さん</h5>
+								</th:block>
+								<th:block th:if="${qborad.bodyId != 1}">
+									<h5 class="card-title"><strong><span th:text="*{name}"></span></strong>さん</h5>
+								</th:block>
+
+								<div class="mb-3">
+								  <textarea readonly name="content" th:text="*{content}" class="form-control"></textarea>
+								</div>
+
+								<div th:text="${'投稿日：' + #dates.format(qborad.createDate, 'yyyy/MM/dd H:mm')}" class="mb-2"></div>
+
+							</div>
+						</th:block>
+
+						</div>
+
+					</div>
+
+
+
 				</div>
 			</div>
 

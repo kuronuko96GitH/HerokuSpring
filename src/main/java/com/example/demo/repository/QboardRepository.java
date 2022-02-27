@@ -15,7 +15,8 @@ import com.example.demo.entity.Qboard;
 public interface QboardRepository extends JpaRepository<Qboard, Long> {
 
 	// 質問一覧（ヘッダ情報）を検索する。(返信投稿を除く、最初の質問だけを取得する)
-	@Query(value = "SELECT * FROM QBOARDS WHERE BODY_ID = 1 AND STATUS_CODE < 8 ORDER BY ID", nativeQuery=true)
+//	@Query(value = "SELECT * FROM QBOARDS WHERE BODY_ID = 1 AND STATUS_CODE < 8 ORDER BY ID", nativeQuery=true)
+	@Query(value = "SELECT * FROM QBOARDS WHERE BODY_ID = 1 AND STATUS_CODE < 8 ORDER BY CREATED_AT DESC", nativeQuery=true)
 	List<Qboard> findList();
 
 	// 質問一覧を検索する。(HEAD_IDに該当するボディデータを取得する)

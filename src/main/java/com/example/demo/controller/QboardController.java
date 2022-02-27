@@ -282,8 +282,14 @@ public class QboardController {
 		return strRtnForm;
 	}
 
+	// 投稿情報の作成
     model.addAttribute("qboardRequest", new QboardRequest());
-	    
+
+	// 追加投稿対象のボディデータの検索
+	List<Qboard> qboardlist = qboardService.findBodyList(qboardService.getHeadId());
+	model.addAttribute("qboardlist", qboardlist);
+
+
     return "qboard/add";
   }
 
@@ -305,6 +311,10 @@ public class QboardController {
 		return strRtnForm;
 	}
 
+	// 追加投稿対象のボディデータの検索
+	List<Qboard> qboardlist = qboardService.findBodyList(qboardService.getHeadId());
+	model.addAttribute("qboardlist", qboardlist);
+
 	if (result.hasErrors()) {
       // 入力チェックエラーの場合
       List<String> errorList = new ArrayList<String>();
@@ -315,23 +325,9 @@ public class QboardController {
       return "qboard/add";
     }
 
-	// 投稿処理用のヘッダIDを、サービスクラスで取得しておく。
-//	qboardService.setHeadId(headId);
-
     // 質問板情報の追加投稿データ登録
 	// （新規登録時は、ヘッダIDは０が設定されてます。データ作成時にヘッダIDを採番します）
 	qboardService.create(qboardRequest, authUser.getId(), qboardService.getHeadId());
-//	qboardService.create(qboardRequest, authUser.getId()); // ログイン時のユーザーIDを設定。
-/*
-	if (authUser.getBackId().equals("list")) {
-		// 前画面IDが"list"(勤退一覧画面)。
-	    return "redirect:/qboard/list";
-	} else {
-
-		// 前画面IDが"stamping"(打刻登録画面)。
-	    return "redirect:/qboard/stamping";		
-	}
-*/
 
 	if ( qboardService.getHeadId() == 0 ) { 
 		// 新規登録（質問投稿）の場合

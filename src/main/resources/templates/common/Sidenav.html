@@ -18,6 +18,8 @@
 					<span class="navbar-brand visible-gt-lg">ポートフォリオ</span>
 				</div>
 			</nav>
+
+			<th:block th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
 <!--
 			<div class="container-fluid bg-secondary text-light py-3" th:object="${authenticatedUser}">
 				<span th:text="*{username}">Username</span>
@@ -35,6 +37,8 @@
 				</div>
 			</div>
 -->
+			</th:block>
+
 			<ul class="nav flex-column">
 				<li class="nav-item border-bottom">
                 	<h4 class="center text-dark pt-3" th:text="${#authentication.principal.username}+' 様'"></h4>
@@ -86,7 +90,7 @@
 	                <a id="navbarDropdown" class="nav-link dropdown-toggle text-dark py-3" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	                    勤退情報登録<span class="caret"></span>
 	                </a>
-	
+
 	                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 	                    <a class="dropdown-item" th:href="@{/work/stamping}">
 	                        打刻登録
@@ -102,7 +106,7 @@
 
 				<li class="nav-item border-bottom">
 	                <a id="navbarDropdown" class="nav-link dropdown-toggle text-dark py-3" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	                    質問掲示板（仮）<span class="caret"></span>
+	                    質問掲示板<span class="caret"></span>
 	                </a>
 
 	                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
