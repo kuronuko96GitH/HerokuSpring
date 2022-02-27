@@ -18,8 +18,8 @@ public interface QboardRepository extends JpaRepository<Qboard, Long> {
 	@Query(value = "SELECT * FROM QBOARDS WHERE BODY_ID = 1 AND STATUS_CODE < 8 ORDER BY ID", nativeQuery=true)
 	List<Qboard> findList();
 
-	// 質問一覧を検索する。(HEAD_IDに該当するデータを取得する)
-	@Query(value = "SELECT * FROM QBOARDS WHERE HEAD_ID = ?1 AND STATUS_CODE < 8 ORDER BY ID", nativeQuery=true)
+	// 質問一覧を検索する。(HEAD_IDに該当するボディデータを取得する)
+	@Query(value = "SELECT * FROM QBOARDS WHERE HEAD_ID = ?1 AND STATUS_CODE <= 8 ORDER BY ID", nativeQuery=true)
 	List<Qboard> findBodyList(Integer headId);
 
 

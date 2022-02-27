@@ -31,23 +31,32 @@
 					<th:block th:if="${qboradRec.count % 2 == 0}">
 						<div class="card bg-light" style="width: 40rem;">
 					</th:block>
+						<th:block th:if="${qborad.statusCode == 8}">
 							<div class="card-body center">
-								<h5 class="card-title"><strong>投稿者：<span th:text="*{name}" class="text-center"></span></strong></h5>
+								<h5 class="card-title"><strong>管理者より</strong></h5>
+								<div class="mb-2">※不適切な内容を含んだ投稿のため、削除されました。</div>
+								<th:block th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
+								    <a th:href="@{/qboard/{id}/releaseAdmin(id=*{id})}" class="btn btn-success btn-sm">ペナルティ削除の解除</a>
+								</th:block>
+							</div>
+						</th:block>
+						<th:block th:if="${qborad.statusCode != 8}">
+							<div class="card-body">
+								<th:block th:if="${qborad.bodyId == 1}">
+									<h5 class="card-title"><strong>【質問者】<span th:text="*{name}"></span></strong>さん</h5>
+								</th:block>
+								<th:block th:if="${qborad.bodyId != 1}">
+									<h5 class="card-title"><strong><span th:text="*{name}"></span></strong>さん</h5>
+								</th:block>
+
+								<th:block th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
 <!--
-								<div th:text="${'NO：' + qboradRec.count}" class="mb-2"></div>
+									<div th:text="${'NO：' + qboradRec.count}" class="mb-2"></div>
 -->
+									<div class="mb-2">ユーザーID：<span th:text="*{userId}"></span></div>
+								</th:block>
+
 								<div class="mb-3">
-<!--
-									<th:block th:if="${#strings.length(qborad.content) > 35}">
-										<strong th:text="${#strings.substring(qborad.content,0,35)}"></strong>
-									</th:block>
-									<th:block th:if="${#strings.length(qborad.content) <= 35}">
-								        <strong th:text="*{content}"></strong>
-									</th:block>
-
-
-								  <textarea name="content" th:text="*{content}" class="form-control" style="resize: none;" placeholder="最大２５５文字まで入力可能です。"></textarea>
--->
 								  <textarea readonly name="content" th:text="*{content}" class="form-control"placeholder="最大２５５文字まで入力可能です。"></textarea>
 								</div>
 
@@ -55,7 +64,12 @@
 								<th:block th:if="${authUser.id == qborad.userId}">
 								    <a th:href="@{/qboard/{id}/delete(id=*{id})}" class="btn btn-danger btn-sm">　削除　</a>
 								</th:block>
+								<th:block th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
+								    <a th:href="@{/qboard/{id}/deleteAdmin(id=*{id})}" class="btn btn-danger btn-sm">違反投稿の削除</a>
+								</th:block>
 							</div>
+						</th:block>
+
 						</div>
 
 				    <div class="text-center mt-3 mb-3">
@@ -74,8 +88,5 @@
 
 	<!-- Scripts -->
 	<div th:replace="common/Script :: script"></div>
-<!--
-	<div th:replace="common/js/JsSearchWork :: scriptSearchWork"></div>
--->
   </body>
 </html>

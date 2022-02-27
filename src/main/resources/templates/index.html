@@ -14,22 +14,22 @@
 		    <h5>　◆このポートフォリオは、<span class="text-danger">デモ版</span>です。<span class="text-danger">予告なく</span>、画面レイアウトの変更。</h5>
 		    <h5>　システムの更新に伴う、データの削除が発生します。ご了承願います。</h5>
 		</div>
-	
+
 	    <h2><span th:text="${message}"></span></h2>
-	
+
 	     <section class="bg-dark">
 	         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
 	             <div class="d-flex justify-content-center">
 	                 <div class="text-center">
 	                     <div class="card text-white bg-dark mt-0 mb-0" style="max-width: 50rem;">
 	                         <div class="card-body">
-	
+
 								<div th:if="${#authentication.principal.roles.get(0) != 'ROLE_USER'}">
 									<h5>※管理者と『guest』ユーザーのみ、</h5>
 									<h5>ユーザー情報一覧が閲覧可能です。</h5>
 								</div>
 	                             <br>
-	
+
 	                             <h4>◆ユーザー情報管理</h4>
 	                             <div th:if="${#authentication.principal.roles.get(0) != 'ROLE_USER'}">
 		                         	<h5><a th:href="@{/user/list}" rel="noopener">ユーザー情報一覧</a></h5>
@@ -40,7 +40,7 @@
 	                         </div>
 	                     </div>
 	                 </div>
-	
+
 	             </div>
 	         </div>
 	         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
@@ -50,15 +50,32 @@
 	                     <div class="card text-white bg-dark mt-0 mb-0" style="max-width: 50rem;">
 	                         <div class="card-body">
 	                             <br>
-	
-	                             <h4>◆勤退情報管理</h4>
+
+	                             <h4>◆勤退情報登録</h4>
 	                             <h5><a th:href="@{/work/stamping}" rel="noopener">打刻登録</a></h5>
 	                             <h5><a th:href="@{/work/list}" rel="noopener">勤退データ一覧</a></h5>
 	                             <h5><a th:href="@{/work/reward}" rel="noopener">報酬計算(フリーランス版)</a></h5>
 	                         </div>
 	                     </div>
 	                 </div>
-	
+
+	             </div>
+	         </div>
+	         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+	             <div class="d-flex justify-content-center">
+	                 
+	                 <div class="text-center">
+	                     <div class="card text-white bg-dark mt-0 mb-0" style="max-width: 50rem;">
+	                         <div class="card-body">
+	                             <br>
+
+	                             <h4>◆質問掲示板</h4>
+	                             <h5><a th:href="@{/qboard/headlist}" rel="noopener">質問掲示板</a></h5>
+	                             <h5><a th:href="@{/qboard/new}" rel="noopener">質問投稿</a></h5>
+	                         </div>
+	                     </div>
+	                 </div>
+
 	             </div>
 	         </div>
 	     </section>
@@ -67,6 +84,6 @@
 
 	<!-- Scripts -->
 	<div th:replace="common/Script :: script"></div>
-     
+
   </body>
 </html>

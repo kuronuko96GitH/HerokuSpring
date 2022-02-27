@@ -319,7 +319,8 @@ public class QboardController {
 //	qboardService.setHeadId(headId);
 
     // 質問板情報の追加投稿データ登録
-	qboardService.create(qboardRequest, authUser.getId(), qboardService.getHeadId()); // ログイン時のユーザーIDを設定。
+	// （新規登録時は、ヘッダIDは０が設定されてます。データ作成時にヘッダIDを採番します）
+	qboardService.create(qboardRequest, authUser.getId(), qboardService.getHeadId());
 //	qboardService.create(qboardRequest, authUser.getId()); // ログイン時のユーザーIDを設定。
 /*
 	if (authUser.getBackId().equals("list")) {
@@ -331,8 +332,16 @@ public class QboardController {
 	    return "redirect:/qboard/stamping";		
 	}
 */
-  return "redirect:/qboard/headlist";
-//    return "redirect:/qboard/list";
+
+	if ( qboardService.getHeadId() == 0 ) { 
+		// 新規登録（質問投稿）の場合
+		
+		// 新規登録されたデータのヘッドIDの取得。
+		qboardService.setHeadId(qboardService.getMaxHeadId());		
+//		return "redirect:/qboard/headlist";
+	}
+
+	return String.format("redirect:/qboard/%d", qboardService.getHeadId());
   }
 
 
@@ -347,11 +356,11 @@ public class QboardController {
   public String deleteQboard(@PathVariable Long id, Model model) {
 
 	  // 既に投稿したデータの削除
-	  qboardService.delUpdate(id, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
+	  qboardService.delUpdate(id, authUser.getId(), 9); // ログイン時のユーザーIDをパラメータとして渡す。
 //	  qboardService.update(qboardUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
 
-	  return "redirect:/qboard/headlist";
-//	  return String.format("redirect:/qboard/%d", qboardUpdateRequest.getId());
+//	  return "redirect:/qboard/headlist";
+	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());
 
 /*
     // 質問板情報の削除
@@ -371,6 +380,47 @@ public class QboardController {
 		return "redirect:/work/list";
 	}
 */
+  }
+
+
+
+  /**
+   * 質問板情報削除（荒らしなどによる違反者投稿の削除）
+   * @param id 削除するユーザーID
+   * @param model Model
+   * @return 質問板情報詳細画面
+   */
+  @GetMapping("/qboard/{id}/deleteAdmin")
+  public String deleteQboardAdmin(@PathVariable Long id, Model model) {
+
+	  // 既に投稿したデータの削除
+	  qboardService.delUpdate(id, authUser.getId(), 8); // ログイン時のユーザーIDをパラメータとして渡す。
+//	  qboardService.update(qboardUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
+
+//	  return "redirect:/qboard/headlist";
+	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());
+
+  }
+
+
+
+  /**
+   * 質問板情報　ペナルティ削除データの解除
+   * （管理者のミスなどにより、誤って削除したデータを復活させる）
+   * @param id 削除するユーザーID
+   * @param model Model
+   * @return 質問板情報詳細画面
+   */
+  @GetMapping("/qboard/{id}/releaseAdmin")
+  public String releaseQboardAdmin(@PathVariable Long id, Model model) {
+
+	  // 管理者のミスなどにより、誤って削除したデータを復活させる
+	  qboardService.delUpdate(id, authUser.getId(), 1); // 状態コードを１（未削除）パラメータとして渡す。
+//	  qboardService.update(qboardUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
+
+//	  return "redirect:/qboard/headlist";
+	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());
+
   }
 
 }

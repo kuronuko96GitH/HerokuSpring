@@ -10,7 +10,7 @@
 		<div th:replace="common/Navbar :: navbar"></div>
 
 		<div class="container">
-			<div class="head_title">質問掲示板（仮）</div>
+			<div class="head_title">質問掲示板</div>
 
 			<div th:replace="common/Msg :: msg"></div>
 
@@ -26,11 +26,13 @@
 					<th:block th:if="${qboradRec.count % 2 == 0}">
 						<div class="card bg-light" style="width: 40rem;">
 					</th:block>
-							<div class="card-body center">
-								<h5 class="card-title"><strong>投稿者：<span th:text="*{name}" class="text-center"></span></strong></h5>
+							<div class="card-body">
+							<th:block th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
 <!--
-								<div th:text="${'NO：' + qboradRec.count}" class="mb-2"></div>
+							<div class="card-body center">
 -->
+							</th:block>
+								<h5 class="card-title"><strong>【質問者】<span th:text="*{name}" class="text-center"></span></strong>さん</h5>
 								<div class="mb-3">
 									<th:block th:if="${#strings.length(qborad.content) > 35}">
 										<strong th:text="${#strings.substring(qborad.content,0,35)}"></strong>

@@ -48,6 +48,15 @@ public class QboardService {
 	this.headId = headId;
   }
 
+ 
+  // （最新の）ヘッダID（新規登録時などに使用するメソッド）
+  public Integer getMaxHeadId() {
+
+	Integer maxHeadId = 0;
+	// ソート順を降順にして、一件目のデータを取得する。
+	maxHeadId = qboardRepository.findHeadIdMax().get(0).getHeadId();
+	return maxHeadId;
+  }
 
 
 
@@ -82,7 +91,7 @@ public class QboardService {
 
 
   /**
-   * 質問板情報 該当するヘッダID該当するリストを検索
+   * 質問板情報 指定されたヘッダIDに該当するボディデータを検索
    * @return 検索結果
    */
   public List<Qboard> findBodyList(Integer headId) {
@@ -182,17 +191,17 @@ public class QboardService {
    */
 //  public void update(QboardUpdateRequest qboardUpdateRequest, Long userID) {
 //	Qboard qboard = findById(qboardUpdateRequest.getId());
-  public void delUpdate(Long Id, Long userID) {
+  public void delUpdate(Long Id, Long userID, Integer intStatusCode) {
 	Qboard qboard = findById(Id);
 
 	if ( qboard.getUserId() == userID) {
 	// 投稿者と削除したログインユーザーが同じ場合
-		qboard.setStatusCode(9); // ステータスコードを削除(９)に設定。
+		qboard.setStatusCode(intStatusCode); // ステータスコードを削除(９)に設定。
 
 	} else {
 	// 投稿者の違反などによるペナルティとして、
 	//管理者権限を持つ担当者が削除した場合。
-		qboard.setStatusCode(8); // ステータスコードを削除(８)に設定。
+		qboard.setStatusCode(intStatusCode); // ステータスコードを削除(８)に設定。
 	}
 	
 /*
