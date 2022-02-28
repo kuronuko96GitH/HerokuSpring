@@ -131,10 +131,9 @@ public class QboardController {
   @GetMapping(value = "/qboard/headlist")
   public String displayHeadListQboard(Model model) {
 
-	// ログイン情報の取得と設定。(このタイミングで、前画面IDも設定しておく)
-//	setAuthUser(model, "list");
+	// ログイン情報の取得と設定。
 	String strRtnForm = setAuthUser(model, null);
-//	String strRtnForm = setAuthUser(model, "list");
+
 	if (strRtnForm != null) {
 		// セッション情報の取得に失敗した場合
 		//システムエラー画面を表示
@@ -169,9 +168,8 @@ public class QboardController {
   public String displayListQboard(@PathVariable Integer headId, Model model) {
 
 	// ログイン情報の取得と設定。(このタイミングで、前画面IDも設定しておく)
-//	setAuthUser(model, "list");
 	String strRtnForm = setAuthUser(model, null);
-//	String strRtnForm = setAuthUser(model, "list");
+
 	if (strRtnForm != null) {
 		// セッション情報の取得に失敗した場合
 		//システムエラー画面を表示
@@ -262,49 +260,9 @@ public class QboardController {
 	qboardService.setHeadId(0);
 
     model.addAttribute("qboardRequest", new QboardRequest());
-	    
-    return "qboard/add";
-//    return "qboard/new";
+
+    return "qboard/new";
   }
-
-
-  /**
-   * 質問板情報新規登録
-   * @param qboardRequest リクエストデータ
-   * @param model Model
-   * @return 質問板情報一覧画面
-   */
- /*
-  @RequestMapping(value = "/qboard/create", method = RequestMethod.POST)
-  public String createQboard(@Validated @ModelAttribute QboardRequest qboardRequest, BindingResult result, Model model) {
-
-	// ログイン情報の取得と設定。
-	String strRtnForm = setAuthUser(model, null);
-	if (strRtnForm != null) {
-		// セッション情報の取得に失敗した場合
-		//システムエラー画面を表示
-		return strRtnForm;
-	}
-
-	if (result.hasErrors()) {
-      // 入力チェックエラーの場合
-      List<String> errorList = new ArrayList<String>();
-      for (ObjectError error : result.getAllErrors()) {
-        errorList.add(error.getDefaultMessage());
-      }
-      model.addAttribute("validationError", errorList);
-      return "qboard/add";
-    }
-
-
-    // 質問板情報の新規登録（質問の投稿）
-	qboardService.create(qboardRequest, authUser.getId(), 0);
-
-  return "redirect:/qboard/headlist";
-//    return "redirect:/qboard/list";
-  }
-*/
-
 
 
 
@@ -313,8 +271,6 @@ public class QboardController {
    * @param model Model
    * @return 質問板情報一覧画面
    */
-//  @GetMapping(value = "/qboard/add{headId}")
-  //  public String displayAddQboard(@PathVariable Integer headId, Model model) {
   @GetMapping(value = "/qboard/add")
   public String displayAddQboard(Model model) {
 
@@ -380,8 +336,7 @@ public class QboardController {
 		// 新規登録（質問投稿）の場合
 		
 		// 新規登録されたデータのヘッドIDの取得。
-		qboardService.setHeadId(qboardService.getMaxHeadId());		
-//		return "redirect:/qboard/headlist";
+		qboardService.setHeadId(qboardService.getMaxHeadId());
 	}
 
 	return String.format("redirect:/qboard/%d", qboardService.getHeadId());
@@ -400,29 +355,8 @@ public class QboardController {
 
 	  // 既に投稿したデータの削除
 	  qboardService.delUpdate(id, authUser.getId(), 9); // ログイン時のユーザーIDをパラメータとして渡す。
-//	  qboardService.update(qboardUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
 
-//	  return "redirect:/qboard/headlist";
 	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());
-
-/*
-    // 質問板情報の削除
-    workService.delete(id);
-
-
-	if (authUser.getBackId().equals("stamping")) {
-		// 前画面IDが"stamping"(打刻登録画面)。
-	    return "redirect:/work/stamping";		
-
-	} else if (authUser.getBackId().equals("reward")) {
-		// 前画面IDが"reward"(報酬計算画面)。
-		return "redirect:/work/reward";
-
-	} else {
-		// 前画面IDが"list"(質問板一覧画面)。
-		return "redirect:/work/list";
-	}
-*/
   }
 
 
@@ -438,11 +372,8 @@ public class QboardController {
 
 	  // 既に投稿したデータの削除
 	  qboardService.delUpdate(id, authUser.getId(), 8); // ログイン時のユーザーIDをパラメータとして渡す。
-//	  qboardService.update(qboardUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
 
-//	  return "redirect:/qboard/headlist";
 	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());
-
   }
 
 
@@ -459,11 +390,8 @@ public class QboardController {
 
 	  // 管理者のミスなどにより、誤って削除したデータを復活させる
 	  qboardService.delUpdate(id, authUser.getId(), 1); // 状態コードを１（未削除）パラメータとして渡す。
-//	  qboardService.update(qboardUpdateRequest, authUser.getId()); // ログイン時のユーザーIDをパラメータとして渡す。
 
-//	  return "redirect:/qboard/headlist";
 	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());
-
   }
 
 }

@@ -39,7 +39,14 @@
 
 							    <div class="text-center">
 							      <input type="submit" value="　投稿　" class="btn btn-primary">
-							      <a th:href="@{/qboard/{headId}(headId=*{headId})}" class="btn btn-secondary">キャンセル</a>
+									<th:block th:if="${qboardRequest.headId == 0}">
+<!--
+								      <a href="/qboard/headlist" class="btn btn-secondary">質問掲示板</a>
+-->
+									</th:block>
+									<th:block th:if="${qboardRequest.headId != 0}">
+								      <a th:href="@{/qboard/{headId}(headId=*{headId})}" class="btn btn-secondary">キャンセル</a>
+									</th:block>
 							    </div>
 							</form>
 
