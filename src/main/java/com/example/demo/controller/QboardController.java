@@ -140,6 +140,11 @@ public class QboardController {
 		return strRtnForm;
 	}
 
+
+    // ラジオボタン用の初期値設定
+    model.addAttribute("radioLimitcnt", Qboard.newLimitcntList());
+
+
 	// 質問板ヘッダ情報一覧画面の検索ボタン処理のために、検索条件の入力項目の空データを作っておく。
 	// ここで作成しておかないと、HTML側でnullエラーになる。
     model.addAttribute("qboardRequestSearch", new QboardRequestSearch());
@@ -205,6 +210,10 @@ public class QboardController {
 		//システムエラー画面を表示
 		return strRtnForm;
 	}
+
+    // ラジオボタン用の初期値設定
+    model.addAttribute("radioLimitcnt", Qboard.newLimitcntList());
+
 
 	if (result.hasErrors()) {
 	      // 入力チェックエラーの場合
@@ -356,7 +365,36 @@ public class QboardController {
 	  // 既に投稿したデータの削除
 	  qboardService.delUpdate(id, authUser.getId(), 9); // ログイン時のユーザーIDをパラメータとして渡す。
 
-	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());
+	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());		  
+  }
+
+
+  /**
+   * 質問板（ヘッダ）情報削除
+   * @param id 削除するユーザーID
+   * @param model Model
+   * @return 質問板画面
+   */
+  @GetMapping("/qboard/{id}/deleteHead")
+  public String deleteHeadQboard(@PathVariable Long id, Model model) {
+
+		// ログイン情報の取得と設定。
+		String strRtnForm = setAuthUser(model, null);
+		if (strRtnForm != null) {
+			// セッション情報の取得に失敗した場合
+			//システムエラー画面を表示
+			return strRtnForm;
+		}
+
+		// 質問板ヘッダ情報一覧画面の検索ボタン処理のために、検索条件の入力項目の空データを作っておく。
+		// ここで作成しておかないと、HTML側でnullエラーになる。
+	    model.addAttribute("qboardRequestSearch", new QboardRequestSearch());
+
+
+	  qboardService.delUpdate(id, authUser.getId(), 9); // ログイン時のユーザーIDをパラメータとして渡す。
+
+	  // ヘッダ情報に該当するデータが削除された場合は、質問板一覧に画面遷移する。
+	  return "qboard/headlist";
   }
 
 
@@ -375,6 +413,36 @@ public class QboardController {
 
 	  return String.format("redirect:/qboard/%d", qboardService.getHeadId());
   }
+
+  /**
+   * 質問板ヘッダ情報削除（荒らしなどによる違反者投稿の削除）
+   * @param id 削除するユーザーID
+   * @param model Model
+   * @return 質問板一覧画面
+   */
+  @GetMapping("/qboard/{id}/deleteHeadAdmin")
+  public String deleteHeadQboardAdmin(@PathVariable Long id, Model model) {
+
+		// ログイン情報の取得と設定。
+		String strRtnForm = setAuthUser(model, null);
+		if (strRtnForm != null) {
+			// セッション情報の取得に失敗した場合
+			//システムエラー画面を表示
+			return strRtnForm;
+		}
+
+		// 質問板ヘッダ情報一覧画面の検索ボタン処理のために、検索条件の入力項目の空データを作っておく。
+		// ここで作成しておかないと、HTML側でnullエラーになる。
+	    model.addAttribute("qboardRequestSearch", new QboardRequestSearch());
+
+
+	  // 既に投稿したデータの削除
+	  qboardService.delUpdate(id, authUser.getId(), 8); // ログイン時のユーザーIDをパラメータとして渡す。
+
+	  // ヘッダ情報に該当するデータが削除された場合は、質問板一覧に画面遷移する。
+	  return "qboard/headlist";
+  }
+
 
 
 

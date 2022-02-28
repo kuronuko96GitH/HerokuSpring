@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -66,4 +68,17 @@ public class Qboard implements Serializable {
    */
   @Column(name = "created_at")
   private Date createDate;
+
+  public static Integer INT_LIMIT_CNT1 = 20; // 検索で取得できる最大件数　条件その１
+  public static Integer INT_LIMIT_CNT2 = 50; // 検索で取得できる最大件数　条件その２
+
+  public static Map<String, String> newLimitcntList() {
+    // ラジオボタンの画面表示用のHashMap作成
+    Map<String, String> limitcnt = new LinkedHashMap<String, String>();
+
+    limitcnt.put("01", "最新２０件");
+    limitcnt.put("02", "最新５０件");
+
+	return limitcnt;
+  }
 }

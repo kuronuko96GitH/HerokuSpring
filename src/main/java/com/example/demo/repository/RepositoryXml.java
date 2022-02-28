@@ -19,5 +19,6 @@ public interface RepositoryXml {
 
 	// (xml版)動的SQLに対応
 //	public List<Qboard> searchQboard(Long userId, String strContent1, String strContent2, String strContent3);
-	public List<Qboard> searchQboard(Long userId, String strContent1);
+//	public List<Qboard> searchQboard(Long userId, String strContent1);
+	public List<Qboard> searchQboard(Long userId, String strContent1, Integer limitCnt);
 }

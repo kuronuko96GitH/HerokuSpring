@@ -43,6 +43,27 @@
 								<input type="text" th:field="*{content3}" class="form-control-inline"> 
 							</div>
 -->
+							<div class="d-flex align-items-center mb-1">
+								<div th:each="Limitcnt : ${radioLimitcnt}">
+
+									<th:block th:if="${Limitcnt.key == '01'}">
+										<input th:if="*{limitcnt == '01'}" type="radio" name="limitcnt" id="limitcnt1" th:value="${Limitcnt.key}" checked>
+										<input th:if="*{limitcnt != null && limitcnt != '01'}" type="radio" name="limitcnt" id="limitcnt1" th:value="${Limitcnt.key}">
+										<input th:if="*{limitcnt == null}" type="radio" name="limitcnt" id="limitcnt1" th:value="${Limitcnt.key}" checked>
+
+										<label for="limitcnt1" th:text="${Limitcnt.value}"></label>　
+									</th:block>
+
+									<th:block th:if="${Limitcnt.key == '02'}">
+										<input th:if="*{limitcnt == '02'}" type="radio" name="limitcnt" id="limitcnt2" th:value="${Limitcnt.key}" checked>
+										<input th:if="*{limitcnt != '02'}" type="radio" name="limitcnt" id="limitcnt2" th:value="${Limitcnt.key}">
+
+										<label for="limitcnt2" th:text="${Limitcnt.value}"></label>　
+									</th:block>
+
+								</div>
+							</div>
+
 						</div>
 					</div>
 					<div class="py-2">

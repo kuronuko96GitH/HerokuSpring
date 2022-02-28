@@ -116,8 +116,20 @@ public class QboardService {
   public List<Qboard> searchQboard(Long userId, QboardRequestSearch qboardRequestSearch) {
 
 	// 入力項目で検索条件を変更する。
-	return repositoryXml.searchQboard(userId, qboardRequestSearch.getContent1());
-//	return repositoryXml.searchQboard(userId, qboardRequestSearch.getContent1(), qboardRequestSearch.getContent2(), qboardRequestSearch.getContent3());
+
+	int limitCnt = 0; // 検索した時の最大件数の指定
+
+	if (qboardRequestSearch.getLimitcnt() != null) {
+		 // 検索最大件数を、検索条件画面のラジオボタンに合わせて設定する。
+
+		if (qboardRequestSearch.getLimitcnt().equals("01")) {
+			limitCnt = Qboard.INT_LIMIT_CNT1;
+		} else {
+			limitCnt = Qboard.INT_LIMIT_CNT2;
+		}
+	}
+
+	return repositoryXml.searchQboard(userId, qboardRequestSearch.getContent1(), limitCnt);
   }
 
 

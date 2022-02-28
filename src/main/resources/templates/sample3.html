@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/Header :: header(title = 'Sample画面', scripts = ~{::script}, links = ~{::link})"></head>
+
+  <body th:if="${#authentication.principal.roles.get(0) != 'ROLE_ADMIN'}">
+	<div class="cover"></div>
+	<div th:replace="common/Sidenav :: sidenav"></div>
+
+	<div class="main">
+		<div th:replace="common/Navbar :: navbar"></div>
+	    <h3>閲覧ができません。</h3>
+	    <h3><span class="text-danger">※管理者権限がありません。</span></h3>
+	</div>
+
+	<!-- script -->
+	<div th:replace="common/Script :: script"></div>
+  </body>
+
+  <body th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
+
+	<!-- th:replaceを使用して、 Navbarを読込みます -->
+	<div th:replace="common/NavbarSample :: navbarsample"></div>
+
+	<div class="container">
+	  <div class="head_title">Sample3画面</div>
+
+◆ラジオボタン　サンプル
+							<div class="d-flex align-items-center mb-1">
+								<div th:each="Limitcnt : ${radioLimitcnt}">
+									<input type="radio" name="limitcnt" th:value="${Limitcnt.key}" th:text="${Limitcnt.value}" th:if="${Limitcnt.key == '01'}" checked />　
+									<input type="radio" name="limitcnt" th:value="${Limitcnt.key}" th:text="${Limitcnt.value}" th:if="${Limitcnt.key != '01'}" />　
+								</div>
+							</div>
+	<hr />
+
+		    <br>
+		    <br>
+		    <br>
+
+	</div>
+
+
+
+	<!-- th:replaceを使用して、 フッター用のフラグメントを読込みます -->
+	<div th:replace="common/Script :: script"></div>
+
+  </body>
+</html>

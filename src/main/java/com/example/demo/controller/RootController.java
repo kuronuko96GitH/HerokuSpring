@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,6 +207,30 @@ public class RootController {
 	model.addAttribute("authName", authUser.getUsername());
 
 	return "sample2";
+  }
+
+  /**
+   * サンプル３画面を表示
+   * @param model Model
+   * @return サンプル画面
+   */
+  @GetMapping(value = "/sample3")
+  public String sample3(Model model) {
+
+
+	    // ラジオボタン用の初期値設定
+	    Map<String, String> limitcnt = new LinkedHashMap<String, String>();
+
+	    limitcnt.put("01", "最新２０件");
+	    limitcnt.put("02", "最新５０件");
+
+//	    String strX01 = limitcnt.get("01");
+//	    String strX02 = limitcnt.get("02");
+	    model.addAttribute("radioLimitcnt", limitcnt);
+
+
+
+	return "sample3";
   }
 
   /**

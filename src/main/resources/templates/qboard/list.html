@@ -65,10 +65,24 @@
 
 								<div th:text="${'投稿日：' + #dates.format(qborad.createDate, 'yyyy/MM/dd H:mm')}" class="mb-2"></div>
 								<th:block th:if="${authUser.id == qborad.userId}">
-								    <a th:href="@{/qboard/{id}/delete(id=*{id})}" class="btn btn-danger btn-sm">　削除　</a>
+									<th:block th:if="${qborad.bodyId == 1}">
+									    <a th:href="@{/qboard/{id}/deleteHead(id=*{id})}" class="btn btn-danger btn-sm">質問投稿を取り下げる</a>
+<!--
+									    <a th:href="@{/qboard/{id}(id=*{id})/delete/{bodyId}(bodyId=*{bodyId})}" class="btn btn-danger btn-sm">質問投稿を取り下げる</a>
+									    <a th:href="@{/qboard/{id}/delete(id=*{id})}" class="btn btn-danger btn-sm">　削除　</a>
+-->
+									</th:block>
+									<th:block th:if="${qborad.bodyId != 1}">
+									    <a th:href="@{/qboard/{id}/delete(id=*{id})}" class="btn btn-danger btn-sm">　削除　</a>
+									</th:block>
 								</th:block>
 								<th:block th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
-								    <a th:href="@{/qboard/{id}/deleteAdmin(id=*{id})}" class="btn btn-danger btn-sm">違反投稿の削除</a>
+									<th:block th:if="${qborad.bodyId == 1}">
+									    <a th:href="@{/qboard/{id}/deleteHeadAdmin(id=*{id})}" class="btn btn-danger btn-sm">違反投稿の削除</a>
+									</th:block>
+									<th:block th:if="${qborad.bodyId != 1}">
+									    <a th:href="@{/qboard/{id}/deleteAdmin(id=*{id})}" class="btn btn-danger btn-sm">違反投稿の削除</a>
+									</th:block>
 								</th:block>
 							</div>
 						</th:block>

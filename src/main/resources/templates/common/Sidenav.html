@@ -71,6 +71,9 @@
 	                    <a class="dropdown-item" th:href="@{/sample2}" th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
 	                        Sample2画面
 	                    </a>
+	                    <a class="dropdown-item" th:href="@{/sample3}" th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
+	                        Sample3画面
+	                    </a>
 	                    <a class="dropdown-item" th:href="@{/sampleVue}" th:if="${#authentication.principal.roles.get(0) == 'ROLE_ADMIN'}">
 	                        VueのSample画面
 	                    </a>

@@ -136,6 +136,13 @@
 	<![CDATA[
 		ORDER BY QBOARDS.HEAD_ID DESC
 	]]>
+	<choose>
+	  <when test="limitCnt != 0">
+		<![CDATA[
+			LIMIT #{limitCnt}
+		]]>
+	  </when>
+	</choose>
 	</select>
 
 	<resultMap type="com.example.demo.entity.Qboard" id="qboardSearch">
