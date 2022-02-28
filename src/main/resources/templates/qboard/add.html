@@ -27,6 +27,8 @@
 
 							<form th:action="@{/qboard/create}" th:object="${qboardRequest}" th:method="post">
 						
+							    <input type="hidden" th:field="*{headId}" class="form-control">
+
 							    <div class="form-group mb-2">
 							      <label>投稿者：<span class="text-danger">※</span></label>
 							      <input type="text" th:field="*{name}" class="form-control">
