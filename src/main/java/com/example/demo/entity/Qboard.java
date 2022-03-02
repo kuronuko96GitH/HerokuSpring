@@ -69,16 +69,14 @@ public class Qboard implements Serializable {
   @Column(name = "created_at")
   private Date createDate;
 
-  public static Integer INT_LIMIT_CNT1 = 20; // 検索で取得できる最大件数　条件その１
-  public static Integer INT_LIMIT_CNT2 = 50; // 検索で取得できる最大件数　条件その２
 
-  public static Map<String, String> newLimitcntList() {
+  public static Map<String, String> newRadioList() {
     // ラジオボタンの画面表示用のHashMap作成
-    Map<String, String> limitcnt = new LinkedHashMap<String, String>();
+    Map<String, String> radioList = new LinkedHashMap<String, String>();
 
-    limitcnt.put("01", "最新２０件");
-    limitcnt.put("02", "最新５０件");
+    radioList.put("01", "指定なし");
+    radioList.put("02", "過去に自分が質問した投稿");
 
-	return limitcnt;
+	return radioList;
   }
 }

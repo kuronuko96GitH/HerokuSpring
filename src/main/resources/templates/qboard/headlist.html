@@ -44,22 +44,25 @@
 								<input type="text" th:field="*{content3}" class="form-control-inline"> 
 							</div>
 -->
+
+
+
 							<div class="d-flex align-items-center mb-1">
-								<div th:each="Limitcnt : ${radioLimitcnt}">
+								<div th:each="RadioRec : ${requestRadio}">
 
-									<th:block th:if="${Limitcnt.key == '01'}">
-										<input th:if="*{limitcnt == '01'}" type="radio" name="limitcnt" id="limitcnt1" th:value="${Limitcnt.key}" checked>
-										<input th:if="*{limitcnt != null && limitcnt != '01'}" type="radio" name="limitcnt" id="limitcnt1" th:value="${Limitcnt.key}">
-										<input th:if="*{limitcnt == null}" type="radio" name="limitcnt" id="limitcnt1" th:value="${Limitcnt.key}" checked>
+									<th:block th:if="${RadioRec.key == '01'}">
+										<input th:if="*{radioKeyValue == '01'}" type="radio" name="radioKeyValue" id="radioKeyValue1" th:value="${RadioRec.key}" checked>
+										<input th:if="*{radioKeyValue != null && radioKeyValue != '01'}" type="radio" name="radioKeyValue" id="radioKeyValue1" th:value="${RadioRec.key}">
+										<input th:if="*{radioKeyValue == null}" type="radio" name="radioKeyValue" id="radioKeyValue1" th:value="${RadioRec.key}" checked>
 
-										<label for="limitcnt1" th:text="${Limitcnt.value}"></label>　
+										<label for="radioKeyValue1" th:text="${RadioRec.value}"></label>　
 									</th:block>
 
-									<th:block th:if="${Limitcnt.key == '02'}">
-										<input th:if="*{limitcnt == '02'}" type="radio" name="limitcnt" id="limitcnt2" th:value="${Limitcnt.key}" checked>
-										<input th:if="*{limitcnt != '02'}" type="radio" name="limitcnt" id="limitcnt2" th:value="${Limitcnt.key}">
+									<th:block th:if="${RadioRec.key == '02'}">
+										<input th:if="*{radioKeyValue == '02'}" type="radio" name="radioKeyValue" id="radioKeyValue2" th:value="${RadioRec.key}" checked>
+										<input th:if="*{radioKeyValue != '02'}" type="radio" name="radioKeyValue" id="radioKeyValue2" th:value="${RadioRec.key}">
 
-										<label for="limitcnt2" th:text="${Limitcnt.value}"></label>　
+										<label for="radioKeyValue2" th:text="${RadioRec.value}"></label>　
 									</th:block>
 
 								</div>
@@ -70,6 +73,7 @@
 								<button class="btn btn-success btn-sm shadow-sm px-3">
 									<span>検索実行</span>
 								</button>
+								<a th:href="@{/qboard/new}" class="btn btn-primary btn-sm">質問投稿はこちら</a>
 							</div>
 		
 							<div th:replace="common/SearchMsg :: searchMsg"></div>
@@ -91,15 +95,20 @@
 			</div>
 
 
+			<div th:if="${searchResult != null}" class="container px-4 px-lg-5 d-flex align-items-center justify-content-center">
+<!--
 			<div class="container px-4 px-lg-5 d-flex align-items-center justify-content-center">
+-->
 				<div class="d-flex justify-content-center">
+<!--
+					<div th:each="qboard, qboardRec : ${qboardheadlist}" th:object="${qboard}">
+-->
+					<div th:each="qboard, qboardRec : ${searchResult.entities}" th:object="${qboard}">
 
-					<div th:each="qborad, qboradRec : ${qboardheadlist}" th:object="${qborad}">
-
-					<th:block th:if="${qboradRec.count % 2 == 1}">
+					<th:block th:if="${qboardRec.count % 2 == 1}">
 						<div class="card" style="width: 40rem;">
 					</th:block>
-					<th:block th:if="${qboradRec.count % 2 == 0}">
+					<th:block th:if="${qboardRec.count % 2 == 0}">
 						<div class="card bg-light" style="width: 40rem;">
 					</th:block>
 							<div class="card-body">
@@ -110,19 +119,20 @@
 							</th:block>
 								<div class="card-title">【質問者】<strong><span th:text="*{name}" class="text-center"></span></strong>さん</div>
 								<div class="mb-1">
-									<th:block th:if="${#strings.length(qborad.content) > 35}">
-										<strong th:text="${#strings.substring(qborad.content,0,35)}"></strong>
+									<th:block th:if="${#strings.length(qboard.content) > 35}">
+										<strong th:text="${#strings.substring(qboard.content,0,35)}"></strong>
 									</th:block>
-									<th:block th:if="${#strings.length(qborad.content) <= 35}">
+									<th:block th:if="${#strings.length(qboard.content) <= 35}">
 								        <strong th:text="*{content}"></strong>
 									</th:block>
 								</div>
 
-								<div th:text="${'投稿日：' + #dates.format(qborad.createDate, 'yyyy/MM/dd H:mm')}" class="mb-2"></div>
+								<div th:text="${'投稿日：' + #dates.format(qboard.createDate, 'yyyy/MM/dd H:mm')}" class="mb-2"></div>
 					        	<a th:href="@{/qboard/{headId}(headId=*{headId})}" class="btn btn-success btn-sm">この投稿を見る</a>
 							</div>
 						</div>
 
+					<div th:replace="common/Pagination :: pagination(@{/qboard/PageView})"></div>
 					</div>
 
 				</div>

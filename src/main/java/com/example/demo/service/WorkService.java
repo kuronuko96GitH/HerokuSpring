@@ -19,14 +19,14 @@ import com.example.demo.repository.RepositoryXml;
 import com.example.demo.repository.WorkRepository;
 
 /**
- * 勤怠情報 Service
+ * 勤退情報 Service
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class WorkService {
 
   /**
-   * 勤怠情報 WorkRepository
+   * 勤退情報 WorkRepository
    */
   @Autowired
   private WorkRepository workRepository;
@@ -41,21 +41,20 @@ public class WorkService {
 
   // 以下、検索画面のページング用
   private Integer fromIndex; // （画面に表示される）始まりのn件目情報（実際の件数データから-1された状態で格納されてます）
-
   private Integer limitCnt; // １ページあたりの表示件数
-/*
-  public Integer getPageFrom() {
-	return fromIndex;
-  }
-*/
+
+//  public Integer getPageFrom() {
+//	return fromIndex;
+//  }
+
   public void setFromIndex(Integer fromIndex) {
 	this.fromIndex = fromIndex;
   }
-/*
-  public Integer getLimitCnt() {
-	return limitCnt;
-  }
-*/
+
+//  public Integer getLimitCnt() {
+//	return limitCnt;
+//  }
+
   public void setLimitCnt(Integer limitCnt) {
 	this.limitCnt = limitCnt;
   }
@@ -65,7 +64,7 @@ public class WorkService {
 
 
   /**
-   * 勤怠情報 全検索
+   * 勤退情報 全検索
    * @return 検索結果
    */
   public List<Work> searchAll() {
@@ -74,8 +73,8 @@ public class WorkService {
   }
 
   /**
-   * 勤怠情報 新規登録
-   * @param user 勤怠情報
+   * 勤退情報 新規登録
+   * @param user 勤退情報
    */
   public void create(WorkRequest workRequest, Long userID) {
 
@@ -187,7 +186,7 @@ public class WorkService {
 
 
   /**
-   * 勤怠情報 主キー検索
+   * 勤退情報 主キー検索
    * @return 検索結果
    */
   public Work findById(Long id) {
@@ -195,7 +194,7 @@ public class WorkService {
   }
 
   /**
-   * 勤怠情報 該当する『ユーザーID』で検索
+   * 勤退情報 該当する『ユーザーID』で検索
    * @return 検索結果
    */
   public List<Work> findByUserID(@PathVariable("userId") Long userId) {
@@ -224,30 +223,17 @@ public class WorkService {
   }
 
   /**
-   * 勤怠情報 該当する『ユーザーID』と『勤怠開始日』～『勤怠終了日』で検索
+   * 勤退情報 該当する『ユーザーID』と『勤退開始日』～『勤退終了日』で検索
    * @return 検索結果
    */
   public List<Work> findByDate(@PathVariable("userId") Long userId, Date startDate, Date endDate) {
 
-/*
-		// 年月日の検索コードで検索条件を変更する。
-		if (startDate != null && endDate == null) {
-			// 勤怠開始日のみ。勤怠終了日は空白(Null)。
-			return workRepository.findByStartDate(userId, startDate);
-		} else if (startDate == null && endDate != null) {
-			// 勤怠開始日は空白(Null)。勤怠終了日のみ。
-			return workRepository.findByEndDate(userId, endDate);
-		} else {
-			// 勤怠開始日と勤怠終了日の両方入力あり。
-			return workRepository.findByDate(userId, startDate, endDate);
-		}
-*/
-		// 勤怠開始日～勤怠終了日で検索。
+		// 勤退開始日～勤退終了日で検索。
 		return workRepository.findByDate(userId, startDate, endDate);
   }
 
   /**
-   * 勤怠情報 該当する『ユーザーID』と『出勤日』で同日の重複チェック
+   * 勤退情報 該当する『ユーザーID』と『出勤日』で同日の重複チェック
    * @return 検索結果
    */
   public List<Work> findByDateDuplicate(Long id, Long userId, Date startDate, Date endDate) {
@@ -257,7 +243,7 @@ public class WorkService {
   }
 
   /**
-   * 勤怠情報 更新
+   * 勤退情報 更新
    * @param 
    */
   public void update(WorkUpdateRequest workUpdateRequest, Long userID) {
@@ -289,7 +275,7 @@ public class WorkService {
   }
 
   /**
-   * 勤怠情報 物理削除
+   * 勤退情報 物理削除
    * @param id ユーザーID
    */
   public void delete(Long id) {

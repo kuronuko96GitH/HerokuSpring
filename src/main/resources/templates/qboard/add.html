@@ -26,7 +26,7 @@
 							<div th:replace="common/Msg :: msg"></div>
 
 							<form th:action="@{/qboard/create}" th:object="${qboardRequest}" th:method="post">
-						
+
 							    <input type="hidden" th:field="*{headId}" class="form-control">
 
 							    <div class="form-group mb-2">

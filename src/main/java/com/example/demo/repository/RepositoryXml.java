@@ -21,5 +21,8 @@ public interface RepositoryXml {
 	public Integer countWork(Long userId, String startDate, String endDate);
 
 	// (xml版)動的SQLに対応
-	public List<Qboard> searchQboard(Long userId, String strContent1, Integer limitCnt);
+	public List<Qboard> searchQboard(Long userId, String strContent1, Integer fromIndex, Integer limitCnt);
+
+	// 条件入力による検索画面の（ページング用）件数を取得
+	public Integer countQboard(Long userId, String strContent1);
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.auth.AuthUser;
 import com.example.demo.dto.QboardRequest;
@@ -27,6 +28,7 @@ import com.example.demo.entity.Qboard;
 import com.example.demo.entity.SystemInfo;
 import com.example.demo.entity.SystemMsg;
 import com.example.demo.service.QboardService;
+import com.example.demo.ui.SearchResult;
 
 /**
  * Qboard情報 Controller
@@ -54,6 +56,19 @@ public class QboardController {
 	* システム情報
 	*/
 	private SystemInfo systemInfo;
+
+	/**
+	* (ページネーション用)検索入力条件情報
+	* 【補足説明】：次へのリンクなどを押してる時は、
+	* 入力条件をユーザーが変更されても、検索ボタンの押したタイミングの入力条件を使いたいため、
+	* このコントローラクラス専用の『WorkRequestSearch』を作成します。
+	* 【※暫定版です】他の良いやり方があれば、そちらに統合。
+	*/
+	private QboardRequestSearch pageRequestSearch;
+
+	public static final int PAGE_LIMIT = 5; // ページネーション。表示可能な最大ページ数。
+//	public static final int PAGE_LIMIT = 2; // ページネーション。（デバッグ用）
+
 
 	/**
 	 * 未入力項目はバリデーション（入力チェック）の対象外とするメソッド
@@ -142,7 +157,7 @@ public class QboardController {
 
 
     // ラジオボタン用の初期値設定
-    model.addAttribute("radioLimitcnt", Qboard.newLimitcntList());
+    model.addAttribute("requestRadio", Qboard.newRadioList());
 
 
 	// 質問板ヘッダ情報一覧画面の検索ボタン処理のために、検索条件の入力項目の空データを作っておく。
@@ -212,7 +227,7 @@ public class QboardController {
 	}
 
     // ラジオボタン用の初期値設定
-    model.addAttribute("radioLimitcnt", Qboard.newLimitcntList());
+    model.addAttribute("requestRadio", Qboard.newRadioList());
 
 
 	if (result.hasErrors()) {
@@ -225,27 +240,112 @@ public class QboardController {
 	      return "qboard/headlist";
 	}
 
-
 	List<Qboard> qboardheadlist;
 
-	// データ検索処理
+	qboardService.setFromIndex(0); // 検索結果の始まりの件数(実際の件数から-１する必要あり)
+	qboardService.setLimitCnt(PAGE_LIMIT); // １ページに表示する件数
+
+	// データ検索処理（検索結果の件数を取得する）
+	Integer intCnt = qboardService.countQboard(authUser.getId(), qboardRequestSearch);
+
+
+	// ページネーション用クラス
+	SearchResult<Qboard> searchResult = new SearchResult<>(intCnt, PAGE_LIMIT);
+	searchResult.moveTo(1); // 初期値は１ページ目を設定する。
+	searchResult.setPageFromIndex(0); // 初期値は０件目（画面上は１件目で処理される）を設定する。
+
+	// 入力条件をもとに、データの検索処理
 	qboardheadlist = qboardService.searchQboard(authUser.getId(), qboardRequestSearch);
 
+	searchResult.setEntities(qboardheadlist);
 
-	if (qboardheadlist.size() == 0) {
+
+	if (intCnt == 0) {
+//	if (qboardheadlist.size() == 0) {
 		// 該当データ無し。
 		model.addAttribute("msgSearchErr", "該当データがありません。");
 //		model.addAttribute("msgInfo", "該当データがありません。");
 	} else {
 		// 該当件数の取得。
-		Integer intCnt = Integer.valueOf(qboardheadlist.size());
+//		Integer intCnt = Integer.valueOf(qboardheadlist.size());
 		model.addAttribute("msgSearchInfo", "【検索結果】条件に該当するデータは" + intCnt.toString() + "件です。");
 //		model.addAttribute("msgSearchInfo", "【検索結果】" + intCnt.toString() + "件のデータがありました。");
 	}
-	model.addAttribute("qboardheadlist", qboardheadlist);
+	model.addAttribute("searchResult", searchResult);
+//	model.addAttribute("qboardheadlist", qboardheadlist);
+
+
+	// 	入力条件をユーザーが変更されても、検索ボタンの押したタイミングの入力条件を使いたいため、
+	// このコントローラクラス専用の『WorkRequestSearch』に、このタイミングで代入します。
+	this.pageRequestSearch = qboardRequestSearch;
 
 	return "qboard/headlist";
   }
+
+
+  /**
+   * 質問板情報一覧　検索後のページリンク（ページネーション処理）
+   * @param WorkRequestSearch workRequestSearch（検索条件の入力項目）
+   * @param model Model
+   * @return 勤退情報一覧画面
+   */
+	@GetMapping("/qboard/PageView")
+	public String onPageViewRequested(@RequestParam("p") int pageNo, Model model) {
+
+		// ログイン情報の取得と設定。
+		String strRtnForm = setAuthUser(model, null);
+		if (strRtnForm != null) {
+			// セッション情報の取得に失敗した場合
+			//システムエラー画面を表示
+			return strRtnForm;
+		}
+
+	    // ラジオボタン用の初期値設定
+	    model.addAttribute("requestRadio", Qboard.newRadioList());
+
+		// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
+		// ここで作成しておかないと、HTML側でnullエラーになる。
+	    model.addAttribute("qboardRequestSearch", this.pageRequestSearch);	// this.pageRequestSearch…検索ボタンを押した時に設定された、検索条件入力項目の情報
+
+		// ページネーション用クラス
+		// データ検索処理（検索結果の件数を取得する）
+		Integer intCnt = qboardService.countQboard(authUser.getId(), this.pageRequestSearch);
+		SearchResult<Qboard> searchResult = new SearchResult<>(intCnt, PAGE_LIMIT);
+
+		// 該当件数の取得。
+		model.addAttribute("msgSearchInfo", "【検索結果】条件に該当するデータは" + intCnt.toString() + "件です。");
+
+		if (pageNo < 1) {
+			// 前へ（リンク）を押した時に１ページより前になった時、
+			// 現在のページ数を１ページ目に設定する。
+			pageNo = 1;
+		}
+
+		if (pageNo > searchResult.getTotalPageCount()) {
+			// 次へ（リンク）を押した時に、最大ページ数を超えた時、
+			// 現在のページ数を最大ページ数に設定する。
+			pageNo = searchResult.getTotalPageCount();			
+		}
+
+
+		List<Qboard> qboardlist; // 検索結果情報（このタイミングでは、まだ空データ）
+		Integer intPageFromIndex = 0;
+
+		intPageFromIndex = (pageNo - 1) * PAGE_LIMIT; // （画面に表示される）始まりのn件目情報（実際の件数データから-1された状態で格納されてます）
+		qboardService.setFromIndex(intPageFromIndex); // （画面に表示される）始まりのn件目情報（実際の件数データから-1された状態で格納されてます）
+
+		// 検索入力条件をもとに、データを再検索。
+		qboardlist = qboardService.searchQboard(authUser.getId(), this.pageRequestSearch);	// this.pageRequestSearch…検索ボタンを押した時に設定された、検索条件入力項目の情報
+
+		// 現在のページ数をもとに、ページ移動による各パラメータの設定
+		searchResult.moveTo(pageNo);
+		searchResult.setPageFromIndex(intPageFromIndex); // 初期値は０件目を指定する。
+
+		searchResult.setEntities(qboardlist);
+
+		model.addAttribute("searchResult", searchResult);
+		return "qboard/headlist";
+	}
 
 
 
@@ -334,7 +434,12 @@ public class QboardController {
         errorList.add(error.getDefaultMessage());
       }
       model.addAttribute("validationError", errorList);
-      return "qboard/add";
+      if (qboardService.getHeadId() == 0) {
+    	  // ヘッドIDが取得できない時（新規の質問投稿時）
+          return "qboard/new";    	  
+      } else {
+          return "qboard/add";
+      }
     }
 
     // 質問板情報の追加投稿データ登録

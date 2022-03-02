@@ -12,9 +12,11 @@ import lombok.Data;
 @Data
 public class QboardRequestSearch implements Serializable {
 	  /**
-	   * 最新〇×件（ラジオボタン用・検索時の最大件数）
+	   * 過去に質問した（検索入力項目のラジオボタン用）
+	   * ０１：指定なし
+	   * ０２：過去に質問投稿したデータ
 	   */
-	  private String limitcnt;
+	  private String radioKeyValue;
 
 	  // 投稿内容（キーワード検索）
 	  // 未入力も可とする。(※『null』データの場合、バリデーションチェックの対象外となります。)

@@ -35,6 +35,30 @@ public class QboardService {
 
 
 
+  // 以下、検索画面のページング用
+  private Integer fromIndex; // （画面に表示される）始まりのn件目情報（実際の件数データから-1された状態で格納されてます）
+  private Integer limitCnt; // １ページあたりの表示件数
+
+//  public Integer getPageFrom() {
+//	return fromIndex;
+//  }
+
+  public void setFromIndex(Integer fromIndex) {
+	this.fromIndex = fromIndex;
+  }
+
+//  public Integer getLimitCnt() {
+//	return limitCnt;
+//  }
+
+  public void setLimitCnt(Integer limitCnt) {
+	this.limitCnt = limitCnt;
+  }
+
+
+
+
+
   /**
    * ヘッダID（質問掲示板のみで使うID）
    */
@@ -117,19 +141,44 @@ public class QboardService {
 
 	// 入力項目で検索条件を変更する。
 
-	int limitCnt = 0; // 検索した時の最大件数の指定
+	// 検索画面が『指定なし』の場合は、検索条件のユーザーIDは０に設定する。
+	Long keyUserId = getRadioUserId(userId, qboardRequestSearch);
 
-	if (qboardRequestSearch.getLimitcnt() != null) {
-		 // 検索最大件数を、検索条件画面のラジオボタンに合わせて設定する。
+	return repositoryXml.searchQboard(keyUserId, qboardRequestSearch.getContent1(), this.fromIndex, this.limitCnt);
+  }
 
-		if (qboardRequestSearch.getLimitcnt().equals("01")) {
-			limitCnt = Qboard.INT_LIMIT_CNT1;
-		} else {
-			limitCnt = Qboard.INT_LIMIT_CNT2;
+  /**
+   * ユーザーIDの取得（入力項目で検索条件を変更する。）
+   * @return 検索結果
+   */
+  public Long getRadioUserId(Long userId, QboardRequestSearch qboardRequestSearch) {
+
+		// 検索画面が『指定なし』の場合は、検索条件のユーザーIDは０に設定する。
+		Long keyUserId = 0L;
+
+		if (qboardRequestSearch.getRadioKeyValue() != null) {
+			 // 検索条件画面のラジオボタンが、指定なし以外の場合。
+
+			if (qboardRequestSearch.getRadioKeyValue().equals("02")) {
+				// 過去に自分がした質問投稿を検索する場合
+				keyUserId = userId;
+			}
 		}
-	}
+		return keyUserId;
+  }
 
-	return repositoryXml.searchQboard(userId, qboardRequestSearch.getContent1(), limitCnt);
+
+  /**
+   * 質問板情報の検索結果の件数を取得（入力された条件で検索）
+   * @return 検索結果
+   */
+  public Integer countQboard(Long userId, QboardRequestSearch qboardRequestSearch) {
+
+	// 検索画面が『指定なし』の場合は、検索条件のユーザーIDは０に設定する。
+	Long keyUserId = getRadioUserId(userId, qboardRequestSearch);
+
+	// 入力項目で検索条件を変更する。
+	return repositoryXml.countQboard(keyUserId, qboardRequestSearch.getContent1());
   }
 
 
@@ -185,7 +234,7 @@ public class QboardService {
 	qboard.setCreateDate(now);
     // 更新日
 	qboard.setUpdateDate(now);
- 
+
     qboardRepository.save(qboard);
   }
 

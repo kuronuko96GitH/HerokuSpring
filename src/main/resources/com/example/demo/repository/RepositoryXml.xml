@@ -65,6 +65,8 @@
 
 
 
+
+
 	<select id="searchWork" parameterType="java.lang.String" resultMap="workSearch">
 	<![CDATA[
 		SELECT	WORKS.ID,
@@ -139,6 +141,8 @@
 
 
 
+
+
 	<select id="searchQboard" parameterType="java.lang.String" resultMap="qboardSearch">
 	<![CDATA[
 		SELECT	QBOARDS.ID,
@@ -155,6 +159,13 @@
 			AND STATUS_CODE < 8
 	]]>
 	<choose>
+	  <when test="userId != 0">
+		<![CDATA[
+			AND QBOARDS.USER_ID = ${userId}
+		]]>
+	  </when>
+	</choose>
+	<choose>
 	  <when test="strContent1 != null">
 		<![CDATA[
 			AND QBOARDS.CONTENT LIKE '%${strContent1}%'
@@ -163,14 +174,8 @@
 	</choose>
 	<![CDATA[
 		ORDER BY QBOARDS.HEAD_ID DESC
+		LIMIT #{limitCnt} OFFSET #{fromIndex}
 	]]>
-	<choose>
-	  <when test="limitCnt != 0">
-		<![CDATA[
-			LIMIT #{limitCnt}
-		]]>
-	  </when>
-	</choose>
 	</select>
 
 	<resultMap type="com.example.demo.entity.Qboard" id="qboardSearch">
@@ -184,5 +189,29 @@
 		<result property="createDate" column="CREATED_AT" />
 		<result property="updateDate" column="UPDATED_AT" />
 	</resultMap>
+
+
+	<select id="countQboard" parameterType="java.lang.String" resultType="int">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM QBOARDS
+		WHERE QBOARDS.BODY_ID = 1
+			AND STATUS_CODE < 8
+	]]>
+	<choose>
+	  <when test="userId != 0">
+		<![CDATA[
+			AND QBOARDS.USER_ID = ${userId}
+		]]>
+	  </when>
+	</choose>
+	<choose>
+	  <when test="strContent1 != null">
+		<![CDATA[
+			AND QBOARDS.CONTENT LIKE '%${strContent1}%'
+		]]>
+	  </when>
+	</choose>
+	</select>
 
 </mapper>

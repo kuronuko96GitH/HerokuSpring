@@ -56,16 +56,6 @@ public class WorkController {
 	private WorkService workService;
 
 	/**
-	* (ページネーション用)検索入力条件情報
-	* 【補足説明】：次へのリンクなどを押してる時は、
-	* 入力条件をユーザーが変更されても、検索ボタンの押したタイミングの入力条件を使いたいため、
-	* このコントローラクラス専用の『WorkRequestSearch』を作成します。
-	* 【※暫定版です】他の良いやり方があれば、そちらに統合。
-	*/
-//	@Autowired
-	private WorkRequestSearch workPageSearch;
-	
-	/**
 	 * ログイン情報
 	 */
 	private AuthUser authUser;
@@ -75,6 +65,14 @@ public class WorkController {
 	*/
 	private SystemInfo systemInfo;
 
+	/**
+	* (ページネーション用)検索入力条件情報
+	* 【補足説明】：次へのリンクなどを押してる時は、
+	* 入力条件をユーザーが変更されても、検索ボタンの押したタイミングの入力条件を使いたいため、
+	* このコントローラクラス専用の『WorkRequestSearch』を作成します。
+	* 【※暫定版です】他の良いやり方があれば、そちらに統合。
+	*/
+	private WorkRequestSearch pageRequestSearch;
 
 	public static final int PAGE_LIMIT = 5; // ページネーション。表示可能な最大ページ数。
 //	public static final int PAGE_LIMIT = 2; // ページネーション。（デバッグ用）
@@ -331,7 +329,7 @@ public class WorkController {
 
 	// 	入力条件をユーザーが変更されても、検索ボタンの押したタイミングの入力条件を使いたいため、
 	// このコントローラクラス専用の『WorkRequestSearch』に、このタイミングで代入します。
-	this.workPageSearch = workRequestSearch;
+	this.pageRequestSearch = workRequestSearch;
 
 	return "work/list";
   }
@@ -356,11 +354,11 @@ public class WorkController {
 
 		// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
 		// ここで作成しておかないと、HTML側でnullエラーになる。
-	    model.addAttribute("workRequestSearch", this.workPageSearch);	// this.workPageSearch…検索ボタンを押した時に設定された、検索条件入力項目の情報
+	    model.addAttribute("workRequestSearch", this.pageRequestSearch);	// this.pageRequestSearch…検索ボタンを押した時に設定された、検索条件入力項目の情報
 
 		// ページネーション用クラス
 		// データ検索処理（検索結果の件数を取得する）
-		Integer intCnt = workService.countWork(authUser.getId(), this.workPageSearch);
+		Integer intCnt = workService.countWork(authUser.getId(), this.pageRequestSearch);
 		SearchResult<Work> searchResult = new SearchResult<>(intCnt, PAGE_LIMIT);
 
 		// 該当件数の取得。
@@ -386,7 +384,7 @@ public class WorkController {
 		workService.setFromIndex(intPageFromIndex); // （画面に表示される）始まりのn件目情報（実際の件数データから-1された状態で格納されてます）
 
 		// 検索入力条件をもとに、データを再検索。
-		worklist = workService.searchWork(authUser.getId(), this.workPageSearch);	// this.workPageSearch…検索ボタンを押した時に設定された、検索条件入力項目の情報
+		worklist = workService.searchWork(authUser.getId(), this.pageRequestSearch);	// this.pageRequestSearch…検索ボタンを押した時に設定された、検索条件入力項目の情報
 
 		// 現在のページ数をもとに、ページ移動による各パラメータの設定
 		searchResult.moveTo(pageNo);
@@ -396,25 +394,10 @@ public class WorkController {
 
 		model.addAttribute("searchResult", searchResult);
 		return "work/list";
-
-/*
-		model.addAttribute("userSearchForm", form);
-
-		SearchResult<AuthenticatedUser> searchResult = new SearchResult<>(service.countUser(form), PAGE_LIMIT);
-		if (pageNo < 1 || pageNo > searchResult.getTotalPageCount()) {
-			return "manage/users/UserList.html";
-		}
-		searchResult.moveTo(pageNo);
-		form.setPageFrom((pageNo - 1) * PAGE_LIMIT);
-		searchResult.setEntities(service.loadUserList(form));
-		
-		model.addAttribute("searchResult", searchResult);
-		return "manage/users/UserList.html";
-*/
 	}
 
-  
-  
+
+
   /**
    * 勤退情報の新規登録画面を表示
    * @param model Model
