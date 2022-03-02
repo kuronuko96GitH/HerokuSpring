@@ -15,10 +15,11 @@ public interface RepositoryXml {
 	public List<User> searchUser(String startAge, String endAge, Integer intMale, Integer intFemale);
 
 	// (xml版)動的SQLに対応
-	public List<Work> searchWork(Long userId, String startDate, String endDate);
+	public List<Work> searchWork(Long userId, String startDate, String endDate, Integer fromIndex, Integer limitCnt);
+
+	// 条件入力による検索画面の（ページング用）件数を取得
+	public Integer countWork(Long userId, String startDate, String endDate);
 
 	// (xml版)動的SQLに対応
-//	public List<Qboard> searchQboard(Long userId, String strContent1, String strContent2, String strContent3);
-//	public List<Qboard> searchQboard(Long userId, String strContent1);
 	public List<Qboard> searchQboard(Long userId, String strContent1, Integer limitCnt);
 }

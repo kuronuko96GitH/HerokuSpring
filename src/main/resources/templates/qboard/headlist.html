@@ -10,8 +10,9 @@
 		<div th:replace="common/Navbar :: navbar"></div>
 
 		<div class="container">
+<!--
 			<div class="head_title">質問掲示板</div>
-
+-->
 			<div th:replace="common/Msg :: msg"></div>
 
 
@@ -19,7 +20,7 @@
 			<div class="search_form sticky-top p-2">
 				<form th:action="@{/qboard/search}" class="my-2" th:object="${qboardRequestSearch}" th:method="post">
 					<div class="d-flex align-items-between">
-						<h5 class="me-2">検索条件</h5>
+						<h6 class="me-2">【質問掲示板】検索条件</h6>
 						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
 							<span>[検索条件を隠す]</span>
 						</a>
@@ -64,18 +65,29 @@
 								</div>
 							</div>
 
+
+							<div class="py-2">
+								<button class="btn btn-success btn-sm shadow-sm px-3">
+									<span>検索実行</span>
+								</button>
+							</div>
+		
+							<div th:replace="common/SearchMsg :: searchMsg"></div>
+
+
 						</div>
 					</div>
+<!--
 					<div class="py-2">
-						<button class="btn btn-success shadow-sm px-3">
+						<button class="btn btn-success btn-sm shadow-sm px-3">
 							<span>検索実行</span>
 						</button>
 					</div>
 
 					<div th:replace="common/SearchMsg :: searchMsg"></div>
-
+-->
 				</form>
-			<hr>
+<!--			<hr> -->
 			</div>
 
 
@@ -97,7 +109,7 @@
 -->
 							</th:block>
 								<div class="card-title">【質問者】<strong><span th:text="*{name}" class="text-center"></span></strong>さん</div>
-								<div class="mb-3">
+								<div class="mb-1">
 									<th:block th:if="${#strings.length(qborad.content) > 35}">
 										<strong th:text="${#strings.substring(qborad.content,0,35)}"></strong>
 									</th:block>

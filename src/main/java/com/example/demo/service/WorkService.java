@@ -37,6 +37,33 @@ public class WorkService {
   @Autowired
   private RepositoryXml repositoryXml;
 
+
+
+  // 以下、検索画面のページング用
+  private Integer fromIndex; // （画面に表示される）始まりのn件目情報（実際の件数データから-1された状態で格納されてます）
+
+  private Integer limitCnt; // １ページあたりの表示件数
+/*
+  public Integer getPageFrom() {
+	return fromIndex;
+  }
+*/
+  public void setFromIndex(Integer fromIndex) {
+	this.fromIndex = fromIndex;
+  }
+/*
+  public Integer getLimitCnt() {
+	return limitCnt;
+  }
+*/
+  public void setLimitCnt(Integer limitCnt) {
+	this.limitCnt = limitCnt;
+  }
+
+
+
+
+
   /**
    * 勤怠情報 全検索
    * @return 検索結果
@@ -182,7 +209,18 @@ public class WorkService {
   public List<Work> searchWork(Long userId, WorkRequestSearch workRequestSearch) {
 
 	// 入力項目で検索条件を変更する。
-	return repositoryXml.searchWork(userId, workRequestSearch.getStartDate(), workRequestSearch.getEndDate());
+	return repositoryXml.searchWork(userId, workRequestSearch.getStartDate(), workRequestSearch.getEndDate(), this.fromIndex, this.limitCnt);
+//	return repositoryXml.searchWork(userId, workRequestSearch.getStartDate(), workRequestSearch.getEndDate());
+  }
+
+  /**
+   * 勤退情報の検索結果の件数を取得（入力された条件で検索）
+   * @return 検索結果
+   */
+  public Integer countWork(Long userId, WorkRequestSearch workRequestSearch) {
+
+	// 入力項目で検索条件を変更する。
+	return repositoryXml.countWork(userId, workRequestSearch.getStartDate(), workRequestSearch.getEndDate());
   }
 
   /**

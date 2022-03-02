@@ -1,0 +1,31 @@
+	<div th:fragment="pagination(baseUrl)">
+		<div class="p-2" th:if="${searchResult}">
+			<ul class="pagination">
+				<li class="page-item" th:classappend="${searchResult.currentPage == 1 ? 'disabled' : ''}">
+					<a th:href="|${baseUrl}?p=${searchResult.currentPage - 1}|" class="page-link">前へ</a>
+				</li>
+				<li class="page-item" th:classappend="${searchResult.currentPage == 1 ? 'active' : ''}">
+					<a th:href="|${baseUrl}?p=1|" class="page-link">1</a>
+				</li>
+				<li class="page-item mx-2" th:if="${searchResult.pageFrom != 2}">
+					...
+				</li>
+				<li class="page-item" th:each="index : ${#numbers.sequence(searchResult.pageFrom, searchResult.pageTo)}"
+					th:if="${searchResult.totalPageCount > 2}" th:classappend="${searchResult.currentPage == index ? 'active' : ''}">
+					<a th:href="|${baseUrl}?p=${index}|" class="page-link" th:text="${index}"></a>
+				</li>
+				<li class="page-item mx-2" th:if="${searchResult.totalPageCount - searchResult.pageTo > 1}">
+					...
+				</li>
+				<li class="page-item" th:if="${searchResult.totalPageCount > 1}"
+					th:classappend="${searchResult.currentPage == searchResult.totalPageCount ? 'active' : ''}">
+					<a th:href="|${baseUrl}?p=${searchResult.totalPageCount}|" 
+						class="page-link" th:text="${searchResult.totalPageCount}"></a>
+				</li>
+				<li class="page-item" th:classappend="${searchResult.currentPage == searchResult.totalPageCount ? 'disabled' : ''}">
+					<a th:href="|${baseUrl}?p=${searchResult.currentPage + 1}|" 
+						class="page-link">次へ</a>
+				</li>
+			</ul>
+		</div>
+	</div>

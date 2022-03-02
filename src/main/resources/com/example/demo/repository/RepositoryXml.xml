@@ -96,6 +96,7 @@
 	</choose>
 	<![CDATA[
 		ORDER BY WORKS.START_AT, WORKS.END_AT
+		LIMIT #{limitCnt} OFFSET #{fromIndex}
 	]]>
 	</select>
 
@@ -108,6 +109,33 @@
 		<result property="worktime" column="WORKTIME" />
 		<result property="updateDate" column="UPDATED_AT" />
 	</resultMap>
+
+
+
+	<select id="countWork" parameterType="java.lang.String" resultType="int">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM WORKS
+		WHERE WORKS.USER_ID = ${userId}
+	]]>
+	<choose>
+	  <when test="startDate != null and endDate != null">
+		<![CDATA[
+			AND WORKS.START_AT >= '${startDate}' AND WORKS.START_AT <= '${endDate}'
+		]]>
+	  </when>
+	  <when test="startDate != null">
+		<![CDATA[
+			AND WORKS.START_AT >= '${startDate}'
+		]]>
+	  </when>
+	  <when test="endDate != null">
+		<![CDATA[
+			AND WORKS.END_AT <= '${endDate}'
+		]]>
+	  </when>
+	</choose>
+	</select>
 
 
 

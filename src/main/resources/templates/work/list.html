@@ -10,21 +10,24 @@
 		<div th:replace="common/Navbar :: navbar"></div>
 
 		<div class="container">
+<!--
 		  <div class="head_title">勤退情報一覧</div>
-
+-->
 		  <div th:replace="common/Msg :: msg"></div>
 
 			<div class="search_form sticky-top p-2">
 				<form th:action="@{/work/search}" class="my-2" th:object="${workRequestSearch}" th:method="post">
 					<div class="d-flex align-items-between">
-						<h5 class="me-2">検索条件</h5>
+						<h6 class="me-2">【勤退情報一覧】検索条件</h6>
+<!--
 						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
 							<span>[検索条件を隠す]</span>
 						</a>
+-->
 					</div>
 					<div id="searchCondition" class="collapse show">
 						<div class="border p-3 rounded">
-							<input type="button" class="btn btn-secondary mb-3" value="検索条件クリア" id="clear_work_button">
+<!--							<input type="button" class="btn btn-secondary btn-sm mb-3" value="検索条件クリア" id="clear_work_button"> -->
 							<div class="mb-3">
 								<strong>勤退年月：</strong>
 								<input type="number" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
@@ -40,18 +43,22 @@
 								<input type="number" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
 								<input type="number" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
 							</div>
+
 						</div>
 					</div>
+
 					<div class="py-2">
-						<button class="btn btn-success shadow-sm px-3">
+						<button class="btn btn-success btn-sm shadow-sm px-3">
 							<span>検索実行</span>
 						</button>
+						<a th:href="@{/work/add}" class="btn btn-primary btn-sm">新規登録はこちら</a>
+						<input type="button" class="btn btn-secondary btn-sm" value="検索条件クリア" id="clear_work_button">
 					</div>
 
 					<div th:replace="common/SearchMsg :: searchMsg"></div>
 
 				</form>
-			<hr>
+<!--			<hr> -->
 			</div>
 
 		  <table class="table table-striped">
@@ -62,24 +69,29 @@
 		        <th>出勤日時</th>
 		        <th>退勤日時</th>
 		        <th>労働時間</th>
-		        <th><a th:href="@{/work/add}" class="btn btn-primary">新規登録はこちら</a></th>
+		        <th></th>
 		      </tr>
 		    </thead>
-		    <tbody>
+		    <tbody th:if="${searchResult != null}">
+<!--
 		      <tr th:each="work, workRec : ${worklist}" th:object="${work}" class="align-middle">
-		        <td th:text="${workRec.count}" class="text-center"></td>
+-->
+		      <tr th:each="work, workRec : ${searchResult.entities}" th:object="${work}" class="align-middle">
+		        <td th:text="${searchResult.pageFromIndex + workRec.count}" class="text-center"></td>
 		        <td th:text="*{content}"></td>
 		        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td th:text="${work.worktime}" class="text-center"></td>
 		        <td class="center">
-		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
-		        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary">コピー(新規登録)</a>
+		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success btn-sm">詳細</a>
+		        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary btn-sm">コピー(新規登録)</a>
 		        </td>
 		      </tr>
 		    </tbody>
 		  </table>
 		</div>
+
+		<div th:replace="common/Pagination :: pagination(@{/work/PageView})"></div>
 
 	</div>
 

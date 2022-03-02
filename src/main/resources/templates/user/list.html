@@ -10,8 +10,9 @@
 		<div th:replace="common/Navbar :: navbar"></div>
 
 		<div class="container">
+<!--
 			<div class="head_title">ユーザー情報一覧</div>
-
+-->
 			<div th:replace="common/Msg :: msg"></div>
 
 <!--
@@ -24,7 +25,7 @@
 			<div class="search_form sticky-top p-2">
 				<form th:action="@{/user/search}" class="my-2" th:object="${userRequestSearch}" th:method="post">
 					<div class="d-flex align-items-between">
-						<h5 class="me-2">検索条件</h5>
+						<h6 class="me-2">【ユーザー情報一覧】検索条件</h6>
 						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
 <!--
 							<span class="d-none">[表示]</span>
@@ -35,7 +36,7 @@
 					</div>
 					<div id="searchCondition" class="collapse show">
 						<div class="border p-3 rounded">
-							<input type="button" class="btn btn-secondary mb-3" value="検索条件クリア" id="clear_user_button">
+<!--							<input type="button" class="btn btn-secondary btn-sm mb-3" value="検索条件クリア" id="clear_user_button"> -->
 							<div class="d-flex align-items-center mb-3">
 								<strong>年齢：</strong>
 								<input type="number" class="form-control" maxlength="3" style="width:80px;"
@@ -74,10 +75,11 @@
 -->
 					</div>
 					<div class="py-2">
-						<button class="btn btn-success shadow-sm px-3">
+						<button class="btn btn-success btn-sm shadow-sm px-3">
 							<span>検索実行</span>
 						</button>
-					    <a th:href="@{/user/add}" class="btn btn-primary">新規登録はこちら</a>
+					    <a th:href="@{/user/add}" class="btn btn-primary btn-sm">新規登録はこちら</a>
+						<input type="button" class="btn btn-secondary btn-sm" value="検索条件クリア" id="clear_user_button">
 					</div>
 
 					<div th:replace="common/SearchMsg :: searchMsg"></div>
@@ -114,7 +116,7 @@
 				</th:block>
 
 		        <td th:text="${#dates.format(user.updateDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
-		        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success">詳細</a></td>
+		        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success btn-sm">詳細</a></td>
 		      </tr>
 		    </tbody>
 		  </table>
