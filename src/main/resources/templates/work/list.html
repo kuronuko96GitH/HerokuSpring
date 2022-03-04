@@ -82,7 +82,7 @@
 		        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td th:text="${work.worktime}" class="text-center"></td>
-		        <td class="center">
+		        <td class="text-center">
 		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success btn-sm">詳細</a>
 		        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary btn-sm">コピー(新規登録)</a>
 		        </td>

@@ -84,8 +84,8 @@
 		        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td th:text="${work.worktime}" class="text-center"></td>
-		        <td class="center">
-		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
+		        <td class="text-center">
+		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success btn-sm">詳細</a>
 		        </td>
 		      </tr>
 		    </tbody>

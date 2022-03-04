@@ -116,7 +116,7 @@
 				</th:block>
 
 		        <td th:text="${#dates.format(user.updateDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
-		        <td class="center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success btn-sm">詳細</a></td>
+		        <td class="text-center"><a th:href="@{/user/{id}(id=*{id})}" class="btn btn-success btn-sm">詳細</a></td>
 		      </tr>
 		    </tbody>
 		  </table>

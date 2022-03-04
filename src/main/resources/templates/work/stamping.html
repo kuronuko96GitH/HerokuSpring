@@ -37,13 +37,13 @@
 		        <td th:text="*{content}"></td>
 		        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td class="center">
-		        	<a th:href="@{/work/stampin}" class="btn btn-success" th:if="${work.startDate == null}">　打刻登録(出勤)　</a>
-		        	<a th:href="@{/work/stampin{id}(id=*{id})}" class="btn btn-success" th:if="${work.startDate != null}">打刻登録(出勤更新)</a>
+		        	<a th:href="@{/work/stampin}" class="btn btn-success btn-sm" th:if="${work.startDate == null}">　打刻登録(出勤)　</a>
+		        	<a th:href="@{/work/stampin{id}(id=*{id})}" class="btn btn-success btn-sm" th:if="${work.startDate != null}">打刻登録(出勤更新)</a>
 		        </td>
 		        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td class="center">
 		        	<span th:if="${work.startDate == null}">未登録</span>
-		        	<a th:href="@{/work/stampout{id}(id=*{id})}" class="btn btn-success" th:if="${work.startDate != null}">打刻登録(退勤)</a>
+		        	<a th:href="@{/work/stampout{id}(id=*{id})}" class="btn btn-success btn-sm" th:if="${work.startDate != null}">打刻登録(退勤)</a>
 		        </td>
 		      </tr>
 		    </tbody>
@@ -65,7 +65,7 @@
 		        <th>出勤日</th>
 		        <th>退勤日</th>
 		        <th>労働時間</th>
-		        <th><a th:href="@{/work/add}" class="btn btn-primary">新規登録はこちら</a></th>
+		        <th><a th:href="@{/work/add}" class="btn btn-primary btn-sm">新規登録はこちら</a></th>
 		      </tr>
 		    </thead>
 		    <tbody>
@@ -75,9 +75,9 @@
 		        <td th:text="${#dates.format(work.startDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td th:text="${#dates.format(work.endDate, 'yyyy/MM/dd H:mm')}" class="text-center"></td>
 		        <td th:text="${work.worktime}" class="text-center"></td>
-		        <td class="center">
-		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success">詳細</a>
-		        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary">コピー(新規登録)</a>
+		        <td class="text-center">
+		        	<a th:href="@{/work/{id}(id=*{id})}" class="btn btn-success btn-sm">詳細</a>
+		        	<a th:href="@{/work/addcopy{id}(id=*{id})}" class="btn btn-primary btn-sm">コピー(新規登録)</a>
 		        </td>
 		      </tr>
 		    </tbody>
