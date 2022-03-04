@@ -10,7 +10,7 @@
 
 	<div th:fragment="sidenav">
 		<div class="sidenav bg-light">
-			<nav class="navbar navbar-dark text-light" style="background: darkmagenta;">
+			<nav class="navbar navbar-dark text-light" style="background: darkblue;">
 				<div class="container-fluid">
 					<a class="navbar-brand sidenav-toggler">
 						<i class="bi bi-chevron-left"></i>
@@ -41,7 +41,7 @@
 
 			<ul class="nav flex-column">
 				<li class="nav-item border-bottom">
-                	<h4 class="center text-dark pt-3" th:text="${#authentication.principal.username}+' 様'"></h4>
+                	<h4 class="text-center text-dark pt-3" th:text="${#authentication.principal.username}+' 様'"></h4>
 				</li>
 				<li class="nav-item border-bottom">
 					<a th:href="@{/}" class="nav-link text-dark py-3">ホーム</a>
