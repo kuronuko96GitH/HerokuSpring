@@ -17,68 +17,81 @@
 
 	    <h2><span th:text="${message}"></span></h2>
 
-	     <section class="bg-dark">
-	         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-	             <div class="d-flex justify-content-center">
-	                 <div class="text-center">
-	                     <div class="card text-white bg-dark mt-0 mb-0" style="max-width: 50rem;">
-	                         <div class="card-body">
-
-								<div th:if="${#authentication.principal.roles.get(0) != 'ROLE_USER'}">
-									<h5>※管理者と『guest』ユーザーのみ、</h5>
-									<h5>ユーザー情報一覧が閲覧可能です。</h5>
-								</div>
-	                             <br>
-
-	                             <h4>◆ユーザー情報管理</h4>
-	                             <div th:if="${#authentication.principal.roles.get(0) != 'ROLE_USER'}">
-		                         	<h5><a th:href="@{/user/list}" rel="noopener">ユーザー情報一覧</a></h5>
-	                             </div>
-	                             <div th:if="${#authentication.principal.roles.get(0) == 'ROLE_USER'}">
-	                             	<h5><a th:href="@{/user/{id}(id=${#authentication.principal.id})}" rel="noopener">ユーザー情報</a></h5>
-	                             </div>
-	                         </div>
-	                     </div>
-	                 </div>
-
-	             </div>
-	         </div>
-	         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-	             <div class="d-flex justify-content-center">
-	                 
-	                 <div class="text-center">
-	                     <div class="card text-white bg-dark mt-0 mb-0" style="max-width: 50rem;">
-	                         <div class="card-body">
-	                             <br>
-
-	                             <h4>◆勤退情報登録</h4>
-	                             <h5><a th:href="@{/work/stamping}" rel="noopener">打刻登録</a></h5>
-	                             <h5><a th:href="@{/work/list}" rel="noopener">勤退データ一覧</a></h5>
-	                             <h5><a th:href="@{/work/reward}" rel="noopener">報酬計算(フリーランス版)</a></h5>
-	                         </div>
-	                     </div>
-	                 </div>
-
-	             </div>
-	         </div>
-	         <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-	             <div class="d-flex justify-content-center">
-	                 
-	                 <div class="text-center">
-	                     <div class="card text-white bg-dark mt-0 mb-0" style="max-width: 50rem;">
-	                         <div class="card-body">
-	                             <br>
-
-	                             <h4>◆質問掲示板</h4>
-	                             <h5><a th:href="@{/qboard/headlist}" rel="noopener">質問掲示板</a></h5>
-	                             <h5><a th:href="@{/qboard/new}" rel="noopener">質問投稿</a></h5>
-	                         </div>
-	                     </div>
-	                 </div>
-
-	             </div>
-	         </div>
-	     </section>
+		<section class="bg-dark">
+		   <div class="menu_content">
+		      <div class="card-wrap">
+	
+				<div class="card-list">
+					<h2 class="card-list-title">◆ユーザー情報管理</h2>
+					<div class="text-center mb-2">
+						<div th:if="${#authentication.principal.roles.get(0) != 'ROLE_USER'}">
+							<a style="width: 100%;" th:href="@{/user/list}" class="btn btn-success">ユーザー情報一覧</a>
+							<div class="card-list-text">※管理者と『guest』ユーザーのみ、</div>
+							<div class="card-list-text">ユーザー情報一覧が閲覧可能です。</div>
+						</div>
+						<div th:if="${#authentication.principal.roles.get(0) == 'ROLE_USER'}">
+							<a style="width: 100%;" th:href="@{/user/{id}(id=${#authentication.principal.id})}" class="btn btn-primary" role="button" data-bs-toggle="button">ユーザー情報</a>
+						</div>
+					</div>
+		        </div>
+		
+				<div class="card-list">
+					<h2 class="card-list-title">◆勤退情報登録</h2>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/work/stamping}" class="btn btn-success">打刻登録</a>
+					</div>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/work/list}" class="btn btn-success">勤退データ一覧</a>
+					</div>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/work/reward}" class="btn btn-success">報酬計算(フリーランス版)</a>
+					</div>
+		        </div>
+	
+				<div class="card-list">
+					<h2 class="card-list-title">◆質問掲示板</h2>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/qboard/headlist}" class="btn btn-success">質問掲示板</a>
+					</div>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/qboard/new}" class="btn btn-success">質問投稿</a>
+					</div>
+		        </div>
+		
+				<div class="card-list">
+					<h2 class="card-list-title">◆About Me</h2>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/others/aboutme}" class="btn btn-success">経歴</a>
+					</div>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/others/devdoc}" class="btn btn-success">開発ドキュメント</a>
+					</div>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/others/devhistory}" class="btn btn-success">開発履歴</a>
+					</div>
+					<div class="text-center mb-2">
+							<a style="width: 100%;" th:href="@{/others/portfolio}" class="btn btn-success">他ポートフォリオ</a>
+					</div>
+		        </div>
+		
+				<div class="card-list">
+					<h2 class="card-list-title"></h2>
+					<div class="text-center mb-1">
+					<!-- 開発中  -->
+					</div>
+		        </div>
+		
+				<div class="card-list">
+					<h2 class="card-list-title"></h2>
+					<div class="text-center mb-1">
+					<!-- 開発中  -->
+					</div>
+		        </div>
+		
+		      </div>    
+		    </div>
+		    
+		</section>
 
 	</div>
 
