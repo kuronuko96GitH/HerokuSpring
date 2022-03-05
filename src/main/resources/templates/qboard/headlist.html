@@ -74,8 +74,9 @@
 									<span>検索実行</span>
 								</button>
 								<a th:href="@{/qboard/new}" class="btn btn-primary btn-sm">質問投稿はこちら</a>
+								<input type="button" class="btn btn-secondary btn-sm" value="検索条件クリア" id="clear_qboard_button">
 							</div>
-		
+
 							<div th:replace="common/SearchMsg :: searchMsg"></div>
 
 
@@ -144,5 +145,6 @@
 
 	<!-- Scripts -->
 	<div th:replace="common/Script :: script"></div>
+	<div th:replace="common/js/JsSearchQboard :: scriptSearchQboard"></div>
   </body>
 </html>
