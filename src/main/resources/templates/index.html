@@ -30,7 +30,7 @@
 							<div class="card-list-text">ユーザー情報一覧が閲覧可能です。</div>
 						</div>
 						<div th:if="${#authentication.principal.roles.get(0) == 'ROLE_USER'}">
-							<a style="width: 100%;" th:href="@{/user/{id}(id=${#authentication.principal.id})}" class="btn btn-primary" role="button" data-bs-toggle="button">ユーザー情報</a>
+							<a style="width: 100%;" th:href="@{/user/{id}(id=${#authentication.principal.id})}" class="btn btn-success">ユーザー情報</a>
 						</div>
 					</div>
 		        </div>
