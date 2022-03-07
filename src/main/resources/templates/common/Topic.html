@@ -1,0 +1,90 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>insert title here</title>
+</head>
+<body>
+
+	<div th:fragment="topic(topic)" th:remove="tag">
+		<h5 th:text="${topic.subject}">トピックのタイトル</h5>
+		<div class="d-flex border-bottom mt-3" th:each="post : ${topic.posts}">
+<!--
+			<div class="me-3">
+				<img src="../static/img/anonymous.png" style="width: 64px;"
+					th:src="${post.author.profileImage.encodedString()}"/>
+			</div>
+-->
+			<div class="flex-grow-1">
+				<p class="fw-bold mb-1" th:text="${'投稿者：' + post.user.name + ' さん'}">投稿者の名前</p>
+				<p class="fw-bold mb-2" th:text="${'投稿日：' + #dates.format(post.postedAt, 'yyyy/MM/dd H:mm')}">投稿者の名前</p>
+<!--
+				<p class="fw-bold mb-2" th:text="${post.author.username}">投稿者の名前</p>
+-->
+				<textarea class="form-control text-dark readonly p-0" readonly th:text="${post.postText}"></textarea>
+<!--
+				<form id="ratingForm" class="d-flex py-2 justify-content-end"
+						th:action="@{/comms/PostRating.do}" method="post"
+						th:with="rateByUser=${post.getRateByUser(user)}">
+					<input type="hidden" name="topicNo" th:value="${topic.topicNo}" />
+					<input type="hidden" name="postNo" th:value="${post.postNo}" />
+					<div class="d-flex align-items-baseline me-3">
+						<button type="button" class="btn btn-link p-0 me-2 text-dark fs-5 ajax-link" 
+								th:data-ts-param="1" th:disabled="${post.isPostedBy(user)}">
+							<span th:switch="${rateByUser.rating}">
+								<i class="bi bi-hand-thumbs-up-fill" th:case="1"></i>
+								<i class="bi bi-hand-thumbs-up" th:case="*"></i>
+							</span>
+						</button>
+						<span th:text="${post.goodRatings.size()}">13</span>
+					</div>
+					<div class="d-flex align-items-baseline me-3">
+						<button type="button" class="btn btn-link p-0 me-2 text-dark fs-5 ajax-link"
+							th:data-ts-param="-1" th:disabled="${post.isPostedBy(user)}">
+							<span th:switch="${rateByUser.rating}">
+								<i class="bi bi-hand-thumbs-down-fill" th:case="-1"></i>
+								<i class="bi bi-hand-thumbs-down" th:case="*"></i>
+							</span>
+						</button>
+						<span th:text="${post.badRatings.size()}">2</span>
+					</div>
+					<div class="d-flex align-items-baseline"
+						th:classappend="${post.isFirstPost() ? '' : 'd-none'}">
+						<span class="me-2 text-dark fs-5">
+							<i class="bi bi-chat"></i>
+						</span>
+						<span th:text="${topic.posts.size() - 1}">8</span>
+					</div>
+				</form>
+-->
+			</div>
+		</div>
+		<div class="d-flex mt-3">
+<!--
+			<div class="me-3">
+				<img src="../static/img/anonymous.png" style="width: 64px;"
+					th:src="${user.profileImage.encodedString()}"/>
+			</div>
+-->
+			<form id="ajaxForm" class="flex-grow-1" th:action="@{/webMeeting/AppendPost}" method="post">
+				<p class="fw-bold mb-2" th:text="${'投稿者：' + #authentication.principal.username + ' さん'}">ログインユーザーの名前</p>
+<!--
+				<p class="fw-bold mb-2" th:text="${'投稿者：' + user.username + ' さん'}">ログインユーザーの名前</p>
+-->
+<!--
+				<p class="fw-bold mb-2" th:text="${user.username}">ログインユーザーの名前</p>
+-->
+				<input type="hidden" th:value="${topic.topicNo}" id="topicNo" />
+				<input type="hidden" th:value="${topic.subject}" id="subject" />
+				<textarea rows="2" class="form-control form-control-sm" id="postText"></textarea>
+				<div th:if="${validationMessage}">
+					<span class="text-danger" th:text="${validationMessage}"></span>
+				</div>
+				<div class="text-end mt-3">
+					<button type="button" class="btn btn-success btn-sm shadow-sm">投稿</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</body>
+</html>

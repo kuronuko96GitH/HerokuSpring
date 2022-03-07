@@ -1,0 +1,19 @@
+@charset "UTF-8";
+/* Web会議室のテキストエリアなどを読み取り専用＆入力を制御するのに必要 */
+.table-fixed-header {
+	height: 100%;
+	overflow: auto;
+	position: relative;
+	flex-grow: 1;
+}
+.table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+textarea {
+	resize: none;
+}
+.form-control.readonly {
+	background: transparent;
+	border: 0;
+}

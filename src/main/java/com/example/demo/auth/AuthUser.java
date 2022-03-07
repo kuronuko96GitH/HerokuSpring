@@ -29,6 +29,7 @@ public class AuthUser implements UserDetails {
 
 	private boolean expired;
 
+
 	// 戻るボタンを作成する時に必要な、画面遷移一つ前の画面ID情報を格納
 	private String backId;
 

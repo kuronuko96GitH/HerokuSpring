@@ -32,7 +32,15 @@ $(function() {
 		e.preventDefault();
 		$(this).find('span').toggleClass('d-none');
 	})
-	
+/* この処理は必要？
+	// Collapse
+	$(document).on('click', '#toggler', function() {
+		$(this).find('.toggler-text').each(function(_index, element) {
+			$(element).toggleClass('d-none');
+		});
+	});
+*/
+
 	// サイドナビゲーション
 	$(document).on('click', '.sidenav-toggler, .cover', function() {
 		$('.sidenav').toggleClass('visible');
@@ -82,4 +90,12 @@ $(function() {
 		});
 	});
 */
+
+
+
+	// Toast
+	// （トースト…ポップアップメージのようなものらしい）
+	$(document).on('click', '#toast-close', function() {
+		$('#toast').addClass('d-none');
+	});
 });
