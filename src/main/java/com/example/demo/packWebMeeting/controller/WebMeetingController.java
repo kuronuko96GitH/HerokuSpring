@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.auth.AuthUser;
 import com.example.demo.entity.SystemInfo;
@@ -211,7 +212,7 @@ public class WebMeetingController {
 //		}
 //	}
 
-	
+
 	// 投稿追加
 	@PostMapping("/webMeeting/AppendPost")
 	public String onAppendPostRequested(@Valid TopicCreationForm form,
@@ -231,6 +232,20 @@ public class WebMeetingController {
 			webMeetingService.appendPost(form, user);
 		}
 		model.addAttribute("topic", webMeetingService.reloadTopic(form.getTopicNo()));
+		return "common/Topic :: topic";
+	}
+
+
+	// 投稿評価
+	@PostMapping("/webMeeting/PostRating")
+	public String onPostRatingRequested(@RequestParam("topicNo") String topicNo,
+										@RequestParam("postNo") int postNo,
+										@RequestParam("rating") int rating,
+										Model model,
+										@AuthenticationPrincipal AuthUser user) {
+		// グッドボタンなどの評価情報を検索し、変更が発生した場合は評価データを追加・更新する。
+		webMeetingService.postRating(topicNo, postNo, rating, user);
+		model.addAttribute("topic", webMeetingService.reloadTopic(topicNo));
 		return "common/Topic :: topic";
 	}
 }

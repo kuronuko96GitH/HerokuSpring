@@ -5,15 +5,48 @@
 
 <mapper namespace="com.example.demo.packWebMeeting.repository.WebMeetingXml">
 
+	<select id="currentRating" resultType="int">
+	<![CDATA[
+		SELECT  RATING_FLG
+		FROM    POST_RATINGS
+		WHERE   TOPICNO      =  #{topicNo}
+		AND     POSTNO       =  #{postNo}
+		AND     USER_ID      =  #{user.id}
+	]]>
+	</select>
+
+	<insert id="updateRating">
+	<![CDATA[
+		INSERT INTO POST_RATINGS
+		(
+		    TOPICNO,
+		    POSTNO,
+		    USER_ID,
+		    RATING_FLG,
+		    RATED_AT
+		) VALUES (
+		    #{topicNo},
+		    #{postNo},
+		    #{user.id},
+		    #{rating},
+		    CURRENT_TIMESTAMP
+		) ON CONFLICT (TOPICNO, POSTNO, USER_ID)
+			DO UPDATE SET
+		    RATING_FLG       =  #{rating},
+		    RATED_AT          =  CURRENT_TIMESTAMP
+	]]>
+	</insert>
+
 	<select id="findTopic" resultMap="Topics">
 	<![CDATA[
 		SELECT  TOPICS.TOPICNO              AS topicNo,
 		        TOPICS.SUBJECT              AS subject,
 		        POSTS.POSTNO                AS postNo,
 		        POSTS.POST                  AS postText,
+		        POSTS.USER_ID               AS postCreatedBy,
 		        U.NAME                      AS postCreatedUsername,
 		        POSTS.CREATED_AT            AS postCreatedAt,
-		        POST_RATINGS.RATEDBY        AS postRatedBy,
+		        POST_RATINGS.USER_ID        AS postRatedBy,
 		        POST_RATINGS.RATING_FLG     AS postRating,
 		        POST_RATINGS.RATED_AT       AS postRatedAt
 		FROM    TOPICS
@@ -37,9 +70,10 @@
 		        TOPICS.SUBJECT              AS subject,
 		        POSTS.POSTNO                AS postNo,
 		        POSTS.POST                  AS postText,
+		        POSTS.USER_ID               AS postCreatedBy,
 		        U.NAME                      AS postCreatedUsername,
 		        POSTS.CREATED_AT            AS postCreatedAt,
-		        POST_RATINGS.RATEDBY        AS postRatedBy,
+		        POST_RATINGS.USER_ID        AS postRatedBy,
 		        POST_RATINGS.RATING_FLG     AS postRating,
 		        POST_RATINGS.RATED_AT       AS postRatedAt
 		FROM    TOPICS
@@ -51,7 +85,7 @@
 		ON      POSTS.TOPICNO    =  POST_RATINGS.TOPICNO
 		AND     POSTS.POSTNO     =  POST_RATINGS.POSTNO
 		ORDER BY
-		        TOPICS.TOPICNO,
+		        TOPICS.CREATED_AT DESC,
 		        POSTS.POSTNO
 	]]>
 	</select>
@@ -70,6 +104,7 @@
 			<result property="postText" column="postText" />
 			<result property="postedAt" column="postCreatedAt" />
 			<association property="user" javaType="com.example.demo.entity.User">
+				<result property="id" column="postCreatedBy" />
 				<result property="name" column="postCreatedUsername" />
 			</association>
 <!-- 
@@ -85,9 +120,12 @@
 			<collection property="ratings" ofType="com.example.demo.packWebMeeting.entity.PostRating">
 				<result property="rating" column="postRating" />
 				<result property="ratedAt" column="postRatedAt" />
+				<association property="rater" javaType="com.example.demo.entity.User">
+					<result property="id" column="postRatedBy" />
+				</association>
 <!--
 				<association property="rater" javaType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
-					<result property="empNo" column="postRatedAt" />
+					<result property="empNo" column="postRatedBy" />
 				</association>
 -->
 			</collection>
@@ -135,5 +173,5 @@
 		)
 	]]>
 	</insert>
-	
+
 </mapper>

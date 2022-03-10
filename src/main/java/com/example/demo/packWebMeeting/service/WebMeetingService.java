@@ -14,7 +14,6 @@ import com.example.demo.packWebMeeting.entity.Topic;
 import com.example.demo.packWebMeeting.entity.forms.TopicCreationForm;
 import com.example.demo.packWebMeeting.repository.NumberingXml;
 import com.example.demo.packWebMeeting.repository.WebMeetingXml;
-//import com.example.demo.packWebMeeting.repository.WebMeetingRepository;
 
 @Service
 public class WebMeetingService {
@@ -68,5 +67,24 @@ public class WebMeetingService {
 	public Topic reloadTopic(String topicNo) {
 		return webMeetingRepository.findTopic(topicNo)
 				.orElse(new Topic());
+	}
+	
+	// 評価情報の更新
+	@Transactional(rollbackFor = Throwable.class)
+	@LogRequired
+	public void postRating(String topicNo, int postNo, int rating, AuthUser user) {
+		// 評価情報の検索処理
+		int currentRating = webMeetingRepository.currentRating(topicNo, postNo, user)
+												.orElse(0);
+		int ratingForUpdate;
+		if (rating == currentRating) {
+			// ０：評価無し
+			ratingForUpdate = 0;
+		} else {
+			// 画面で押された評価情報を渡す
+			ratingForUpdate = rating;
+		}
+		// 評価情報の更新処理
+		webMeetingRepository.updateRating(topicNo, postNo, user, ratingForUpdate);
 	}
 }

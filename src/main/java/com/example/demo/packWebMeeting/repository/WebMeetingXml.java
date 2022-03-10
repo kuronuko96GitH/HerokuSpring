@@ -22,6 +22,17 @@ public interface WebMeetingXml {
 	// 『Posts』テーブルに新規登録
 	public void registerPost(@Param("form") TopicCreationForm form, @Param("user") AuthUser user);
 	
-	// 
+	// 追加投稿されたトピック情報の検索
 	public Optional<Topic> findTopic(String topicNo);
+	
+	// 評価データの検索
+	public Optional<Integer> currentRating(@Param("topicNo") String topicNo, 
+			@Param("postNo") int postNo, 
+			@Param("user") AuthUser user);
+
+	// 評価データの更新
+	public void updateRating(@Param("topicNo") String topicNo, 
+			@Param("postNo") int postNo, 
+			@Param("user") AuthUser user,
+			@Param("rating") int rating);
 }
