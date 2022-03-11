@@ -192,6 +192,36 @@ public class DateEdit {
 	}
 
 	/**
+	 * 文字列の『年月日(yyyy-MM-dd or yyyy/MM/dd)』『時』『分』『秒』を、Date型で返します。
+	 * 
+	 * @param 文字列の『年』『月』『日』『時』『分』『秒』
+	 * @return Date型の戻り値
+	 */
+	public static Date getDateYMDTime(String strDateYMD, String strTimeH, String strTimeM, String strTimeS) {
+
+	    // "-"は、"/"に置き替える。
+        String strReplaceDate = strDateYMD.replace("-", "/");
+
+	    String strDate =  strReplaceDate + " "
+	    				+ String.format("%02d", Integer.parseInt(strTimeH)) + ":"
+	    				+ String.format("%02d", Integer.parseInt(strTimeM)) + ":"
+	    				+ String.format("%02d", Integer.parseInt(strTimeS));
+
+
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+		Date dateValue = null;
+		
+		try {
+			dateValue = sdFormat.parse(strDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+	    return dateValue;
+	}
+
+	/**
 	 * 文字列の『年』『月』『日』『時』『分』『秒』を、Date型で返します。
 	 * 
 	 * @param 文字列の『年』『月』『日』『時』『分』『秒』
@@ -233,6 +263,40 @@ public class DateEdit {
 	    String strDate =  String.format("%04d", Integer.parseInt(strDateY)) + "/"
 				+ String.format("%02d", Integer.parseInt(strDateM)) + "/"
 				+ String.format("%02d", Integer.parseInt(strDateD)) + " "
+				+ String.format("%02d", Integer.parseInt(strTimeH)) + ":"
+				+ String.format("%02d", Integer.parseInt(strTimeM)) + ":"
+				+ String.format("%02d", Integer.parseInt(strTimeS));
+
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+
+		try {
+			dateValue = sdFormat.parse(strDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+	    // 引数で指定された書式の文字列を取得
+	    strDate = new SimpleDateFormat(strFormat).format(dateValue);
+
+	    return strDate;
+	}
+
+
+	/**
+	 * 文字列の『年月日(yyyy-MM-dd or yyyy/MM/dd)』『時』『分』『秒』を、指定された書式のString型で返します。
+	 * 
+	 * @param 文字列の『年月日(yyyy-MM-dd or yyyy/MM/dd)』『時』『分』『秒』
+	 * @param strFormat…書式の指定
+	 * @return String型の戻り値
+	 */
+	public static String getFormatDateYMDTime(String strDateYMD, String strTimeH, String strTimeM, String strTimeS, String strFormat) {
+
+	    // "-"は、"/"に置き替える。
+        String strReplaceDate = strDateYMD.replace("-", "/");
+ 
+		Date dateValue = null;
+	    String strDate =  strReplaceDate + " "
 				+ String.format("%02d", Integer.parseInt(strTimeH)) + ":"
 				+ String.format("%02d", Integer.parseInt(strTimeM)) + ":"
 				+ String.format("%02d", Integer.parseInt(strTimeS));

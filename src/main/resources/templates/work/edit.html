@@ -27,9 +27,13 @@
 		      <div class="row mx-md-n5">
 		        <div class="col-2 pt-3 border bg-light">出勤日<span class="text-danger">※</span></div>
 		        <div class="col py-2 border">
+			      <input type="date" th:field="*{startDateYMD}" class="form-control-inline"> 
+<!-- 
+【旧版】年月日のテキストボックス３つが別々ver
 			      <input type="number" th:field="*{startDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
 			      <input type="number" th:field="*{startDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
 			      <input type="number" th:field="*{startDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
+-->
 			      <input type="number" th:field="*{startDateHH}" class="form-control-inline" maxlength="2" style="width:50px;"> 時
 			      <input type="number" th:field="*{startDateMI}" class="form-control-inline" maxlength="2" style="width:50px;"> 分
 		        </div>
@@ -38,9 +42,13 @@
 		      <div class="row mx-md-n5">
 		        <div class="col-2 pt-3 border bg-light">退勤日<span class="text-danger">※</span></div>
 		        <div class="col py-2 border">
+			      <input type="date" th:field="*{endDateYMD}" class="form-control-inline"> 
+<!-- 
+【旧版】年月日のテキストボックス３つが別々ver
 			      <input type="number" th:field="*{endDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
 			      <input type="number" th:field="*{endDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
 			      <input type="number" th:field="*{endDateD}" class="form-control-inline" maxlength="2" style="width:50px;"> 日
+-->
 			      <input type="number" th:field="*{endDateHH}" class="form-control-inline" maxlength="2" style="width:50px;"> 時
 			      <input type="number" th:field="*{endDateMI}" class="form-control-inline" maxlength="2" style="width:50px;"> 分
 		        </div>

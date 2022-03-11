@@ -84,7 +84,7 @@ public class WorkService {
     work.setUserId(userID); // ユーザーID
     work.setContent(workRequest.getContent());
 
-
+/*【旧版】年月日のテキストボックス３つが別々ver
     // 開始日時
     Date dateS = DateEdit.getDateTime(workRequest.getStartDateY(), workRequest.getStartDateM(), workRequest.getStartDateD(),
     		workRequest.getStartDateHH(), workRequest.getStartDateMI(), "0");
@@ -92,6 +92,16 @@ public class WorkService {
 
     // 終了日時
     Date dateE = DateEdit.getDateTime(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD(),
+    		workRequest.getEndDateHH(), workRequest.getEndDateMI(), "0");
+    work.setEndDate(dateE);
+*/
+    // 開始日時
+    Date dateS = DateEdit.getDateYMDTime(workRequest.getStartDateYMD(),
+    		workRequest.getStartDateHH(), workRequest.getStartDateMI(), "0");
+    work.setStartDate(dateS);
+
+    // 終了日時
+    Date dateE = DateEdit.getDateYMDTime(workRequest.getEndDateYMD(),
     		workRequest.getEndDateHH(), workRequest.getEndDateMI(), "0");
     work.setEndDate(dateE);
 
@@ -252,6 +262,7 @@ public class WorkService {
     work.setUserId(userID);
     work.setContent(workUpdateRequest.getContent());
 
+/*【旧版】年月日のテキストボックス３つが別々ver
     // 開始日時
     Date dateS = DateEdit.getDateTime(workUpdateRequest.getStartDateY(), workUpdateRequest.getStartDateM(), workUpdateRequest.getStartDateD(),
     		workUpdateRequest.getStartDateHH(), workUpdateRequest.getStartDateMI(), "0");
@@ -259,6 +270,16 @@ public class WorkService {
 
     // 終了日時
     Date dateE = DateEdit.getDateTime(workUpdateRequest.getEndDateY(), workUpdateRequest.getEndDateM(), workUpdateRequest.getEndDateD(),
+    		workUpdateRequest.getEndDateHH(), workUpdateRequest.getEndDateMI(), "0");
+    work.setEndDate(dateE);
+*/
+    // 開始日時
+    Date dateS = DateEdit.getDateYMDTime(workUpdateRequest.getStartDateYMD(),
+    		workUpdateRequest.getStartDateHH(), workUpdateRequest.getStartDateMI(), "0");
+    work.setStartDate(dateS);
+
+    // 終了日時
+    Date dateE = DateEdit.getDateYMDTime(workUpdateRequest.getEndDateYMD(),
     		workUpdateRequest.getEndDateHH(), workUpdateRequest.getEndDateMI(), "0");
     work.setEndDate(dateE);
 

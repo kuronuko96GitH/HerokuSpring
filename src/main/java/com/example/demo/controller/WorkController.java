@@ -163,9 +163,19 @@ public class WorkController {
 		return strRtnForm;
 	}
 
-	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
-	// ここで作成しておかないと、HTML側でnullエラーになる。
-    model.addAttribute("workRequestSearch", new WorkRequestSearch());
+
+	if (this.pageRequestSearch == null) {
+		// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
+		// ここで作成しておかないと、HTML側でnullエラーになる。
+	    model.addAttribute("workRequestSearch", new WorkRequestSearch());
+		
+	} else {
+	    model.addAttribute("workRequestSearch", this.pageRequestSearch);	// this.pageRequestSearch…検索ボタンを押した時に設定された、検索条件入力項目の情報
+	}
+//	// 勤退情報一覧画面(勤退年月)検索のために、検索条件の年月日の空データを作っておく。
+//	// ここで作成しておかないと、HTML側でnullエラーになる。
+//    model.addAttribute("workRequestSearch", new WorkRequestSearch());
+
 
 /*
 	// 勤退情報の検索
@@ -212,16 +222,28 @@ public class WorkController {
 	boolean isDateYMD = false; // 日付チェック用(false：正しい日付形式ではない)
 
 
+	if (workRequestSearch.getSearchDateY() == null
+			&& workRequestSearch.getSearchDateM() == null ) {
+		// 勤退開始(年)と勤退開始(月)が空白の場合。
 
-	if (workRequestSearch.getStartDateY() != null || workRequestSearch.getEndDateY() != null) {
-		// 勤退開始日(年)　または　勤退終了日(年)　が入力されていた場合は
-		// 勤退年月は検索処理の対象外とする。
+		if (workRequestSearch.getEndDateYMD() != null) {
+			// 勤退終了日（年月日）が入力されていた場合。
+			strEndDate = DateEdit.getFormatDateYMDTime(workRequestSearch.getEndDateYMD(), "23", "59", "59", "yyyy-MM-dd HH:mm:ss");
+//			strEndDate = DateEdit.getFormatDateYMDTime(workRequestSearch.getEndDateYMD(), "23", "59", "59", "yyyy-MM-dd");
+			workRequestSearch.setEndDate(strEndDate);
+		}
 
-	// 検索条件の入力チェック(検索年月)
-	} else if (workRequestSearch.getSearchDateY() == null
-		&& workRequestSearch.getSearchDateM() == null ) {
-		// 勤退開始(年)と勤退開始(月)が空白の場合は、エラーチェックの対象外。
-
+		if (workRequestSearch.getStartDate() != null && workRequestSearch.getEndDateYMD() != null) {
+			// 勤退開始日と勤退終了日（年月日）が入力されていた場合
+		
+			// 開始日と終了日の範囲チェック。
+			isDateYMD = DateRange.isRangeChk(workRequestSearch.getStartDate(), workRequestSearch.getEndDateYMD());
+		
+			if (!isDateYMD) {
+		        model.addAttribute("validationError", "勤退終了日が、勤退開始日より過去になっています。");
+		        return "work/list";
+			}
+		}
 	} else {
 		isDateYMD = DateEdit.isDate(workRequestSearch.getSearchDateY(), workRequestSearch.getSearchDateM(), "01");
 		if (!isDateYMD) {
@@ -230,7 +252,7 @@ public class WorkController {
 		}
 
 		// 勤退年月の勤退開始日（該当月の初日）の取得
-		strStartDate = DateEdit.getFormatDate(workRequestSearch.getSearchDateY(), workRequestSearch.getSearchDateM(), "1", "yyyy-MM-dd");
+		strStartDate = DateEdit.getFormatDate(workRequestSearch.getSearchDateY(), workRequestSearch.getSearchDateM(), "1", "yyyy-MM-dd HH:mm:ss");
 		workRequestSearch.setStartDate(strStartDate);
 
 		// 勤退年月の勤退終了日(該当月の末日)の取得
@@ -240,9 +262,7 @@ public class WorkController {
 	}
 
 
-
-
-
+/*【旧版】年月日のテキストボックス３つが別々ver
 	// 検索条件の入力チェック(開始年月日)
 	if (workRequestSearch.getStartDateY() == null
 		&& workRequestSearch.getStartDateM() == null
@@ -291,6 +311,8 @@ public class WorkController {
 			}
 		}
 	}
+*/
+
 
 
 	List<Work> worklist;
@@ -326,6 +348,17 @@ public class WorkController {
 	model.addAttribute("searchResult", searchResult);
 //	model.addAttribute("worklist", worklist);
 
+	if (workRequestSearch.getSearchDateY() != null
+	&& workRequestSearch.getSearchDateM() != null ) {
+		// 勤退年月の勤退開始(年)と勤退開始(月)が入力されていた場合は、
+		// 画面条件入力項目である勤退開始日と勤退終了日のリクエストデータを
+		// このタイミングで初期化する。
+		// （画面を再描写した時に、内部処理していたリクエストデータを引き継いで、画面に表示してしまうため）
+
+		workRequestSearch.setStartDate("");	// 勤退開始日の初期化
+		workRequestSearch.setEndDate("");	// 勤退終了日の初期化
+		workRequestSearch.setEndDateYMD("");	// 勤退終了日(年月日)の初期化
+	}
 
 	// 	入力条件をユーザーが変更されても、検索ボタンの押したタイミングの入力条件を使いたいため、
 	// このコントローラクラス専用の『WorkRequestSearch』に、このタイミングで代入します。
@@ -443,25 +476,32 @@ public class WorkController {
     
     workRequest.setContent(work.getContent());
 
-
+/*【旧版】年月日のテキストボックス３つが別々ver
     // 開始日時(年)
     workRequest.setStartDateY(DateEdit.getDate(work.getStartDate(), "yyyy"));
     // 開始日時(月)
     workRequest.setStartDateM(DateEdit.getDate(work.getStartDate(), "M"));
     // 開始日時(日)
     workRequest.setStartDateD(DateEdit.getDate(work.getStartDate(), "d"));
+*/
+	// 開始日時(年月日)
+	workRequest.setStartDateYMD(DateEdit.getDate(work.getStartDate(), "yyyy-MM-dd"));
     // 開始日時(時間)
     workRequest.setStartDateHH(DateEdit.getDate(work.getStartDate(), "H"));
     // 開始日時(分)
     workRequest.setStartDateMI(DateEdit.getDate(work.getStartDate(), "m"));
 
 
+/*【旧版】年月日のテキストボックス３つが別々ver
     // 終了日時(年)
     workRequest.setEndDateY(DateEdit.getDate(work.getEndDate(), "yyyy"));
     // 終了日時(月)
     workRequest.setEndDateM(DateEdit.getDate(work.getEndDate(), "M"));
     // 終了日時(日)
     workRequest.setEndDateD(DateEdit.getDate(work.getEndDate(), "d"));
+*/
+	// 終了日時(年月日)
+	workRequest.setEndDateYMD(DateEdit.getDate(work.getEndDate(), "yyyy-MM-dd"));
     // 終了日時(時間)
     workRequest.setEndDateHH(DateEdit.getDate(work.getEndDate(), "H"));
     // 終了日時(分)
@@ -501,7 +541,7 @@ public class WorkController {
       model.addAttribute("validationError", errorList);
       return "work/add";
     }
-
+/*【旧版】年月日のテキストボックス３つが別々ver
 	// 開始日時と終了日時の範囲チェック。
 	String strStartDate = DateEdit.getFormatDateTime(workRequest.getStartDateY(), workRequest.getStartDateM(), workRequest.getStartDateD(),
 			workRequest.getStartDateHH(), workRequest.getStartDateMI(), "00", "yyyy/MM/dd HH:mm:ss");
@@ -519,6 +559,22 @@ public class WorkController {
 			"00", "00", "00");
 	Date DateEnd = DateEdit.getDateTime(workRequest.getEndDateY(), workRequest.getEndDateM(), workRequest.getEndDateD(),
 			"23", "59", "59");
+*/
+	// 開始日時と終了日時の範囲チェック。
+	String strStartDate = DateEdit.getFormatDateYMDTime(workRequest.getStartDateYMD(),
+			workRequest.getStartDateHH(), workRequest.getStartDateMI(), "00", "yyyy/MM/dd HH:mm:ss");
+	String strEndDate = DateEdit.getFormatDateYMDTime(workRequest.getEndDateYMD(),
+			workRequest.getEndDateHH(), workRequest.getEndDateMI(), "00", "yyyy/MM/dd HH:mm:ss");
+	boolean isDateYMD = DateTimeRange.isRangeChk(strStartDate, strEndDate);
+
+	if (!isDateYMD) {
+	    model.addAttribute("validationError", "退勤日が、出勤日より過去になっています。");
+	    return "work/add";
+	}
+
+
+	Date DateStart = DateEdit.getDateYMDTime(workRequest.getStartDateYMD(), "00", "00", "00");
+	Date DateEnd = DateEdit.getDateYMDTime(workRequest.getEndDateYMD(), "23", "59", "59");
 
 	// 登録しようとしてる日付のデータが、既に存在してないかを検索。
 	List<Work> worklist = workService.findByDate(authUser.getId(), DateStart, DateEnd);
@@ -728,18 +784,22 @@ public class WorkController {
 		return strRtnForm;
 	}
 
+	// データベースから検索
     Work work = workService.findById(id);
     WorkUpdateRequest workUpdateRequest = new WorkUpdateRequest();
     workUpdateRequest.setId(work.getId());
     workUpdateRequest.setContent(work.getContent());
 
-
+/*【旧版】年月日のテキストボックス３つが別々ver
     // 開始日時(年)
     workUpdateRequest.setStartDateY(DateEdit.getDate(work.getStartDate(), "yyyy"));
     // 開始日時(月)
     workUpdateRequest.setStartDateM(DateEdit.getDate(work.getStartDate(), "M"));
     // 開始日時(日)
     workUpdateRequest.setStartDateD(DateEdit.getDate(work.getStartDate(), "d"));
+*/
+	// 開始日時(年月日)
+	workUpdateRequest.setStartDateYMD(DateEdit.getDate(work.getStartDate(), "yyyy-MM-dd"));
     // 開始日時(時間)
     workUpdateRequest.setStartDateHH(DateEdit.getDate(work.getStartDate(), "H"));
     // 開始日時(分)
@@ -749,24 +809,31 @@ public class WorkController {
     if (work.getEndDate() == null) {
     	// データベースから取得した終了日時がnullだった場合
     	// 画面表示データを空白で埋める。
-
+	    // 終了日時(年月日)
+	    workUpdateRequest.setEndDateYMD("");
+/*【旧版】年月日のテキストボックス３つが別々ver
 	    // 終了日時(年)
 	    workUpdateRequest.setEndDateY("");
 	    // 終了日時(月)
 	    workUpdateRequest.setEndDateM("");
 	    // 終了日時(日)
 	    workUpdateRequest.setEndDateD("");
+*/
 	    // 終了日時(時間)
 	    workUpdateRequest.setEndDateHH("");
 	    // 終了日時(分)
 	    workUpdateRequest.setEndDateMI("");
     } else {
+	    // 終了日時(年月日)
+	    workUpdateRequest.setEndDateYMD(DateEdit.getDate(work.getEndDate(), "yyyy-MM-dd"));
+/*【旧版】年月日のテキストボックス３つが別々ver
 	    // 終了日時(年)
 	    workUpdateRequest.setEndDateY(DateEdit.getDate(work.getEndDate(), "yyyy"));
 	    // 終了日時(月)
 	    workUpdateRequest.setEndDateM(DateEdit.getDate(work.getEndDate(), "M"));
 	    // 終了日時(日)
 	    workUpdateRequest.setEndDateD(DateEdit.getDate(work.getEndDate(), "d"));
+*/
 	    // 終了日時(時間)
 	    workUpdateRequest.setEndDateHH(DateEdit.getDate(work.getEndDate(), "H"));
 	    // 終了日時(分)
@@ -806,12 +873,19 @@ public class WorkController {
     }
 
 	// 開始日時と終了日時の範囲チェック。
+	String strStartDate = DateEdit.getFormatDateYMDTime(workUpdateRequest.getStartDateYMD(),
+			workUpdateRequest.getStartDateHH(), workUpdateRequest.getStartDateMI(), "00", "yyyy/MM/dd HH:mm:ss");
+	String strEndDate = DateEdit.getFormatDateYMDTime(workUpdateRequest.getEndDateYMD(),
+			workUpdateRequest.getEndDateHH(), workUpdateRequest.getEndDateMI(), "00", "yyyy/MM/dd HH:mm:ss");
+	boolean isDateYMD = DateTimeRange.isRangeChk(strStartDate, strEndDate);
+/*【旧版】年月日のテキストボックス３つが別々ver
+	// 開始日時と終了日時の範囲チェック。
 	String strStartDate = DateEdit.getFormatDateTime(workUpdateRequest.getStartDateY(), workUpdateRequest.getStartDateM(), workUpdateRequest.getStartDateD(),
 			workUpdateRequest.getStartDateHH(), workUpdateRequest.getStartDateMI(), "00", "yyyy/MM/dd HH:mm:ss");
 	String strEndDate = DateEdit.getFormatDateTime(workUpdateRequest.getEndDateY(), workUpdateRequest.getEndDateM(), workUpdateRequest.getEndDateD(),
 			workUpdateRequest.getEndDateHH(), workUpdateRequest.getEndDateMI(), "00", "yyyy/MM/dd HH:mm:ss");
 	boolean isDateYMD = DateTimeRange.isRangeChk(strStartDate, strEndDate);
-
+*/
 
 	if (!isDateYMD) {
 	    model.addAttribute("validationError", "退勤日が、出勤日より過去になっています。");
@@ -819,11 +893,14 @@ public class WorkController {
 	}
 
 
+	Date DateStart = DateEdit.getDateYMDTime(workUpdateRequest.getStartDateYMD(), "00", "00", "00");
+	Date DateEnd = DateEdit.getDateYMDTime(workUpdateRequest.getEndDateYMD(), "23", "59", "59");
+/*【旧版】年月日のテキストボックス３つが別々ver
 	Date DateStart = DateEdit.getDateTime(workUpdateRequest.getStartDateY(), workUpdateRequest.getStartDateM(), workUpdateRequest.getStartDateD(),
 			"00", "00", "00");
 	Date DateEnd = DateEdit.getDateTime(workUpdateRequest.getEndDateY(), workUpdateRequest.getEndDateM(), workUpdateRequest.getEndDateD(),
 			"23", "59", "59");
-
+*/
 	// 登録しようとしてる日付のデータが、既に存在してないかを検索。
 	List<Work> worklist = workService.findByDateDuplicate(workUpdateRequest.getId(), authUser.getId(), DateStart, DateEnd);
 
