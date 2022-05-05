@@ -27,12 +27,19 @@
 					</div>
 					<div id="searchCondition" class="collapse show">
 						<div class="border p-3 rounded">
+<!-- 
+【2022.5.5】不具合が多いため、処理をシンプルにするため、
+			勤怠年月は非表示【hidden】とする。
+			【暫定版】テキストボックスが空白の状態で、内部処理だけは残す。【hidden】
 							<div class="mb-3">
 								<strong>勤退年月：</strong>
 								<input type="number" th:field="*{searchDateY}" class="form-control-inline" maxlength="4" style="width:70px;"> 年
 								<input type="number" th:field="*{searchDateM}" class="form-control-inline" maxlength="2" style="width:50px;"> 月
 								<strong>（※勤退年月が、検索条件として優先されます。）</strong>
 							</div>
+-->
+								<input type="hidden" th:field="*{searchDateY}">
+								<input type="hidden" th:field="*{searchDateM}">
 							<div class="mb-3">
 								<strong>勤退開始日：</strong>
 								<input type="date" th:field="*{startDate}" class="form-control-inline">　<strong>～　勤退終了日：</strong>
